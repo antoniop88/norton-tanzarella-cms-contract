@@ -1,6 +1,6 @@
 {
   "name": "@norton-tanzarella/cms-contract",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Zod schemas, page registry and field metadata for Norton Tanzarella CMS",
   "type": "module",
   "private": true,
@@ -15,7 +15,6 @@
   "files": ["dist"],
   "scripts": {
     "build": "tsup",
-    "prepare": "tsup",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
