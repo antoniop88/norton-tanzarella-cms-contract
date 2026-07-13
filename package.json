@@ -4,6 +4,7 @@
   "description": "Zod schemas, page registry and field metadata for Norton Tanzarella CMS",
   "type": "module",
   "private": true,
+  "packageManager": "pnpm@10.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
