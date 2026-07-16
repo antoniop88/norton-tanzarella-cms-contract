@@ -4,8 +4,10 @@ export type PageKey =
   | 'home'
   | 'chi-siamo'
   | 'immobili-index'
-  | 'articoli-index'
   | 'contatti'
+  | 'property-finder'
+  | 'virtual-tours'
+  | 'sell-with-us'
   | 'privacy-policy'
   | 'cookie-policy'
 
@@ -15,6 +17,37 @@ export type PageRegistryEntry = {
   defaults: (locale: 'it' | 'en') => CmsPageDocument
   milestone: 'M1' | 'M2' | 'M3'
 }
+
+const CATEGORY_SHOWCASE_ITEMS_IT = [
+  {
+    label: 'Attici e penthouse',
+    image: '/full-logo.png',
+    imageAlt: 'Attici e penthouse',
+    href: '/immobili',
+    ctaLabel: 'Vedi gli immobili',
+  },
+  {
+    label: 'Ville e dimore',
+    image: '/full-logo.png',
+    imageAlt: 'Ville e dimore',
+    href: '/immobili',
+    ctaLabel: 'Vedi gli immobili',
+  },
+  {
+    label: 'Appartamenti',
+    image: '/full-logo.png',
+    imageAlt: 'Appartamenti',
+    href: '/immobili',
+    ctaLabel: 'Vedi gli immobili',
+  },
+  {
+    label: 'Investimenti',
+    image: '/full-logo.png',
+    imageAlt: 'Investimenti',
+    href: '/immobili',
+    ctaLabel: 'Vedi gli immobili',
+  },
+] as const
 
 const HOME_DEFAULTS_IT: CmsPageDocument = {
   seo: {
@@ -34,10 +67,20 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       },
     },
     {
+      id: '00000000-0000-4000-8000-000000000005',
+      type: 'categoryShowcase',
+      enabled: true,
+      order: 1,
+      content: {
+        title: 'Proprietà di prestigio a Roma',
+        items: [...CATEGORY_SHOWCASE_ITEMS_IT],
+      },
+    },
+    {
       id: '00000000-0000-4000-8000-000000000002',
       type: 'features',
       enabled: true,
-      order: 1,
+      order: 2,
       content: {
         title: 'Perché sceglierci',
         items: [
@@ -51,7 +94,7 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       id: '00000000-0000-4000-8000-000000000003',
       type: 'featuredCollection',
       enabled: true,
-      order: 2,
+      order: 3,
       content: {
         collectionKey: 'immobili',
         mode: 'featured',
@@ -65,7 +108,7 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       id: '00000000-0000-4000-8000-000000000004',
       type: 'cta',
       enabled: true,
-      order: 3,
+      order: 4,
       content: {
         title: 'Hai bisogno di una valutazione?',
         description: 'Contattaci per un appuntamento senza impegno.',
@@ -85,8 +128,8 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
 
 export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
   home: {
-    allowedTypes: ['hero', 'features', 'featuredCollection', 'cta'],
-    reorderable: ['features', 'featuredCollection', 'cta'],
+    allowedTypes: ['hero', 'categoryShowcase', 'features', 'featuredCollection', 'cta'],
+    reorderable: ['categoryShowcase', 'features', 'featuredCollection', 'cta'],
     defaults: (locale) => (locale === 'en' ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT),
     milestone: 'M1',
   },
@@ -164,43 +207,6 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
           },
     milestone: 'M3',
   },
-  'articoli-index': {
-    allowedTypes: ['pageHeader'],
-    reorderable: [],
-    defaults: (locale) =>
-      locale === 'en'
-        ? {
-            seo: { title: 'Articles', description: 'News and insights from Norton Tanzarella.' },
-            sections: [
-              {
-                id: '00000000-0000-4000-8000-000000000051',
-                type: 'pageHeader',
-                enabled: true,
-                order: 0,
-                content: {
-                  title: 'Articles',
-                  lead: 'Market updates, guides and stories from our team.',
-                },
-              },
-            ],
-          }
-        : {
-            seo: { title: 'Articoli', description: 'Notizie e approfondimenti da Norton Tanzarella.' },
-            sections: [
-              {
-                id: '00000000-0000-4000-8000-000000000051',
-                type: 'pageHeader',
-                enabled: true,
-                order: 0,
-                content: {
-                  title: 'Articoli',
-                  lead: 'Aggiornamenti di mercato, guide e storie dal nostro team.',
-                },
-              },
-            ],
-          },
-    milestone: 'M3',
-  },
   contatti: {
     allowedTypes: ['pageHeader', 'richText'],
     reorderable: [],
@@ -242,6 +248,135 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 order: 1,
                 content: {
                   body: 'Scrivici per valutazioni, appuntamenti di visita o informazioni generali.',
+                },
+              },
+            ],
+          },
+    milestone: 'M2',
+  },
+  'property-finder': {
+    allowedTypes: ['pageHeader'],
+    reorderable: [],
+    defaults: (locale) =>
+      locale === 'en'
+        ? {
+            seo: {
+              title: 'Property Finder',
+              description: 'Find your next property with Norton Tanzarella.',
+            },
+            sections: [
+              {
+                id: '00000000-0000-4000-8000-000000000060',
+                type: 'pageHeader',
+                enabled: true,
+                order: 0,
+                content: {
+                  title: 'Property Finder',
+                  lead: 'Page under construction.',
+                },
+              },
+            ],
+          }
+        : {
+            seo: {
+              title: 'Trova immobile',
+              description: 'Trova il prossimo immobile con Norton Tanzarella.',
+            },
+            sections: [
+              {
+                id: '00000000-0000-4000-8000-000000000060',
+                type: 'pageHeader',
+                enabled: true,
+                order: 0,
+                content: {
+                  title: 'Trova immobile',
+                  lead: 'Pagina in costruzione.',
+                },
+              },
+            ],
+          },
+    milestone: 'M2',
+  },
+  'virtual-tours': {
+    allowedTypes: ['pageHeader'],
+    reorderable: [],
+    defaults: (locale) =>
+      locale === 'en'
+        ? {
+            seo: {
+              title: 'Virtual Tours',
+              description: 'Explore selected properties with virtual tours.',
+            },
+            sections: [
+              {
+                id: '00000000-0000-4000-8000-000000000070',
+                type: 'pageHeader',
+                enabled: true,
+                order: 0,
+                content: {
+                  title: 'Virtual Tours',
+                  lead: 'Page under construction.',
+                },
+              },
+            ],
+          }
+        : {
+            seo: {
+              title: 'Tour virtuali',
+              description: 'Esplora immobili selezionati con tour virtuali.',
+            },
+            sections: [
+              {
+                id: '00000000-0000-4000-8000-000000000070',
+                type: 'pageHeader',
+                enabled: true,
+                order: 0,
+                content: {
+                  title: 'Tour virtuali',
+                  lead: 'Pagina in costruzione.',
+                },
+              },
+            ],
+          },
+    milestone: 'M2',
+  },
+  'sell-with-us': {
+    allowedTypes: ['pageHeader'],
+    reorderable: [],
+    defaults: (locale) =>
+      locale === 'en'
+        ? {
+            seo: {
+              title: 'Sell with us',
+              description: 'Sell your property with Norton Tanzarella.',
+            },
+            sections: [
+              {
+                id: '00000000-0000-4000-8000-000000000080',
+                type: 'pageHeader',
+                enabled: true,
+                order: 0,
+                content: {
+                  title: 'Sell with us',
+                  lead: 'Page under construction.',
+                },
+              },
+            ],
+          }
+        : {
+            seo: {
+              title: 'Vendi con noi',
+              description: 'Vendi il tuo immobile con Norton Tanzarella.',
+            },
+            sections: [
+              {
+                id: '00000000-0000-4000-8000-000000000080',
+                type: 'pageHeader',
+                enabled: true,
+                order: 0,
+                content: {
+                  title: 'Vendi con noi',
+                  lead: 'Pagina in costruzione.',
                 },
               },
             ],

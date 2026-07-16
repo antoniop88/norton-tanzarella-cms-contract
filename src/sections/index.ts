@@ -1,4 +1,5 @@
 import {
+  categoryShowcaseContentSchema,
   ctaContentSchema,
   featuredCollectionContentSchema,
   featuresContentSchema,
@@ -20,6 +21,7 @@ export const sectionContentByType = {
   features: featuresContentSchema,
   cta: ctaContentSchema,
   featuredCollection: featuredCollectionContentSchema,
+  categoryShowcase: categoryShowcaseContentSchema,
   pageHeader: pageHeaderContentSchema,
   richText: richTextContentSchema,
   legalPolicy: legalPolicyContentSchema,
@@ -31,6 +33,22 @@ export const sectionContentByType = {
 } as const
 
 export type SectionType = keyof typeof sectionContentByType
+
+export const SECTION_TYPE_LABELS_IT: Record<SectionType, string> = {
+  hero: 'Hero',
+  features: 'Caratteristiche',
+  cta: 'Call to action',
+  featuredCollection: 'Collezione in evidenza',
+  categoryShowcase: 'Showcase categorie',
+  pageHeader: 'Intestazione pagina',
+  richText: 'Testo libero',
+  legalPolicy: 'Policy legale',
+  split: 'Sezione split',
+  team: 'Team',
+  stats: 'Statistiche',
+  faq: 'FAQ',
+  testimonials: 'Testimonianze',
+}
 
 export function parseSectionContent(type: string, content: unknown) {
   const schema = sectionContentByType[type as SectionType]

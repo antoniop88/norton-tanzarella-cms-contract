@@ -7,4 +7,6 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   target: 'es2022',
+  // Bundle zod so Vite consumers can exclude this file: dep without a stale zod prebundle.
+  noExternal: ['zod'],
 })
