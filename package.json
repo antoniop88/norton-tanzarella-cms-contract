@@ -1,6 +1,6 @@
 {
   "name": "@norton-tanzarella/cms-contract",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Zod schemas, page registry and field metadata for Norton Tanzarella CMS",
   "type": "module",
   "private": true,
@@ -9,16 +9,18 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
-    "prepare": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "prepare": "node ./scripts/ensure-dist.mjs"
   },
   "dependencies": {
     "zod": "^3.25.76"
