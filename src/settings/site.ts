@@ -3,7 +3,9 @@ import { DEFAULT_CONTACT_SETTINGS_IT, contactSettingsSchema } from './contact.js
 import {
   DEFAULT_LAYOUT_SETTINGS_IT,
   layoutSettingsSchema,
+  normalizeNavPath,
   type MainNavLink,
+  type MainNavPath,
 } from './layout.js'
 
 export const siteSettingsSchema = contactSettingsSchema.merge(layoutSettingsSchema)
@@ -34,9 +36,10 @@ function mergeHeaderNav(stored: unknown): MainNavLink[] {
     if (!item || typeof item !== 'object') continue
     const link = item as MainNavLink
     if (typeof link.to === 'string' && typeof link.label === 'string') {
+      const to = normalizeNavPath(link.to)
       // Drop nav items that duplicate header CTA destinations
-      if (excludeTo.has(link.to)) continue
-      byTo.set(link.to, link)
+      if (excludeTo.has(to)) continue
+      byTo.set(to, { ...link, to: to as MainNavPath })
     }
   }
 
@@ -53,27 +56,70 @@ function mergeHeaderNav(stored: unknown): MainNavLink[] {
   return merged.slice(0, 8)
 }
 
+function normalizeHeaderCta(value: unknown): SiteSettings['headerCta'] | undefined {
+  if (!value || typeof value !== 'object') return undefined
+  const link = value as { label?: unknown; to?: unknown }
+  if (typeof link.label !== 'string' || typeof link.to !== 'string') return undefined
+  return { label: link.label, to: normalizeNavPath(link.to) as MainNavPath }
+}
+
+function normalizeFooter(value: unknown): SiteSettings['footer'] | undefined {
+  if (!value || typeof value !== 'object') return undefined
+  const footer = value as { columns?: unknown }
+  if (!Array.isArray(footer.columns)) return undefined
+  return {
+    columns: footer.columns.map((col) => {
+      const column = col as { title?: unknown; links?: unknown }
+      const title = typeof column.title === 'string' ? column.title : ''
+      const links = Array.isArray(column.links)
+        ? column.links
+            .map((item) => {
+              if (!item || typeof item !== 'object') return null
+              const link = item as { label?: unknown; to?: unknown; external?: unknown }
+              if (typeof link.label !== 'string' || typeof link.to !== 'string') return null
+              return {
+                label: link.label,
+                to: normalizeNavPath(link.to) as MainNavPath,
+                ...(typeof link.external === 'boolean' ? { external: link.external } : {}),
+              }
+            })
+            .filter((link): link is NonNullable<typeof link> => link != null)
+        : []
+      return { title, links }
+    }),
+  }
+}
+
 export function mergeSiteSettingsDefaults(document: unknown): SiteSettings {
   const partial = (document && typeof document === 'object' ? document : {}) as Record<string, unknown>
+  const partialOrg = (partial.organization as Record<string, unknown> | undefined) ?? {}
+  const partialForm = (partial.contactForm as Record<string, unknown> | undefined) ?? {}
+
+  // Optional email/url fields reject "" under Zod — coerce blanks to undefined.
+  const blankToUndefined = (value: unknown) => (value === '' ? undefined : value)
+
   return siteSettingsSchema.parse({
     ...DEFAULT_SITE_SETTINGS_IT,
     ...partial,
     organization: {
       ...DEFAULT_SITE_SETTINGS_IT.organization,
-      ...(partial.organization as object | undefined),
+      ...partialOrg,
+      mapUrl: blankToUndefined(partialOrg.mapUrl),
     },
     contactForm: {
       ...DEFAULT_SITE_SETTINGS_IT.contactForm,
-      ...(partial.contactForm as object | undefined),
+      ...partialForm,
+      leadRecipientEmail: blankToUndefined(partialForm.leadRecipientEmail),
+      privacyPolicyUrl: blankToUndefined(partialForm.privacyPolicyUrl),
       // Deep-merge nested objects so upgrading stored settings (older shape)
       // keeps the newly added default labels (phone/subject) and messages.
       labels: {
         ...DEFAULT_SITE_SETTINGS_IT.contactForm.labels,
-        ...((partial.contactForm as { labels?: object } | undefined)?.labels),
+        ...((partialForm.labels as object | undefined) ?? undefined),
       },
       messages: {
         ...DEFAULT_SITE_SETTINGS_IT.contactForm.messages,
-        ...((partial.contactForm as { messages?: object } | undefined)?.messages),
+        ...((partialForm.messages as object | undefined) ?? undefined),
       },
     },
     brand: {
@@ -85,10 +131,10 @@ export function mergeSiteSettingsDefaults(document: unknown): SiteSettings {
       },
     },
     headerNav: mergeHeaderNav(partial.headerNav),
-    headerCta: partial.headerCta ?? DEFAULT_SITE_SETTINGS_IT.headerCta,
+    headerCta: normalizeHeaderCta(partial.headerCta) ?? DEFAULT_SITE_SETTINGS_IT.headerCta,
     headerSecondaryCta:
-      partial.headerSecondaryCta ?? DEFAULT_SITE_SETTINGS_IT.headerSecondaryCta,
-    footer: partial.footer ?? DEFAULT_SITE_SETTINGS_IT.footer,
+      normalizeHeaderCta(partial.headerSecondaryCta) ?? DEFAULT_SITE_SETTINGS_IT.headerSecondaryCta,
+    footer: normalizeFooter(partial.footer) ?? DEFAULT_SITE_SETTINGS_IT.footer,
     legalLinks: partial.legalLinks ?? DEFAULT_SITE_SETTINGS_IT.legalLinks,
     social: partial.social ?? DEFAULT_SITE_SETTINGS_IT.social,
   })

@@ -4046,10 +4046,23 @@ var coerce = {
 var NEVER = INVALID;
 
 // src/sections/common.ts
+var optionalMediaIdSchema = external_exports.preprocess(
+  (val) => val === "" || val === null ? void 0 : val,
+  external_exports.string().uuid().optional()
+);
 var ctaLinkSchema = external_exports.object({
   label: external_exports.string().max(40).describe("Etichetta"),
   to: external_exports.string().max(200).describe("Destinazione")
 }).describe("Link CTA");
+var optionalCtaLinkSchema = external_exports.preprocess((val) => {
+  if (val == null || val === "") return void 0;
+  if (typeof val !== "object" || Array.isArray(val)) return val;
+  const o = val;
+  const label = typeof o.label === "string" ? o.label.trim() : "";
+  const to = typeof o.to === "string" ? o.to.trim() : "";
+  if (!label && !to) return void 0;
+  return { label, to };
+}, ctaLinkSchema.optional());
 var featureItemSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
   description: external_exports.string().max(300).describe("Descrizione")
@@ -4058,9 +4071,8 @@ var featureItemSchema = external_exports.object({
 // src/sections/m1.ts
 var heroContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
-  subtitle: external_exports.string().max(160).optional().describe("Sottotitolo"),
-  cta: ctaLinkSchema.optional().describe("CTA"),
-  image: external_exports.string().optional().describe("Immagine")
+  subtitle: external_exports.string().max(600).optional().describe("Sottotitolo"),
+  cta: optionalCtaLinkSchema.describe("CTA")
 });
 var featuresContentSchema = external_exports.object({
   title: external_exports.string().max(80).optional().describe("Titolo"),
@@ -4084,7 +4096,7 @@ var featuredCollectionContentSchema = external_exports.object({
 });
 var categoryShowcaseItemSchema = external_exports.object({
   label: external_exports.string().max(80).describe("Titolo categoria"),
-  image: external_exports.string().min(1).describe("Immagine"),
+  mediaId: optionalMediaIdSchema.describe("Immagine"),
   imageAlt: external_exports.string().max(160).optional().describe("Testo alternativo"),
   href: external_exports.string().max(200).describe("Link destinazione"),
   ctaLabel: external_exports.string().max(60).optional().describe("Etichetta CTA")
@@ -4110,16 +4122,26 @@ var legalPolicyContentSchema = external_exports.object({
 var splitContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
   body: external_exports.string().max(2e3).describe("Testo"),
-  image: external_exports.string().describe("Immagine"),
+  mediaId: optionalMediaIdSchema.describe("Immagine"),
   imageAlt: external_exports.string().max(120).optional().describe("Testo alternativo"),
-  reverse: external_exports.boolean().optional().describe("Layout invertito")
+  reverse: external_exports.boolean().optional().describe("Layout invertito"),
+  button: optionalCtaLinkSchema.describe("CTA")
+});
+var imageSlideshowItemSchema = external_exports.object({
+  mediaId: optionalMediaIdSchema.describe("Immagine"),
+  imageAlt: external_exports.string().max(160).optional().describe("Testo alternativo"),
+  caption: external_exports.string().max(120).optional().describe("Didascalia")
+});
+var imageSlideshowContentSchema = external_exports.object({
+  items: external_exports.array(imageSlideshowItemSchema).min(2).max(8).describe("Slide"),
+  autoplayMs: external_exports.number().int().min(0).max(12e3).optional().describe("Autoplay (ms, 0 = off)")
 });
 var teamContentSchema = external_exports.object({
   title: external_exports.string().max(80).optional().describe("Titolo sezione"),
   name: external_exports.string().max(80).describe("Nome"),
   role: external_exports.string().max(80).describe("Ruolo"),
   bio: external_exports.string().max(500).describe("Biografia"),
-  image: external_exports.string().describe("Foto")
+  mediaId: optionalMediaIdSchema.describe("Foto")
 });
 var statsContentSchema = external_exports.object({
   items: external_exports.array(
@@ -4150,6 +4172,37 @@ var testimonialsContentSchema = external_exports.object({
   ).min(1).max(10).describe("Testimonianze")
 });
 
+// src/sections/collectPageMediaIds.ts
+function isUuid(value) {
+  if (value.length !== 36) return false;
+  return /^[0-9a-f-]{36}$/i.test(value);
+}
+function walkCollectMediaIds(value, into) {
+  if (value == null) return;
+  if (Array.isArray(value)) {
+    for (const entry of value) walkCollectMediaIds(entry, into);
+    return;
+  }
+  if (typeof value !== "object") return;
+  for (const [key, entry] of Object.entries(value)) {
+    if ((key === "mediaId" || key.startsWith("mediaId")) && typeof entry === "string" && isUuid(entry)) {
+      into.add(entry.toLowerCase());
+    } else {
+      walkCollectMediaIds(entry, into);
+    }
+  }
+}
+function collectPageMediaIds(document) {
+  const ids = /* @__PURE__ */ new Set();
+  if (!document || typeof document !== "object") return [];
+  const sections = document.sections;
+  if (!Array.isArray(sections)) return [];
+  for (const section of sections) {
+    walkCollectMediaIds(section?.content, ids);
+  }
+  return [...ids];
+}
+
 // src/sections/index.ts
 var sectionContentByType = {
   hero: heroContentSchema,
@@ -4161,6 +4214,7 @@ var sectionContentByType = {
   richText: richTextContentSchema,
   legalPolicy: legalPolicyContentSchema,
   split: splitContentSchema,
+  imageSlideshow: imageSlideshowContentSchema,
   team: teamContentSchema,
   stats: statsContentSchema,
   faq: faqContentSchema,
@@ -4176,6 +4230,7 @@ var SECTION_TYPE_LABELS_IT = {
   richText: "Testo libero",
   legalPolicy: "Policy legale",
   split: "Sezione split",
+  imageSlideshow: "Slideshow immagini",
   team: "Team",
   stats: "Statistiche",
   faq: "FAQ",
@@ -4373,6 +4428,172 @@ var DEFAULT_OPENING_HOURS_IT = [
   { dayOfWeek: "Saturday", opens: "09:00", closes: "13:00" }
 ];
 
+// src/settings/branding.ts
+var hexColorSchema = external_exports.string().regex(/^#[0-9A-Fa-f]{6}$/, "Must be a hex color (#RRGGBB)");
+var FONT_SANS_WHITELIST = ["Nunito Sans", "Inter", "DM Sans"];
+var FONT_HEADING_WHITELIST = [
+  "Playfair Display",
+  "Libre Baskerville",
+  "Source Serif 4"
+];
+var FONT_WHITELIST = [
+  ...FONT_SANS_WHITELIST,
+  ...FONT_HEADING_WHITELIST
+];
+var LOGO_SLOTS = [
+  "siteHeader",
+  "siteFooter",
+  "siteFavicon",
+  "backofficeLogin",
+  "backofficeSidebar",
+  "backofficeSidebarCollapsed"
+];
+var mediaIdSchema = external_exports.string().uuid();
+var logoAltSchema = external_exports.object({
+  it: external_exports.string().max(120).optional(),
+  en: external_exports.string().max(120).optional()
+});
+var logoSlotSchema = external_exports.object({
+  mediaId: mediaIdSchema.optional(),
+  mediaIdLight: mediaIdSchema.optional(),
+  mediaIdDark: mediaIdSchema.optional(),
+  alt: logoAltSchema.optional()
+});
+var brandingColorsSchema = external_exports.object({
+  primary: hexColorSchema.describe("Colore primario"),
+  secondary: hexColorSchema.describe("Colore secondario"),
+  accent: hexColorSchema.describe("Accento"),
+  background: hexColorSchema.describe("Sfondo"),
+  foreground: hexColorSchema.describe("Testo"),
+  success: hexColorSchema.describe("Successo"),
+  warning: hexColorSchema.describe("Avviso"),
+  error: hexColorSchema.describe("Errore")
+});
+var brandingTypographySchema = external_exports.object({
+  fontSans: external_exports.enum(FONT_SANS_WHITELIST).describe("Font corpo"),
+  fontHeading: external_exports.enum(FONT_HEADING_WHITELIST).describe("Font titoli")
+});
+var brandingLogosSchema = external_exports.object({
+  siteHeader: logoSlotSchema.optional(),
+  siteFooter: logoSlotSchema.optional(),
+  siteFavicon: logoSlotSchema.optional(),
+  backofficeLogin: logoSlotSchema.optional(),
+  backofficeSidebar: logoSlotSchema.optional(),
+  backofficeSidebarCollapsed: logoSlotSchema.optional()
+});
+var DEFAULT_BRANDING_COLORS = {
+  primary: "#0A2374",
+  secondary: "#B2914F",
+  accent: "#B2914F",
+  background: "#FCFCFD",
+  foreground: "#1C1C26",
+  success: "#2F9E44",
+  warning: "#E67700",
+  error: "#C42B2B"
+};
+var DEFAULT_BRANDING_TYPOGRAPHY = {
+  fontSans: "Nunito Sans",
+  fontHeading: "Playfair Display"
+};
+var DEFAULT_BRANDING_SCALARS = {
+  themeColor: DEFAULT_BRANDING_COLORS.primary,
+  backgroundColor: DEFAULT_BRANDING_COLORS.background,
+  colors: { ...DEFAULT_BRANDING_COLORS },
+  typography: { ...DEFAULT_BRANDING_TYPOGRAPHY },
+  logos: {}
+};
+var settingsScalarsSchema = external_exports.object({
+  themeColor: hexColorSchema,
+  backgroundColor: hexColorSchema,
+  colors: brandingColorsSchema,
+  typography: brandingTypographySchema,
+  logos: brandingLogosSchema.default({})
+}).superRefine((data, ctx) => {
+  if (data.themeColor !== data.colors.primary) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["themeColor"],
+      message: "themeColor must match colors.primary"
+    });
+  }
+  if (data.backgroundColor !== data.colors.background) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["backgroundColor"],
+      message: "backgroundColor must match colors.background"
+    });
+  }
+});
+function normalizeSettingsScalars(raw) {
+  const base = structuredClone(DEFAULT_BRANDING_SCALARS);
+  if (!raw || typeof raw !== "object") {
+    return settingsScalarsSchema.parse(base);
+  }
+  const input = raw;
+  const colorsIn = input.colors && typeof input.colors === "object" ? input.colors : {};
+  const typographyIn = input.typography && typeof input.typography === "object" ? input.typography : {};
+  const logosIn = input.logos && typeof input.logos === "object" ? input.logos : {};
+  const primary = typeof colorsIn.primary === "string" && colorsIn.primary || typeof input.themeColor === "string" && input.themeColor || base.colors.primary;
+  const background = typeof colorsIn.background === "string" && colorsIn.background || typeof input.backgroundColor === "string" && input.backgroundColor || base.colors.background;
+  const colors = {
+    ...base.colors,
+    ...colorsIn,
+    primary,
+    background
+  };
+  const typography = {
+    ...base.typography,
+    ...typographyIn
+  };
+  const candidate = {
+    themeColor: primary,
+    backgroundColor: background,
+    colors,
+    typography,
+    logos: { ...logosIn }
+  };
+  const parsed = settingsScalarsSchema.safeParse(candidate);
+  if (parsed.success) return parsed.data;
+  return settingsScalarsSchema.parse(base);
+}
+function scalarsToCssVars(scalars) {
+  const { colors, typography } = scalars;
+  return {
+    "--brand-primary": colors.primary,
+    "--brand-secondary": colors.secondary,
+    "--brand-surface": colors.primary,
+    "--brand-secondary-text": colors.secondary,
+    "--color-primary": colors.primary,
+    "--color-brand": colors.primary,
+    "--color-brand-accent": colors.secondary,
+    "--color-accent": colors.accent,
+    "--color-background": colors.background,
+    "--color-foreground": colors.foreground,
+    "--color-success": colors.success,
+    "--color-warning": colors.warning,
+    "--color-error": colors.error,
+    "--color-destructive": colors.error,
+    "--font-sans": `'${typography.fontSans}', ui-sans-serif, system-ui, sans-serif`,
+    "--font-display": `'${typography.fontHeading}', ui-serif, Georgia, serif`
+  };
+}
+function cssVarsToStyleText(vars) {
+  const body = Object.entries(vars).map(([key, value]) => `${key}:${value}`).join(";");
+  return `:root{${body}}`;
+}
+function collectLogoMediaIds(logos) {
+  if (!logos) return [];
+  const ids = /* @__PURE__ */ new Set();
+  for (const slot of LOGO_SLOTS) {
+    const config = logos[slot];
+    if (!config) continue;
+    if (config.mediaId) ids.add(config.mediaId);
+    if (config.mediaIdLight) ids.add(config.mediaIdLight);
+    if (config.mediaIdDark) ids.add(config.mediaIdDark);
+  }
+  return [...ids];
+}
+
 // src/settings/contact.ts
 var organizationSchema = external_exports.object({
   legalName: external_exports.string().max(120).describe("Ragione sociale"),
@@ -4465,22 +4686,18 @@ function mergeSharedOrganization(targetOrg, sourceOrg) {
     openingHours: mergeOpeningHoursNotes(sourceOrg.openingHours, targetOrg.openingHours)
   };
 }
-var settingsScalarsSchema = external_exports.object({
-  themeColor: external_exports.string().regex(/^#[0-9A-Fa-f]{6}$/),
-  backgroundColor: external_exports.string().regex(/^#[0-9A-Fa-f]{6}$/)
-});
 var DEFAULT_CONTACT_SETTINGS_IT = {
   organization: {
     legalName: "Norton Tanzarella S.r.l.",
     email: "info@nortontanzarella.it",
-    phone: "+39 06 1234 5678",
+    phone: "+39 0831 000000",
     address: {
-      street: "Via Roma 1",
-      city: "Roma",
-      postalCode: "00100",
+      street: "Corso Vittorio Emanuele 12",
+      city: "Ostuni",
+      postalCode: "72017",
       country: "IT"
     },
-    geo: { latitude: 41.9028, longitude: 12.4964 },
+    geo: { latitude: 40.7297, longitude: 17.5778 },
     openingHours: DEFAULT_OPENING_HOURS_IT
   },
   contactForm: {
@@ -4576,18 +4793,33 @@ function socialPlatformIcon(platform) {
 // src/settings/layout.ts
 var MAIN_NAV_PATHS = [
   "/",
-  "/chi-siamo",
-  "/immobili",
-  "/trova-immobile",
-  "/tour-virtuali",
-  "/vendi-con-noi",
-  "/contatti"
+  "/about",
+  "/properties",
+  "/property-finder",
+  "/virtual-tours",
+  "/sell-with-us",
+  "/contact"
 ];
+var LEGACY_NAV_PATH_MAP = {
+  "/chi-siamo": "/about",
+  "/immobili": "/properties",
+  "/trova-immobile": "/property-finder",
+  "/tour-virtuali": "/virtual-tours",
+  "/vendi-con-noi": "/sell-with-us",
+  "/contatti": "/contact"
+};
+function normalizeNavPath(to) {
+  return LEGACY_NAV_PATH_MAP[to] ?? to;
+}
 var LEGAL_LINK_PATHS = ["/privacy-policy", "/cookie-policy"];
 var FOOTER_NAV_PATHS = [...MAIN_NAV_PATHS, ...LEGAL_LINK_PATHS];
-var mainNavPathSchema = external_exports.enum(MAIN_NAV_PATHS);
+function normalizeNavPathInput(value) {
+  if (typeof value !== "string") return value;
+  return normalizeNavPath(value);
+}
+var mainNavPathSchema = external_exports.preprocess(normalizeNavPathInput, external_exports.enum(MAIN_NAV_PATHS));
 var legalLinkPathSchema = external_exports.enum(LEGAL_LINK_PATHS);
-var footerNavPathSchema = external_exports.enum(FOOTER_NAV_PATHS);
+var footerNavPathSchema = external_exports.preprocess(normalizeNavPathInput, external_exports.enum(FOOTER_NAV_PATHS));
 var httpsUrlSchema = external_exports.string().url().max(500).refine((value) => value.startsWith("https://"), {
   message: "URL deve usare HTTPS"
 });
@@ -4650,29 +4882,29 @@ var layoutSettingsSchema = external_exports.object({
 var DEFAULT_LAYOUT_SETTINGS_IT = {
   brand: {
     name: "Norton Tanzarella",
-    tagline: "Agenzia immobiliare di prestigio a Roma.",
-    description: "Consulenza immobiliare, vendita e affitto di propriet\xE0 selezionate.",
+    tagline: "Agenzia immobiliare a Ostuni e in Valle d'Itria.",
+    description: "Masserie, rustici e trulli: consulenza per acquisto e vendita in Valle d'Itria.",
     footerVisibility: DEFAULT_BRAND_FOOTER_VISIBILITY
   },
   headerNav: [
     { label: "Home", to: "/" },
-    { label: "Chi siamo", to: "/chi-siamo" },
-    { label: "Immobili", to: "/immobili" },
-    { label: "Trova immobile", to: "/trova-immobile" },
-    { label: "Tour virtuali", to: "/tour-virtuali" }
+    { label: "Chi siamo", to: "/about" },
+    { label: "Immobili", to: "/properties" },
+    { label: "Trova immobile", to: "/property-finder" },
+    { label: "Tour virtuali", to: "/virtual-tours" }
   ],
-  headerCta: { label: "Contattaci", to: "/contatti" },
-  headerSecondaryCta: { label: "Vendi con noi", to: "/vendi-con-noi" },
+  headerCta: { label: "Contattaci", to: "/contact" },
+  headerSecondaryCta: { label: "Vendi con noi", to: "/sell-with-us" },
   footer: {
     columns: [
       {
         title: "Navigazione",
         links: [
           { label: "Home", to: "/" },
-          { label: "Chi siamo", to: "/chi-siamo" },
-          { label: "Immobili", to: "/immobili" },
-          { label: "Trova immobile", to: "/trova-immobile" },
-          { label: "Tour virtuali", to: "/tour-virtuali" }
+          { label: "Chi siamo", to: "/about" },
+          { label: "Immobili", to: "/properties" },
+          { label: "Trova immobile", to: "/property-finder" },
+          { label: "Tour virtuali", to: "/virtual-tours" }
         ]
       },
       {
@@ -4716,8 +4948,9 @@ function mergeHeaderNav(stored) {
     if (!item || typeof item !== "object") continue;
     const link = item;
     if (typeof link.to === "string" && typeof link.label === "string") {
-      if (excludeTo.has(link.to)) continue;
-      byTo.set(link.to, link);
+      const to = normalizeNavPath(link.to);
+      if (excludeTo.has(to)) continue;
+      byTo.set(to, { ...link, to });
     }
   }
   const merged = [];
@@ -4732,27 +4965,61 @@ function mergeHeaderNav(stored) {
   }
   return merged.slice(0, 8);
 }
+function normalizeHeaderCta(value) {
+  if (!value || typeof value !== "object") return void 0;
+  const link = value;
+  if (typeof link.label !== "string" || typeof link.to !== "string") return void 0;
+  return { label: link.label, to: normalizeNavPath(link.to) };
+}
+function normalizeFooter(value) {
+  if (!value || typeof value !== "object") return void 0;
+  const footer = value;
+  if (!Array.isArray(footer.columns)) return void 0;
+  return {
+    columns: footer.columns.map((col) => {
+      const column = col;
+      const title = typeof column.title === "string" ? column.title : "";
+      const links = Array.isArray(column.links) ? column.links.map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const link = item;
+        if (typeof link.label !== "string" || typeof link.to !== "string") return null;
+        return {
+          label: link.label,
+          to: normalizeNavPath(link.to),
+          ...typeof link.external === "boolean" ? { external: link.external } : {}
+        };
+      }).filter((link) => link != null) : [];
+      return { title, links };
+    })
+  };
+}
 function mergeSiteSettingsDefaults(document) {
   const partial = document && typeof document === "object" ? document : {};
+  const partialOrg = partial.organization ?? {};
+  const partialForm = partial.contactForm ?? {};
+  const blankToUndefined = (value) => value === "" ? void 0 : value;
   return siteSettingsSchema.parse({
     ...DEFAULT_SITE_SETTINGS_IT,
     ...partial,
     organization: {
       ...DEFAULT_SITE_SETTINGS_IT.organization,
-      ...partial.organization
+      ...partialOrg,
+      mapUrl: blankToUndefined(partialOrg.mapUrl)
     },
     contactForm: {
       ...DEFAULT_SITE_SETTINGS_IT.contactForm,
-      ...partial.contactForm,
+      ...partialForm,
+      leadRecipientEmail: blankToUndefined(partialForm.leadRecipientEmail),
+      privacyPolicyUrl: blankToUndefined(partialForm.privacyPolicyUrl),
       // Deep-merge nested objects so upgrading stored settings (older shape)
       // keeps the newly added default labels (phone/subject) and messages.
       labels: {
         ...DEFAULT_SITE_SETTINGS_IT.contactForm.labels,
-        ...partial.contactForm?.labels
+        ...partialForm.labels ?? void 0
       },
       messages: {
         ...DEFAULT_SITE_SETTINGS_IT.contactForm.messages,
-        ...partial.contactForm?.messages
+        ...partialForm.messages ?? void 0
       }
     },
     brand: {
@@ -4764,9 +5031,9 @@ function mergeSiteSettingsDefaults(document) {
       }
     },
     headerNav: mergeHeaderNav(partial.headerNav),
-    headerCta: partial.headerCta ?? DEFAULT_SITE_SETTINGS_IT.headerCta,
-    headerSecondaryCta: partial.headerSecondaryCta ?? DEFAULT_SITE_SETTINGS_IT.headerSecondaryCta,
-    footer: partial.footer ?? DEFAULT_SITE_SETTINGS_IT.footer,
+    headerCta: normalizeHeaderCta(partial.headerCta) ?? DEFAULT_SITE_SETTINGS_IT.headerCta,
+    headerSecondaryCta: normalizeHeaderCta(partial.headerSecondaryCta) ?? DEFAULT_SITE_SETTINGS_IT.headerSecondaryCta,
+    footer: normalizeFooter(partial.footer) ?? DEFAULT_SITE_SETTINGS_IT.footer,
     legalLinks: partial.legalLinks ?? DEFAULT_SITE_SETTINGS_IT.legalLinks,
     social: partial.social ?? DEFAULT_SITE_SETTINGS_IT.social
   });
@@ -4792,38 +5059,60 @@ var cmsPageDocumentSchema = external_exports.object({
 // src/pages/registry.ts
 var CATEGORY_SHOWCASE_ITEMS_IT = [
   {
-    label: "Attici e penthouse",
-    image: "/full-logo.png",
-    imageAlt: "Attici e penthouse",
-    href: "/immobili",
+    label: "Masserie",
+    imageAlt: "Masseria in Valle d'Itria",
+    href: "/properties",
     ctaLabel: "Vedi gli immobili"
   },
   {
-    label: "Ville e dimore",
-    image: "/full-logo.png",
-    imageAlt: "Ville e dimore",
-    href: "/immobili",
+    label: "Rustici",
+    imageAlt: "Rustico in campagna",
+    href: "/properties",
     ctaLabel: "Vedi gli immobili"
   },
   {
-    label: "Appartamenti",
-    image: "/full-logo.png",
-    imageAlt: "Appartamenti",
-    href: "/immobili",
+    label: "Trulli",
+    imageAlt: "Trulli in Valle d'Itria",
+    href: "/properties",
     ctaLabel: "Vedi gli immobili"
   },
   {
-    label: "Investimenti",
-    image: "/full-logo.png",
-    imageAlt: "Investimenti",
-    href: "/immobili",
+    label: "Centro storico Ostuni",
+    imageAlt: "Casa nel centro storico di Ostuni",
+    href: "/properties",
     ctaLabel: "Vedi gli immobili"
+  }
+];
+var CATEGORY_SHOWCASE_ITEMS_EN = [
+  {
+    label: "Masserie",
+    imageAlt: "Masseria in the Valle d'Itria",
+    href: "/properties",
+    ctaLabel: "View properties"
+  },
+  {
+    label: "Rustici",
+    imageAlt: "Country house (rustico)",
+    href: "/properties",
+    ctaLabel: "View properties"
+  },
+  {
+    label: "Trulli",
+    imageAlt: "Trulli in the Valle d'Itria",
+    href: "/properties",
+    ctaLabel: "View properties"
+  },
+  {
+    label: "Ostuni historic centre",
+    imageAlt: "Home in Ostuni historic centre",
+    href: "/properties",
+    ctaLabel: "View properties"
   }
 ];
 var HOME_DEFAULTS_IT = {
   seo: {
     title: "Norton Tanzarella",
-    description: "Agenzia immobiliare a Roma."
+    description: "Agenzia immobiliare a Ostuni e in Valle d'Itria \u2014 masserie, rustici e trulli."
   },
   sections: [
     {
@@ -4832,9 +5121,9 @@ var HOME_DEFAULTS_IT = {
       enabled: true,
       order: 0,
       content: {
-        title: "Trova la casa dei tuoi sogni a Roma",
-        subtitle: "Consulenza immobiliare personalizzata per acquisto e vendita.",
-        cta: { label: "Scopri gli immobili", to: "/immobili" }
+        title: "La casa dei tuoi sogni in Valle d'Itria",
+        subtitle: "Masserie, rustici e case a Ostuni: consulenza personalizzata per acquisto e vendita.",
+        cta: { label: "Scopri gli immobili", to: "/properties" }
       }
     },
     {
@@ -4843,7 +5132,7 @@ var HOME_DEFAULTS_IT = {
       enabled: true,
       order: 1,
       content: {
-        title: "Propriet\xE0 di prestigio a Roma",
+        title: "Masserie, rustici e trulli in Valle d'Itria",
         items: [...CATEGORY_SHOWCASE_ITEMS_IT]
       }
     },
@@ -4855,9 +5144,18 @@ var HOME_DEFAULTS_IT = {
       content: {
         title: "Perch\xE9 sceglierci",
         items: [
-          { title: "Esperienza locale", description: "Conoscenza approfondita del mercato romano." },
-          { title: "Assistenza completa", description: "Dalla valutazione alla firma del rogito." },
-          { title: "Trasparenza", description: "Informazioni chiare in ogni fase della trattativa." }
+          {
+            title: "Territorio e tipologiche",
+            description: "Conosciamo Ostuni e la Valle d'Itria: masserie, rustici, trulli e case nel centro storico."
+          },
+          {
+            title: "Assistenza completa",
+            description: "Dalla ricerca alla firma del rogito, con servizi su misura per ogni cliente."
+          },
+          {
+            title: "Fiducia e relazioni",
+            description: "Trasparenza e relazioni di lungo periodo: la casa come scelta di vita."
+          }
         ]
       }
     },
@@ -4882,8 +5180,8 @@ var HOME_DEFAULTS_IT = {
       order: 4,
       content: {
         title: "Hai bisogno di una valutazione?",
-        description: "Contattaci per un appuntamento senza impegno.",
-        button: { label: "Contattaci", to: "/contatti" }
+        description: "Contattaci per un appuntamento senza impegno a Ostuni.",
+        button: { label: "Contattaci", to: "/contact" }
       }
     }
   ]
@@ -4891,9 +5189,356 @@ var HOME_DEFAULTS_IT = {
 var HOME_DEFAULTS_EN = {
   seo: {
     title: "Norton Tanzarella",
-    description: "Real estate agency in Rome."
+    description: "Real estate agency in Ostuni and the Valle d'Itria \u2014 masserie, rustici and trulli."
   },
-  sections: HOME_DEFAULTS_IT.sections.map((section) => ({ ...section }))
+  sections: [
+    {
+      id: "00000000-0000-4000-8000-000000000001",
+      type: "hero",
+      enabled: true,
+      order: 0,
+      content: {
+        title: "Find your dream home in the Valle d'Itria",
+        subtitle: "Masserie, rustici and homes in Ostuni: personalised advice for buying and selling.",
+        cta: { label: "Browse properties", to: "/properties" }
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000005",
+      type: "categoryShowcase",
+      enabled: true,
+      order: 1,
+      content: {
+        title: "Masserie, rustici and trulli in the Valle d'Itria",
+        items: [...CATEGORY_SHOWCASE_ITEMS_EN]
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000002",
+      type: "features",
+      enabled: true,
+      order: 2,
+      content: {
+        title: "Why choose us",
+        items: [
+          {
+            title: "Territory and property types",
+            description: "We know Ostuni and the Valle d'Itria: masserie, rustici, trulli and historic-centre homes."
+          },
+          {
+            title: "End-to-end support",
+            description: "From search to completion, with tailored services for every client."
+          },
+          {
+            title: "Trust and relationships",
+            description: "Transparency and long-term relationships: a home as a lifestyle choice."
+          }
+        ]
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000003",
+      type: "featuredCollection",
+      enabled: true,
+      order: 3,
+      content: {
+        collectionKey: "immobili",
+        mode: "featured",
+        limit: 6,
+        title: "Featured properties",
+        viewAllLabel: "View all",
+        hideWhenEmpty: true
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000004",
+      type: "cta",
+      enabled: true,
+      order: 4,
+      content: {
+        title: "Need a valuation?",
+        description: "Contact us for a no-obligation meeting in Ostuni.",
+        button: { label: "Contact us", to: "/contact" }
+      }
+    }
+  ]
+};
+var CHI_SIAMO_SLIDESHOW_ITEMS = [
+  { imageAlt: "Ostuni al tramonto" },
+  { imageAlt: "Masseria in Valle d'Itria" },
+  { imageAlt: "Interior di prestigio" },
+  { imageAlt: "Paesaggio della campagna pugliese" }
+];
+var CHI_SIAMO_DEFAULTS_IT = {
+  seo: {
+    title: "Chi siamo",
+    description: "Norton Tanzarella a Ostuni e in Valle d'Itria \u2014 visione, territorio e immobiliare di prestigio."
+  },
+  sections: [
+    {
+      id: "00000000-0000-4000-8000-000000000010",
+      type: "hero",
+      enabled: true,
+      order: 0,
+      content: {
+        title: "Chi siamo",
+        subtitle: "Norton Tanzarella non si limita alla presentazione di propriet\xE0 d'eccezione. Attraverso incontri, luoghi e progetti si \xE8 costruita una visione dell'immobiliare di prestigio: pi\xF9 sensibile, pi\xF9 umana, pi\xF9 ancorata a un art de vivre. Condividiamo ci\xF2 che fa l'essenza del nostro lavoro \u2014 uno sguardo su Ostuni, la Valle d'Itria e le esperienze che modellano un certo stile di vita in Puglia."
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000017",
+      type: "imageSlideshow",
+      enabled: true,
+      order: 1,
+      content: {
+        items: [...CHI_SIAMO_SLIDESHOW_ITEMS],
+        autoplayMs: 5e3
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000011",
+      type: "split",
+      enabled: true,
+      order: 2,
+      content: {
+        title: "La nostra visione",
+        body: "Offriamo un'esperienza d'acquisto eccezionale radicata a Ostuni e in Valle d'Itria. Aiutiamo a realizzare il sogno di una masseria, un rustico o una casa distintiva, rendendo il percorso entusiasmante e senza stress.\n\nServizi personalizzati, conoscenza approfondita del mercato locale e relazioni di lungo periodo: possedere qui non \xE8 solo un investimento, \xE8 una scelta di vita.",
+        imageAlt: "Ostuni e la Valle d'Itria",
+        button: { label: "Scopri le propriet\xE0", to: "/properties" }
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000018",
+      type: "split",
+      enabled: true,
+      order: 3,
+      content: {
+        title: "Una comunit\xE0 impegnata",
+        body: "Da anni accompagniamo vendite e acquisizioni di prestigio in Valle d'Itria. Un approccio esigente, una strategia di valorizzazione e una rete solida di acquirenti e prescrittori ci hanno reso un punto di riferimento.\n\nOggi Norton Tanzarella \xE8 una marca e una comunit\xE0 riunita intorno all'immobiliare di prestigio e all'art de vivre che incarna.",
+        imageAlt: "Incontro e consulenza immobiliare",
+        reverse: true,
+        button: { label: "Contattaci", to: "/contact" }
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000019",
+      type: "split",
+      enabled: true,
+      order: 4,
+      content: {
+        title: "Il territorio",
+        body: "Condividiamo i luoghi che fanno la ricchezza della nostra regione: masserie, architetture notevoli, paesaggi ispiratori. Perch\xE9 l'immobiliare di prestigio \xE8 anche una questione di territorio e di stile di vita.\n\nDa Ostuni alla campagna, ogni indirizzo racconta un pezzo della Valle d'Itria.",
+        imageAlt: "Masseria e paesaggio pugliese",
+        button: { label: "Esplora le tipologiche", to: "/properties" }
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000013",
+      type: "team",
+      enabled: true,
+      order: 5,
+      content: {
+        title: "Chi guida l'agenzia",
+        name: "Norton Tanzarella",
+        role: "Fondatore",
+        bio: "Una visione esigente del mercato di prestigio in Valle d'Itria, unita a una strategia di valorizzazione e a una rete solida di acquirenti e prescrittori. Al centro, le persone e i luoghi \u2014 da Ostuni alle masserie della campagna."
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000012",
+      type: "stats",
+      enabled: true,
+      order: 6,
+      content: {
+        items: [
+          { value: 20, suffix: "+", label: "Anni di esperienza" },
+          { value: 500, suffix: "+", label: "Clienti accompagnati" },
+          { value: 150, suffix: "+", label: "Immobili gestiti" },
+          { value: 1, label: "Rete di fiducia" }
+        ]
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000014",
+      type: "cta",
+      enabled: true,
+      order: 7,
+      content: {
+        title: "Pronto a trovare la propriet\xE0 dei tuoi sogni?",
+        description: "Il nostro obiettivo \xE8 rendere l'acquisto fluido, con tutto il supporto di cui avete bisogno.",
+        button: { label: "Contattaci", to: "/contact" }
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000015",
+      type: "faq",
+      enabled: true,
+      order: 8,
+      content: {
+        title: "Domande frequenti",
+        items: [
+          {
+            question: "Perch\xE9 affidarsi a Norton Tanzarella a Ostuni e in Valle d'Itria?",
+            answer: "Conosciamo il territorio, le tipologiche (masserie, rustici, trulli, centro storico) e le dinamiche di prezzo. Uniamo discrezione, trasparenza e una rete di professionisti per accompagnarvi in ogni fase."
+          },
+          {
+            question: "Cercate anche masserie, rustici e trulli?",
+            answer: "S\xEC. La ricerca include masserie, rustici, trulli, casali e abitazioni nel centro storico di Ostuni, in base a esigenze e stile di vita."
+          },
+          {
+            question: "Quali servizi offrite oltre alla ricerca immobiliare?",
+            answer: "Consulenza legale e finanziaria, visite, negoziazioni, project management, gestione immobiliare e affitti turistici, assistenza post-vendita, relocation e rete di professionisti."
+          },
+          {
+            question: "Aiutate anche dopo il rogito e per trasferirsi in Italia?",
+            answer: "S\xEC. Offriamo assistenza post-vendita e servizi di trasferimento (visti, permessi di soggiorno, insediamento), oltre al collegamento con professionisti fidati."
+          },
+          {
+            question: "Come avviene la valutazione di una propriet\xE0?",
+            answer: "Consideriamo ubicazione, qualit\xE0, stato, rarit\xE0 tipologica e andamento del mercato locale in Valle d'Itria. La stima \xE8 confidenziale e calibrata sul posizionamento specifico."
+          }
+        ]
+      }
+    }
+  ]
+};
+var CHI_SIAMO_DEFAULTS_EN = {
+  seo: {
+    title: "About us",
+    description: "Norton Tanzarella in Ostuni and the Valle d'Itria \u2014 vision, territory and prestige real estate."
+  },
+  sections: [
+    {
+      id: "00000000-0000-4000-8000-000000000010",
+      type: "hero",
+      enabled: true,
+      order: 0,
+      content: {
+        title: "About us",
+        subtitle: "Norton Tanzarella is more than showcasing exceptional properties. Through encounters, places and projects, a vision of prestige real estate has taken shape: more sensitive, more human, more rooted in a way of living. We share what makes the essence of our work \u2014 a gaze on Ostuni, the Valle d'Itria and the experiences that shape a certain art of living in Puglia."
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000017",
+      type: "imageSlideshow",
+      enabled: true,
+      order: 1,
+      content: {
+        items: [
+          { imageAlt: "Ostuni at sunset" },
+          { imageAlt: "Masseria in the Valle d'Itria" },
+          { imageAlt: "Prestige interior" },
+          { imageAlt: "Puglian countryside landscape" }
+        ],
+        autoplayMs: 5e3
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000011",
+      type: "split",
+      enabled: true,
+      order: 2,
+      content: {
+        title: "Our vision",
+        body: "We offer an exceptional buying experience rooted in Ostuni and the Valle d'Itria. We help people achieve the dream of a masseria, rustico or distinctive home, making the journey exciting and stress-free.\n\nTailored services, deep local market knowledge and long-term relationships: owning here is not only an investment \u2014 it is a lifestyle choice.",
+        imageAlt: "Ostuni and the Valle d'Itria",
+        button: { label: "Explore properties", to: "/properties" }
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000018",
+      type: "split",
+      enabled: true,
+      order: 3,
+      content: {
+        title: "An engaged community",
+        body: "For years we have accompanied prestige sales and acquisitions in the Valle d'Itria. A demanding approach, a valorisation strategy and a solid network of buyers and introducers have made us a market reference.\n\nToday Norton Tanzarella is a brand and a community gathered around prestige real estate and the art of living it embodies.",
+        imageAlt: "Property consultation meeting",
+        reverse: true,
+        button: { label: "Contact us", to: "/contact" }
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000019",
+      type: "split",
+      enabled: true,
+      order: 4,
+      content: {
+        title: "The territory",
+        body: "We share the places that enrich our region: masserie, remarkable architecture, inspiring landscapes. Prestige real estate is also a matter of territory and lifestyle.\n\nFrom Ostuni to the countryside, every address tells a piece of the Valle d'Itria.",
+        imageAlt: "Masseria and Puglian landscape",
+        button: { label: "Browse property types", to: "/properties" }
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000013",
+      type: "team",
+      enabled: true,
+      order: 5,
+      content: {
+        title: "Who leads the agency",
+        name: "Norton Tanzarella",
+        role: "Founder",
+        bio: "A demanding vision of the prestige market in the Valle d'Itria, combined with a valorisation strategy and a solid network of buyers and introducers. At the centre: people and places \u2014 from Ostuni to the masserie of the countryside."
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000012",
+      type: "stats",
+      enabled: true,
+      order: 6,
+      content: {
+        items: [
+          { value: 20, suffix: "+", label: "Years of experience" },
+          { value: 500, suffix: "+", label: "Clients guided" },
+          { value: 150, suffix: "+", label: "Properties managed" },
+          { value: 1, label: "Trusted network" }
+        ]
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000014",
+      type: "cta",
+      enabled: true,
+      order: 7,
+      content: {
+        title: "Ready to find your dream property?",
+        description: "We aim to make the buying process smooth, with all the support you need every step of the way.",
+        button: { label: "Contact us", to: "/contact" }
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000015",
+      type: "faq",
+      enabled: true,
+      order: 8,
+      content: {
+        title: "Frequently asked questions",
+        items: [
+          {
+            question: "Why choose Norton Tanzarella in Ostuni and the Valle d'Itria?",
+            answer: "We know the territory, property types (masserie, rustici, trulli, historic centre) and pricing dynamics. We combine discretion, transparency and a network of professionals at every stage."
+          },
+          {
+            question: "Do you search for masserie, rustici and trulli?",
+            answer: "Yes. Our search covers masserie, rustici, trulli, farmhouses and homes in Ostuni historic centre, matched to your needs and lifestyle."
+          },
+          {
+            question: "What services do you offer beyond property search?",
+            answer: "Legal and financial advice, viewings, negotiations, project management, property and vacation-rental management, after-sales support, relocation and a network of professionals."
+          },
+          {
+            question: "Do you help after completion and with relocating to Italy?",
+            answer: "Yes. We provide after-sales support and relocation services (visas, residency permits, settling in), plus introductions to trusted professionals."
+          },
+          {
+            question: "How is a property valued?",
+            answer: "We consider location, quality, condition, typological rarity and local market trends in the Valle d'Itria. Estimates are confidential and calibrated to each property."
+          }
+        ]
+      }
+    }
+  ]
 };
 var PAGE_REGISTRY = {
   home: {
@@ -4903,44 +5548,16 @@ var PAGE_REGISTRY = {
     milestone: "M1"
   },
   "chi-siamo": {
-    allowedTypes: ["hero", "split", "team", "stats", "cta"],
-    reorderable: ["split", "team", "stats", "cta"],
-    defaults: (locale) => locale === "en" ? {
-      seo: { title: "About us", description: "Norton Tanzarella real estate agency." },
-      sections: [
-        {
-          id: "00000000-0000-4000-8000-000000000010",
-          type: "hero",
-          enabled: true,
-          order: 0,
-          content: {
-            title: "Your trusted partner in Rome",
-            subtitle: "Experience, transparency and local knowledge."
-          }
-        }
-      ]
-    } : {
-      seo: { title: "Chi siamo", description: "Agenzia immobiliare Norton Tanzarella." },
-      sections: [
-        {
-          id: "00000000-0000-4000-8000-000000000010",
-          type: "hero",
-          enabled: true,
-          order: 0,
-          content: {
-            title: "Il tuo partner di fiducia a Roma",
-            subtitle: "Esperienza, trasparenza e conoscenza del territorio."
-          }
-        }
-      ]
-    },
+    allowedTypes: ["hero", "imageSlideshow", "split", "team", "stats", "cta", "faq"],
+    reorderable: ["imageSlideshow", "split", "team", "stats", "cta", "faq"],
+    defaults: (locale) => locale === "en" ? CHI_SIAMO_DEFAULTS_EN : CHI_SIAMO_DEFAULTS_IT,
     milestone: "M2"
   },
   "immobili-index": {
     allowedTypes: ["pageHeader"],
     reorderable: [],
     defaults: (locale) => locale === "en" ? {
-      seo: { title: "Properties", description: "Browse our property listings in Rome." },
+      seo: { title: "Properties", description: "Browse masserie, rustici and homes in Ostuni and the Valle d'Itria." },
       sections: [
         {
           id: "00000000-0000-4000-8000-000000000050",
@@ -4949,12 +5566,12 @@ var PAGE_REGISTRY = {
           order: 0,
           content: {
             title: "Properties",
-            lead: "Find the right home in Rome with Norton Tanzarella."
+            lead: "Find a masseria, rustico or home in Ostuni and the Valle d'Itria."
           }
         }
       ]
     } : {
-      seo: { title: "Immobili", description: "Sfoglia gli immobili in vendita a Roma." },
+      seo: { title: "Immobili", description: "Sfoglia masserie, rustici e case a Ostuni e in Valle d'Itria." },
       sections: [
         {
           id: "00000000-0000-4000-8000-000000000050",
@@ -4963,7 +5580,7 @@ var PAGE_REGISTRY = {
           order: 0,
           content: {
             title: "Immobili",
-            lead: "Trova la casa giusta a Roma con Norton Tanzarella."
+            lead: "Trova masseria, rustico o casa a Ostuni e in Valle d'Itria."
           }
         }
       ]
@@ -5145,7 +5762,10 @@ var PAGE_REGISTRY = {
           type: "legalPolicy",
           enabled: true,
           order: 0,
-          content: { source: "manual", body: "" }
+          content: {
+            source: "manual",
+            body: locale === "en" ? "Page under construction. The full privacy policy will be published here." : "Pagina in costruzione. La privacy policy completa sar\xE0 pubblicata qui."
+          }
         }
       ]
     }),
@@ -5162,7 +5782,10 @@ var PAGE_REGISTRY = {
           type: "legalPolicy",
           enabled: true,
           order: 0,
-          content: { source: "manual", body: "" }
+          content: {
+            source: "manual",
+            body: locale === "en" ? "Page under construction. The full cookie policy will be published here." : "Pagina in costruzione. La cookie policy completa sar\xE0 pubblicata qui."
+          }
         }
       ]
     }),
@@ -5226,13 +5849,18 @@ var SHARED_STRING_KEYS = /* @__PURE__ */ new Set([
   "to",
   "href",
   "iubendaPolicyId",
-  "collectionKey"
+  "collectionKey",
+  "leadRecipientEmail",
+  "privacyPolicyUrl",
+  "mapUrl",
+  "url",
+  "platform"
 ]);
-function resolveLocaleScope(kind, fieldKey) {
+function resolveLocaleScope(kind, fieldKey, format) {
   if (kind === "image" || kind === "boolean" || kind === "number" || kind === "enum") {
     return "shared";
   }
-  if (kind === "string" && SHARED_STRING_KEYS.has(fieldKey)) {
+  if (kind === "string" && (SHARED_STRING_KEYS.has(fieldKey) || format === "email" || format === "url")) {
     return "shared";
   }
   if (kind === "object" || kind === "array") {
@@ -5322,7 +5950,7 @@ function zodToFieldMeta(schema, key = "root") {
       if (inner instanceof external_exports.ZodString) {
         const maxLength = getMaxLength(inner);
         const format = resolveStringFormat(fieldSchema);
-        const isImageField = fieldKey === "image" || fieldKey.endsWith("Image") || fieldKey.endsWith("image");
+        const isImageField = fieldKey === "image" || fieldKey === "mediaId" || fieldKey.endsWith("Image") || fieldKey.endsWith("image") || fieldKey.endsWith("MediaId");
         if (isImageField && format !== "url" && format !== "email" && format !== "time") {
           fields.push({
             kind: "image",
@@ -5338,7 +5966,7 @@ function zodToFieldMeta(schema, key = "root") {
           key: fieldKey,
           label: resolveLabel(fieldSchema, fieldKey),
           required,
-          localeScope: resolveLocaleScope("string", fieldKey),
+          localeScope: resolveLocaleScope("string", fieldKey, format),
           maxLength,
           multiline: format === void 0 && maxLength !== void 0 && maxLength > 200,
           format
@@ -5431,6 +6059,9 @@ function zodToFieldMeta(schema, key = "root") {
 }
 export {
   DAY_OF_WEEK_LABELS_IT,
+  DEFAULT_BRANDING_COLORS,
+  DEFAULT_BRANDING_SCALARS,
+  DEFAULT_BRANDING_TYPOGRAPHY,
   DEFAULT_BRAND_FOOTER_VISIBILITY,
   DEFAULT_CONTACT_SETTINGS_IT,
   DEFAULT_LAYOUT_SETTINGS_IT,
@@ -5438,9 +6069,14 @@ export {
   DEFAULT_SITE_SETTINGS_IT,
   EDITOR_DAY_ORDER,
   FEATURED_COLLECTION_MODE_LABELS_IT,
+  FONT_HEADING_WHITELIST,
+  FONT_SANS_WHITELIST,
+  FONT_WHITELIST,
   FOOTER_NAV_PATHS,
+  LEGACY_NAV_PATH_MAP,
   LEGAL_LINK_PATHS,
   LEGAL_POLICY_SOURCE_LABELS_IT,
+  LOGO_SLOTS,
   MAIN_NAV_PATHS,
   PAGE_KEYS,
   PAGE_REGISTRY,
@@ -5451,14 +6087,20 @@ export {
   WEEKDAY_ORDER,
   brandFooterVisibilitySchema,
   brandSchema,
+  brandingColorsSchema,
+  brandingLogosSchema,
+  brandingTypographySchema,
   categoryShowcaseContentSchema,
   categoryShowcaseItemSchema,
   cmsNavLinkSchema,
   cmsPageDocumentSchema,
   cmsSectionSchema,
   cmsSeoSchema,
+  collectLogoMediaIds,
+  collectPageMediaIds,
   contactFormSchema,
   contactSettingsSchema,
+  cssVarsToStyleText,
   ctaContentSchema,
   ctaLinkSchema,
   dayOfWeekSchema,
@@ -5478,19 +6120,29 @@ export {
   headerCtaSchema,
   headerSecondaryCtaSchema,
   heroContentSchema,
+  hexColorSchema,
+  imageSlideshowContentSchema,
+  imageSlideshowItemSchema,
   isPageKey,
   layoutSettingsSchema,
   legalNavLinkSchema,
   legalPolicyContentSchema,
+  logoAltSchema,
+  logoSlotSchema,
   mainNavLinkSchema,
   mergeOpeningHoursNotes,
   mergeSharedOrganization,
   mergeSiteSettingsDefaults,
+  normalizeNavPath,
+  normalizeSettingsScalars,
   openingHoursSchema,
+  optionalCtaLinkSchema,
+  optionalMediaIdSchema,
   organizationSchema,
   pageHeaderContentSchema,
   parseSectionContent,
   richTextContentSchema,
+  scalarsToCssVars,
   sectionContentByType,
   settingsScalarsSchema,
   siteSettingsSchema,

@@ -7,6 +7,7 @@ import {
 } from './m1.js'
 import {
   faqContentSchema,
+  imageSlideshowContentSchema,
   legalPolicyContentSchema,
   pageHeaderContentSchema,
   richTextContentSchema,
@@ -15,6 +16,8 @@ import {
   teamContentSchema,
   testimonialsContentSchema,
 } from './m2.js'
+
+export { collectPageMediaIds } from './collectPageMediaIds.js'
 
 export const sectionContentByType = {
   hero: heroContentSchema,
@@ -26,6 +29,7 @@ export const sectionContentByType = {
   richText: richTextContentSchema,
   legalPolicy: legalPolicyContentSchema,
   split: splitContentSchema,
+  imageSlideshow: imageSlideshowContentSchema,
   team: teamContentSchema,
   stats: statsContentSchema,
   faq: faqContentSchema,
@@ -44,6 +48,7 @@ export const SECTION_TYPE_LABELS_IT: Record<SectionType, string> = {
   richText: 'Testo libero',
   legalPolicy: 'Policy legale',
   split: 'Sezione split',
+  imageSlideshow: 'Slideshow immagini',
   team: 'Team',
   stats: 'Statistiche',
   faq: 'FAQ',

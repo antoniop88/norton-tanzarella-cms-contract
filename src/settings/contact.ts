@@ -162,25 +162,49 @@ export function mergeSharedOrganization(
   }
 }
 
-export const settingsScalarsSchema = z.object({
-  themeColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-  backgroundColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-})
-
-export type SettingsScalars = z.infer<typeof settingsScalarsSchema>
+export {
+  hexColorSchema,
+  FONT_SANS_WHITELIST,
+  FONT_HEADING_WHITELIST,
+  FONT_WHITELIST,
+  LOGO_SLOTS,
+  logoAltSchema,
+  logoSlotSchema,
+  brandingColorsSchema,
+  brandingTypographySchema,
+  brandingLogosSchema,
+  DEFAULT_BRANDING_COLORS,
+  DEFAULT_BRANDING_TYPOGRAPHY,
+  DEFAULT_BRANDING_SCALARS,
+  settingsScalarsSchema,
+  normalizeSettingsScalars,
+  scalarsToCssVars,
+  cssVarsToStyleText,
+  collectLogoMediaIds,
+} from './branding.js'
+export type {
+  FontSans,
+  FontHeading,
+  LogoSlot,
+  LogoSlotConfig,
+  BrandingColors,
+  BrandingTypography,
+  BrandingLogos,
+  SettingsScalars,
+} from './branding.js'
 
 export const DEFAULT_CONTACT_SETTINGS_IT: ContactSettings = {
   organization: {
     legalName: 'Norton Tanzarella S.r.l.',
     email: 'info@nortontanzarella.it',
-    phone: '+39 06 1234 5678',
+    phone: '+39 0831 000000',
     address: {
-      street: 'Via Roma 1',
-      city: 'Roma',
-      postalCode: '00100',
+      street: 'Corso Vittorio Emanuele 12',
+      city: 'Ostuni',
+      postalCode: '72017',
       country: 'IT',
     },
-    geo: { latitude: 41.9028, longitude: 12.4964 },
+    geo: { latitude: 40.7297, longitude: 17.5778 },
     openingHours: DEFAULT_OPENING_HOURS_IT,
   },
   contactForm: {

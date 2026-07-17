@@ -1,11 +1,10 @@
 import { z } from 'zod'
-import { ctaLinkSchema, featureItemSchema } from './common.js'
+import { ctaLinkSchema, featureItemSchema, optionalCtaLinkSchema, optionalMediaIdSchema } from './common.js'
 
 export const heroContentSchema = z.object({
   title: z.string().max(80).describe('Titolo'),
-  subtitle: z.string().max(160).optional().describe('Sottotitolo'),
-  cta: ctaLinkSchema.optional().describe('CTA'),
-  image: z.string().optional().describe('Immagine'),
+  subtitle: z.string().max(600).optional().describe('Sottotitolo'),
+  cta: optionalCtaLinkSchema.describe('CTA'),
 })
 
 export const featuresContentSchema = z.object({
@@ -33,7 +32,7 @@ export const featuredCollectionContentSchema = z.object({
 
 export const categoryShowcaseItemSchema = z.object({
   label: z.string().max(80).describe('Titolo categoria'),
-  image: z.string().min(1).describe('Immagine'),
+  mediaId: optionalMediaIdSchema.describe('Immagine'),
   imageAlt: z.string().max(160).optional().describe('Testo alternativo'),
   href: z.string().max(200).describe('Link destinazione'),
   ctaLabel: z.string().max(60).optional().describe('Etichetta CTA'),

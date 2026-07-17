@@ -12,7 +12,7 @@ import {
 describe('layout path constants', () => {
   it('defines main nav paths without legal pages', () => {
     expect(MAIN_NAV_PATHS).not.toContain('/privacy-policy')
-    expect(MAIN_NAV_PATHS).toContain('/contatti')
+    expect(MAIN_NAV_PATHS).toContain('/contact')
   })
 
   it('merges main and legal paths for footer nav', () => {

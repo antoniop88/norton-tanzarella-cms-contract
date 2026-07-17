@@ -71,16 +71,22 @@ const SHARED_STRING_KEYS = new Set([
   'href',
   'iubendaPolicyId',
   'collectionKey',
+  'leadRecipientEmail',
+  'privacyPolicyUrl',
+  'mapUrl',
+  'url',
+  'platform',
 ])
 
 function resolveLocaleScope(
   kind: FieldMeta['kind'],
   fieldKey: string,
+  format?: 'url' | 'email' | 'time',
 ): LocaleScope {
   if (kind === 'image' || kind === 'boolean' || kind === 'number' || kind === 'enum') {
     return 'shared'
   }
-  if (kind === 'string' && SHARED_STRING_KEYS.has(fieldKey)) {
+  if (kind === 'string' && (SHARED_STRING_KEYS.has(fieldKey) || format === 'email' || format === 'url')) {
     return 'shared'
   }
   if (kind === 'object' || kind === 'array') {
@@ -192,7 +198,7 @@ export function zodToFieldMeta(schema: ZodTypeAny, key = 'root'): FieldMeta[] {
         const maxLength = getMaxLength(inner)
         const format = resolveStringFormat(fieldSchema)
         const isImageField =
-          fieldKey === 'image' || fieldKey.endsWith('Image') || fieldKey.endsWith('image')
+          fieldKey === 'image' || fieldKey === 'mediaId' || fieldKey.endsWith('Image') || fieldKey.endsWith('image') || fieldKey.endsWith('MediaId')
         if (isImageField && format !== 'url' && format !== 'email' && format !== 'time') {
           fields.push({
             kind: 'image',
@@ -208,7 +214,7 @@ export function zodToFieldMeta(schema: ZodTypeAny, key = 'root'): FieldMeta[] {
           key: fieldKey,
           label: resolveLabel(fieldSchema, fieldKey),
           required,
-          localeScope: resolveLocaleScope('string', fieldKey),
+          localeScope: resolveLocaleScope('string', fieldKey, format),
           maxLength,
           multiline: format === undefined && maxLength !== undefined && maxLength > 200,
           format,

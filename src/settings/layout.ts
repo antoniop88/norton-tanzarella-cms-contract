@@ -3,13 +3,27 @@ import { SOCIAL_PLATFORM_IDS } from './socialPlatforms.js'
 
 export const MAIN_NAV_PATHS = [
   '/',
-  '/chi-siamo',
-  '/immobili',
-  '/trova-immobile',
-  '/tour-virtuali',
-  '/vendi-con-noi',
-  '/contatti',
+  '/about',
+  '/properties',
+  '/property-finder',
+  '/virtual-tours',
+  '/sell-with-us',
+  '/contact',
 ] as const
+
+/** Old Italian segments → English-first public paths. */
+export const LEGACY_NAV_PATH_MAP = {
+  '/chi-siamo': '/about',
+  '/immobili': '/properties',
+  '/trova-immobile': '/property-finder',
+  '/tour-virtuali': '/virtual-tours',
+  '/vendi-con-noi': '/sell-with-us',
+  '/contatti': '/contact',
+} as const satisfies Record<string, (typeof MAIN_NAV_PATHS)[number]>
+
+export function normalizeNavPath(to: string): string {
+  return LEGACY_NAV_PATH_MAP[to as keyof typeof LEGACY_NAV_PATH_MAP] ?? to
+}
 
 export const LEGAL_LINK_PATHS = ['/privacy-policy', '/cookie-policy'] as const
 
@@ -19,9 +33,14 @@ export type MainNavPath = (typeof MAIN_NAV_PATHS)[number]
 export type LegalLinkPath = (typeof LEGAL_LINK_PATHS)[number]
 export type FooterNavPath = (typeof FOOTER_NAV_PATHS)[number]
 
-const mainNavPathSchema = z.enum(MAIN_NAV_PATHS)
+function normalizeNavPathInput(value: unknown): unknown {
+  if (typeof value !== 'string') return value
+  return normalizeNavPath(value)
+}
+
+const mainNavPathSchema = z.preprocess(normalizeNavPathInput, z.enum(MAIN_NAV_PATHS))
 const legalLinkPathSchema = z.enum(LEGAL_LINK_PATHS)
-const footerNavPathSchema = z.enum(FOOTER_NAV_PATHS)
+const footerNavPathSchema = z.preprocess(normalizeNavPathInput, z.enum(FOOTER_NAV_PATHS))
 
 const httpsUrlSchema = z
   .string()
@@ -133,29 +152,29 @@ export type LayoutSettings = z.infer<typeof layoutSettingsSchema>
 export const DEFAULT_LAYOUT_SETTINGS_IT: LayoutSettings = {
   brand: {
     name: 'Norton Tanzarella',
-    tagline: 'Agenzia immobiliare di prestigio a Roma.',
-    description: 'Consulenza immobiliare, vendita e affitto di proprietà selezionate.',
+    tagline: 'Agenzia immobiliare a Ostuni e in Valle d\'Itria.',
+    description: 'Masserie, rustici e trulli: consulenza per acquisto e vendita in Valle d\'Itria.',
     footerVisibility: DEFAULT_BRAND_FOOTER_VISIBILITY,
   },
   headerNav: [
     { label: 'Home', to: '/' },
-    { label: 'Chi siamo', to: '/chi-siamo' },
-    { label: 'Immobili', to: '/immobili' },
-    { label: 'Trova immobile', to: '/trova-immobile' },
-    { label: 'Tour virtuali', to: '/tour-virtuali' },
+    { label: 'Chi siamo', to: '/about' },
+    { label: 'Immobili', to: '/properties' },
+    { label: 'Trova immobile', to: '/property-finder' },
+    { label: 'Tour virtuali', to: '/virtual-tours' },
   ],
-  headerCta: { label: 'Contattaci', to: '/contatti' },
-  headerSecondaryCta: { label: 'Vendi con noi', to: '/vendi-con-noi' },
+  headerCta: { label: 'Contattaci', to: '/contact' },
+  headerSecondaryCta: { label: 'Vendi con noi', to: '/sell-with-us' },
   footer: {
     columns: [
       {
         title: 'Navigazione',
         links: [
           { label: 'Home', to: '/' },
-          { label: 'Chi siamo', to: '/chi-siamo' },
-          { label: 'Immobili', to: '/immobili' },
-          { label: 'Trova immobile', to: '/trova-immobile' },
-          { label: 'Tour virtuali', to: '/tour-virtuali' },
+          { label: 'Chi siamo', to: '/about' },
+          { label: 'Immobili', to: '/properties' },
+          { label: 'Trova immobile', to: '/property-finder' },
+          { label: 'Tour virtuali', to: '/virtual-tours' },
         ],
       },
       {

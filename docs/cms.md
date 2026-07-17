@@ -1,4 +1,4 @@
-# CMS — Contratto v0.9.0
+# CMS — Contratto v0.14.0
 
 ## Export
 
@@ -16,35 +16,31 @@
 
 Solo `home` — tipi ammessi: `hero`, `categoryShowcase`, `features`, `featuredCollection`, `cta`.
 
-Pagine M2 aggiuntive: `property-finder`, `virtual-tours`, `sell-with-us` (`pageHeader`, placeholder in costruzione).
+## Pagine M2 — Chi siamo (v0.14.0)
+
+`chi-siamo`: `hero`, `imageSlideshow`, `split`, `team`, `stats`, `cta`, `faq`.
+
+Defaults: hero → slideshow → split×3 → team → stats → cta → faq (IT|EN).
+
+- `imageSlideshow`: 2–8 slide (`mediaId?`, `imageAlt?`, `caption?`), `autoplayMs?` — full-viewport, **non** riusa `categoryShowcase`
+- `split`: `mediaId?`, `button?` (CTA); `hero.subtitle` max 600
+- Immagini shared (`mediaId`) su slideshow / split / team; upload folder `cms/chi-siamo/`
+
+Pagine M2 stub: `property-finder`, `virtual-tours`, `sell-with-us` (`pageHeader`, placeholder in costruzione); policy con body «in costruzione».
 
 ## Layout header (v0.8.1)
 
 - `headerCta` — Contattaci
 - `headerSecondaryCta` — Vendi con noi (`/vendi-con-noi`)
 
-## `categoryShowcase` (v0.7.0)
+## `categoryShowcase` (v0.12.0)
 
 - `title` obbligatorio
-- `items` length 4: `label`, `image`, `imageAlt?`, `href`, `ctaLabel?`
+- `items` length 4: `label`, `mediaId` (uuid), `imageAlt?`, `href`, `ctaLabel?`
+- Sezioni `hero` / `split` / `team`: campo `mediaId` (uuid) al posto di `image`
+- `split` / `team`: `mediaId` opzionale (v0.13.0)
+- `collectPageMediaIds(document)` — UUID referenziati nelle sezioni
 
 ## `featuredCollection`
 
 - `collectionKey`: solo `immobili`
-- `mode`: `featured` | `manual`
-- `hideWhenEmpty`: default `true` — sezione nascosta se 0 item
-- Validazione publish: warning se >50% itemIds morti; errore se manual e tutti morti
-
-## Dipendenze consumer
-
-```json
-"@norton-tanzarella/cms-contract": "file:../norton-tanzarella-cms-contract"
-```
-
-`prepare: tsup` obbligatorio — senza `dist/` gli import falliscono.
-
-## Orari apertura (v0.5.0)
-
-- `openingHoursSchema`, `groupOpeningHoursByDay`, `flattenDaySchedules`, `validateOpeningHours`
-- `organization.openingHours[]`: flat, max 14 righe (2 fasce × 7 giorni + festivi)
-- Chiusura totale: giorno assente dall'array

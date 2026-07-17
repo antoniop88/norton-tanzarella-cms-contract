@@ -1,6 +1,8 @@
 import * as zod from 'zod';
 import { z, ZodTypeAny } from 'zod';
 
+/** Empty string / null from forms → omitted; otherwise must be a UUID. */
+declare const optionalMediaIdSchema: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
 declare const ctaLinkSchema: z.ZodObject<{
     label: z.ZodString;
     to: z.ZodString;
@@ -11,6 +13,23 @@ declare const ctaLinkSchema: z.ZodObject<{
     label: string;
     to: string;
 }>;
+/**
+ * Optional CTA from backoffice forms: empty object / blank label+to → omitted.
+ * Prevents `cta: {}` (JSON drops undefined keys) from failing Required.
+ */
+declare const optionalCtaLinkSchema: z.ZodEffects<z.ZodOptional<z.ZodObject<{
+    label: z.ZodString;
+    to: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    label: string;
+    to: string;
+}, {
+    label: string;
+    to: string;
+}>>, {
+    label: string;
+    to: string;
+} | undefined, unknown>;
 declare const featureItemSchema: z.ZodObject<{
     title: z.ZodString;
     description: z.ZodString;
@@ -25,7 +44,7 @@ declare const featureItemSchema: z.ZodObject<{
 declare const heroContentSchema: z.ZodObject<{
     title: z.ZodString;
     subtitle: z.ZodOptional<z.ZodString>;
-    cta: z.ZodOptional<z.ZodObject<{
+    cta: z.ZodEffects<z.ZodOptional<z.ZodObject<{
         label: z.ZodString;
         to: z.ZodString;
     }, "strip", z.ZodTypeAny, {
@@ -34,8 +53,10 @@ declare const heroContentSchema: z.ZodObject<{
     }, {
         label: string;
         to: string;
-    }>>;
-    image: z.ZodOptional<z.ZodString>;
+    }>>, {
+        label: string;
+        to: string;
+    } | undefined, unknown>;
 }, "strip", z.ZodTypeAny, {
     title: string;
     subtitle?: string | undefined;
@@ -43,15 +64,10 @@ declare const heroContentSchema: z.ZodObject<{
         label: string;
         to: string;
     } | undefined;
-    image?: string | undefined;
 }, {
     title: string;
     subtitle?: string | undefined;
-    cta?: {
-        label: string;
-        to: string;
-    } | undefined;
-    image?: string | undefined;
+    cta?: unknown;
 }>;
 declare const featuresContentSchema: z.ZodObject<{
     title: z.ZodOptional<z.ZodString>;
@@ -139,20 +155,20 @@ declare const featuredCollectionContentSchema: z.ZodObject<{
 }>;
 declare const categoryShowcaseItemSchema: z.ZodObject<{
     label: z.ZodString;
-    image: z.ZodString;
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
     imageAlt: z.ZodOptional<z.ZodString>;
     href: z.ZodString;
     ctaLabel: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     label: string;
-    image: string;
     href: string;
+    mediaId?: string | undefined;
     imageAlt?: string | undefined;
     ctaLabel?: string | undefined;
 }, {
     label: string;
-    image: string;
     href: string;
+    mediaId?: unknown;
     imageAlt?: string | undefined;
     ctaLabel?: string | undefined;
 }>;
@@ -160,20 +176,20 @@ declare const categoryShowcaseContentSchema: z.ZodObject<{
     title: z.ZodString;
     items: z.ZodArray<z.ZodObject<{
         label: z.ZodString;
-        image: z.ZodString;
+        mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
         imageAlt: z.ZodOptional<z.ZodString>;
         href: z.ZodString;
         ctaLabel: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         label: string;
-        image: string;
         href: string;
+        mediaId?: string | undefined;
         imageAlt?: string | undefined;
         ctaLabel?: string | undefined;
     }, {
         label: string;
-        image: string;
         href: string;
+        mediaId?: unknown;
         imageAlt?: string | undefined;
         ctaLabel?: string | undefined;
     }>, "many">;
@@ -181,8 +197,8 @@ declare const categoryShowcaseContentSchema: z.ZodObject<{
     title: string;
     items: {
         label: string;
-        image: string;
         href: string;
+        mediaId?: string | undefined;
         imageAlt?: string | undefined;
         ctaLabel?: string | undefined;
     }[];
@@ -190,8 +206,8 @@ declare const categoryShowcaseContentSchema: z.ZodObject<{
     title: string;
     items: {
         label: string;
-        image: string;
         href: string;
+        mediaId?: unknown;
         imageAlt?: string | undefined;
         ctaLabel?: string | undefined;
     }[];
@@ -232,40 +248,103 @@ declare const legalPolicyContentSchema: z.ZodObject<{
 declare const splitContentSchema: z.ZodObject<{
     title: z.ZodString;
     body: z.ZodString;
-    image: z.ZodString;
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
     imageAlt: z.ZodOptional<z.ZodString>;
     reverse: z.ZodOptional<z.ZodBoolean>;
+    button: z.ZodEffects<z.ZodOptional<z.ZodObject<{
+        label: z.ZodString;
+        to: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        label: string;
+        to: string;
+    }, {
+        label: string;
+        to: string;
+    }>>, {
+        label: string;
+        to: string;
+    } | undefined, unknown>;
 }, "strip", z.ZodTypeAny, {
     title: string;
-    image: string;
     body: string;
     reverse?: boolean | undefined;
+    button?: {
+        label: string;
+        to: string;
+    } | undefined;
+    mediaId?: string | undefined;
     imageAlt?: string | undefined;
 }, {
     title: string;
-    image: string;
     body: string;
     reverse?: boolean | undefined;
+    button?: unknown;
+    mediaId?: unknown;
     imageAlt?: string | undefined;
 }>;
+declare const imageSlideshowItemSchema: z.ZodObject<{
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+    imageAlt: z.ZodOptional<z.ZodString>;
+    caption: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    mediaId?: string | undefined;
+    imageAlt?: string | undefined;
+    caption?: string | undefined;
+}, {
+    mediaId?: unknown;
+    imageAlt?: string | undefined;
+    caption?: string | undefined;
+}>;
+declare const imageSlideshowContentSchema: z.ZodObject<{
+    items: z.ZodArray<z.ZodObject<{
+        mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+        imageAlt: z.ZodOptional<z.ZodString>;
+        caption: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
+        caption?: string | undefined;
+    }, {
+        mediaId?: unknown;
+        imageAlt?: string | undefined;
+        caption?: string | undefined;
+    }>, "many">;
+    autoplayMs: z.ZodOptional<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    items: {
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
+        caption?: string | undefined;
+    }[];
+    autoplayMs?: number | undefined;
+}, {
+    items: {
+        mediaId?: unknown;
+        imageAlt?: string | undefined;
+        caption?: string | undefined;
+    }[];
+    autoplayMs?: number | undefined;
+}>;
+type ImageSlideshowItem = z.infer<typeof imageSlideshowItemSchema>;
+type ImageSlideshowContent = z.infer<typeof imageSlideshowContentSchema>;
 declare const teamContentSchema: z.ZodObject<{
     title: z.ZodOptional<z.ZodString>;
     name: z.ZodString;
     role: z.ZodString;
     bio: z.ZodString;
-    image: z.ZodString;
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
 }, "strip", z.ZodTypeAny, {
-    image: string;
     name: string;
     role: string;
     bio: string;
     title?: string | undefined;
+    mediaId?: string | undefined;
 }, {
-    image: string;
     name: string;
     role: string;
     bio: string;
     title?: string | undefined;
+    mediaId?: unknown;
 }>;
 declare const statsContentSchema: z.ZodObject<{
     items: z.ZodArray<z.ZodObject<{
@@ -273,24 +352,24 @@ declare const statsContentSchema: z.ZodObject<{
         suffix: z.ZodOptional<z.ZodString>;
         label: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        label: string;
         value: number;
+        label: string;
         suffix?: string | undefined;
     }, {
-        label: string;
         value: number;
+        label: string;
         suffix?: string | undefined;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
     items: {
-        label: string;
         value: number;
+        label: string;
         suffix?: string | undefined;
     }[];
 }, {
     items: {
-        label: string;
         value: number;
+        label: string;
         suffix?: string | undefined;
     }[];
 }>;
@@ -350,11 +429,100 @@ declare const testimonialsContentSchema: z.ZodObject<{
     title?: string | undefined;
 }>;
 
+declare const cmsSeoSchema: z.ZodObject<{
+    title: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    title?: string | undefined;
+    description?: string | undefined;
+}, {
+    title?: string | undefined;
+    description?: string | undefined;
+}>;
+declare const cmsSectionSchema: z.ZodObject<{
+    id: z.ZodString;
+    type: z.ZodString;
+    enabled: z.ZodBoolean;
+    order: z.ZodNumber;
+    content: z.ZodRecord<z.ZodString, z.ZodUnknown>;
+}, "strip", z.ZodTypeAny, {
+    type: string;
+    id: string;
+    enabled: boolean;
+    order: number;
+    content: Record<string, unknown>;
+}, {
+    type: string;
+    id: string;
+    enabled: boolean;
+    order: number;
+    content: Record<string, unknown>;
+}>;
+declare const cmsPageDocumentSchema: z.ZodObject<{
+    seo: z.ZodOptional<z.ZodObject<{
+        title: z.ZodOptional<z.ZodString>;
+        description: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        title?: string | undefined;
+        description?: string | undefined;
+    }, {
+        title?: string | undefined;
+        description?: string | undefined;
+    }>>;
+    sections: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodString;
+        enabled: z.ZodBoolean;
+        order: z.ZodNumber;
+        content: z.ZodRecord<z.ZodString, z.ZodUnknown>;
+    }, "strip", z.ZodTypeAny, {
+        type: string;
+        id: string;
+        enabled: boolean;
+        order: number;
+        content: Record<string, unknown>;
+    }, {
+        type: string;
+        id: string;
+        enabled: boolean;
+        order: number;
+        content: Record<string, unknown>;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    sections: {
+        type: string;
+        id: string;
+        enabled: boolean;
+        order: number;
+        content: Record<string, unknown>;
+    }[];
+    seo?: {
+        title?: string | undefined;
+        description?: string | undefined;
+    } | undefined;
+}, {
+    sections: {
+        type: string;
+        id: string;
+        enabled: boolean;
+        order: number;
+        content: Record<string, unknown>;
+    }[];
+    seo?: {
+        title?: string | undefined;
+        description?: string | undefined;
+    } | undefined;
+}>;
+type CmsPageDocument = z.infer<typeof cmsPageDocumentSchema>;
+type CmsSection = z.infer<typeof cmsSectionSchema>;
+
+declare function collectPageMediaIds(document: CmsPageDocument | unknown): string[];
+
 declare const sectionContentByType: {
     readonly hero: zod.ZodObject<{
         title: zod.ZodString;
         subtitle: zod.ZodOptional<zod.ZodString>;
-        cta: zod.ZodOptional<zod.ZodObject<{
+        cta: zod.ZodEffects<zod.ZodOptional<zod.ZodObject<{
             label: zod.ZodString;
             to: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -363,8 +531,10 @@ declare const sectionContentByType: {
         }, {
             label: string;
             to: string;
-        }>>;
-        image: zod.ZodOptional<zod.ZodString>;
+        }>>, {
+            label: string;
+            to: string;
+        } | undefined, unknown>;
     }, "strip", zod.ZodTypeAny, {
         title: string;
         subtitle?: string | undefined;
@@ -372,15 +542,10 @@ declare const sectionContentByType: {
             label: string;
             to: string;
         } | undefined;
-        image?: string | undefined;
     }, {
         title: string;
         subtitle?: string | undefined;
-        cta?: {
-            label: string;
-            to: string;
-        } | undefined;
-        image?: string | undefined;
+        cta?: unknown;
     }>;
     readonly features: zod.ZodObject<{
         title: zod.ZodOptional<zod.ZodString>;
@@ -470,20 +635,20 @@ declare const sectionContentByType: {
         title: zod.ZodString;
         items: zod.ZodArray<zod.ZodObject<{
             label: zod.ZodString;
-            image: zod.ZodString;
+            mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
             imageAlt: zod.ZodOptional<zod.ZodString>;
             href: zod.ZodString;
             ctaLabel: zod.ZodOptional<zod.ZodString>;
         }, "strip", zod.ZodTypeAny, {
             label: string;
-            image: string;
             href: string;
+            mediaId?: string | undefined;
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
         }, {
             label: string;
-            image: string;
             href: string;
+            mediaId?: unknown;
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
         }>, "many">;
@@ -491,8 +656,8 @@ declare const sectionContentByType: {
         title: string;
         items: {
             label: string;
-            image: string;
             href: string;
+            mediaId?: string | undefined;
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
         }[];
@@ -500,8 +665,8 @@ declare const sectionContentByType: {
         title: string;
         items: {
             label: string;
-            image: string;
             href: string;
+            mediaId?: unknown;
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
         }[];
@@ -539,40 +704,88 @@ declare const sectionContentByType: {
     readonly split: zod.ZodObject<{
         title: zod.ZodString;
         body: zod.ZodString;
-        image: zod.ZodString;
+        mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
         imageAlt: zod.ZodOptional<zod.ZodString>;
         reverse: zod.ZodOptional<zod.ZodBoolean>;
+        button: zod.ZodEffects<zod.ZodOptional<zod.ZodObject<{
+            label: zod.ZodString;
+            to: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            label: string;
+            to: string;
+        }, {
+            label: string;
+            to: string;
+        }>>, {
+            label: string;
+            to: string;
+        } | undefined, unknown>;
     }, "strip", zod.ZodTypeAny, {
         title: string;
-        image: string;
         body: string;
         reverse?: boolean | undefined;
+        button?: {
+            label: string;
+            to: string;
+        } | undefined;
+        mediaId?: string | undefined;
         imageAlt?: string | undefined;
     }, {
         title: string;
-        image: string;
         body: string;
         reverse?: boolean | undefined;
+        button?: unknown;
+        mediaId?: unknown;
         imageAlt?: string | undefined;
+    }>;
+    readonly imageSlideshow: zod.ZodObject<{
+        items: zod.ZodArray<zod.ZodObject<{
+            mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
+            imageAlt: zod.ZodOptional<zod.ZodString>;
+            caption: zod.ZodOptional<zod.ZodString>;
+        }, "strip", zod.ZodTypeAny, {
+            mediaId?: string | undefined;
+            imageAlt?: string | undefined;
+            caption?: string | undefined;
+        }, {
+            mediaId?: unknown;
+            imageAlt?: string | undefined;
+            caption?: string | undefined;
+        }>, "many">;
+        autoplayMs: zod.ZodOptional<zod.ZodNumber>;
+    }, "strip", zod.ZodTypeAny, {
+        items: {
+            mediaId?: string | undefined;
+            imageAlt?: string | undefined;
+            caption?: string | undefined;
+        }[];
+        autoplayMs?: number | undefined;
+    }, {
+        items: {
+            mediaId?: unknown;
+            imageAlt?: string | undefined;
+            caption?: string | undefined;
+        }[];
+        autoplayMs?: number | undefined;
     }>;
     readonly team: zod.ZodObject<{
         title: zod.ZodOptional<zod.ZodString>;
         name: zod.ZodString;
         role: zod.ZodString;
         bio: zod.ZodString;
-        image: zod.ZodString;
+        mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
     }, "strip", zod.ZodTypeAny, {
-        image: string;
         name: string;
         role: string;
         bio: string;
         title?: string | undefined;
+        mediaId?: string | undefined;
     }, {
-        image: string;
         name: string;
         role: string;
         bio: string;
         title?: string | undefined;
+        mediaId?: unknown;
     }>;
     readonly stats: zod.ZodObject<{
         items: zod.ZodArray<zod.ZodObject<{
@@ -580,24 +793,24 @@ declare const sectionContentByType: {
             suffix: zod.ZodOptional<zod.ZodString>;
             label: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
-            label: string;
             value: number;
+            label: string;
             suffix?: string | undefined;
         }, {
-            label: string;
             value: number;
+            label: string;
             suffix?: string | undefined;
         }>, "many">;
     }, "strip", zod.ZodTypeAny, {
         items: {
-            label: string;
             value: number;
+            label: string;
             suffix?: string | undefined;
         }[];
     }, {
         items: {
-            label: string;
             value: number;
+            label: string;
             suffix?: string | undefined;
         }[];
     }>;
@@ -672,7 +885,6 @@ declare function parseSectionContent(type: string, content: unknown): {
             label: string;
             to: string;
         } | undefined;
-        image?: string | undefined;
     } | {
         items: {
             title: string;
@@ -700,8 +912,8 @@ declare function parseSectionContent(type: string, content: unknown): {
         title: string;
         items: {
             label: string;
-            image: string;
             href: string;
+            mediaId?: string | undefined;
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
         }[];
@@ -715,15 +927,22 @@ declare function parseSectionContent(type: string, content: unknown): {
         body?: string | undefined;
         iubendaPolicyId?: string | undefined;
     } | {
-        image: string;
+        items: {
+            mediaId?: string | undefined;
+            imageAlt?: string | undefined;
+            caption?: string | undefined;
+        }[];
+        autoplayMs?: number | undefined;
+    } | {
         name: string;
         role: string;
         bio: string;
         title?: string | undefined;
+        mediaId?: string | undefined;
     } | {
         items: {
-            label: string;
             value: number;
+            label: string;
             suffix?: string | undefined;
         }[];
     } | {
@@ -803,6 +1022,1062 @@ type OpeningHoursValidationIssue = {
 };
 declare function validateOpeningHours(entries: OpeningHoursEntry[]): OpeningHoursValidationIssue[];
 declare const DEFAULT_OPENING_HOURS_IT: OpeningHoursEntry[];
+
+declare const hexColorSchema: z.ZodString;
+declare const FONT_SANS_WHITELIST: readonly ["Nunito Sans", "Inter", "DM Sans"];
+declare const FONT_HEADING_WHITELIST: readonly ["Playfair Display", "Libre Baskerville", "Source Serif 4"];
+declare const FONT_WHITELIST: readonly ["Nunito Sans", "Inter", "DM Sans", "Playfair Display", "Libre Baskerville", "Source Serif 4"];
+type FontSans = (typeof FONT_SANS_WHITELIST)[number];
+type FontHeading = (typeof FONT_HEADING_WHITELIST)[number];
+declare const LOGO_SLOTS: readonly ["siteHeader", "siteFooter", "siteFavicon", "backofficeLogin", "backofficeSidebar", "backofficeSidebarCollapsed"];
+type LogoSlot = (typeof LOGO_SLOTS)[number];
+declare const logoAltSchema: z.ZodObject<{
+    it: z.ZodOptional<z.ZodString>;
+    en: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    it?: string | undefined;
+    en?: string | undefined;
+}, {
+    it?: string | undefined;
+    en?: string | undefined;
+}>;
+declare const logoSlotSchema: z.ZodObject<{
+    mediaId: z.ZodOptional<z.ZodString>;
+    mediaIdLight: z.ZodOptional<z.ZodString>;
+    mediaIdDark: z.ZodOptional<z.ZodString>;
+    alt: z.ZodOptional<z.ZodObject<{
+        it: z.ZodOptional<z.ZodString>;
+        en: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        it?: string | undefined;
+        en?: string | undefined;
+    }, {
+        it?: string | undefined;
+        en?: string | undefined;
+    }>>;
+}, "strip", z.ZodTypeAny, {
+    mediaId?: string | undefined;
+    mediaIdLight?: string | undefined;
+    mediaIdDark?: string | undefined;
+    alt?: {
+        it?: string | undefined;
+        en?: string | undefined;
+    } | undefined;
+}, {
+    mediaId?: string | undefined;
+    mediaIdLight?: string | undefined;
+    mediaIdDark?: string | undefined;
+    alt?: {
+        it?: string | undefined;
+        en?: string | undefined;
+    } | undefined;
+}>;
+type LogoSlotConfig = z.infer<typeof logoSlotSchema>;
+declare const brandingColorsSchema: z.ZodObject<{
+    primary: z.ZodString;
+    secondary: z.ZodString;
+    accent: z.ZodString;
+    background: z.ZodString;
+    foreground: z.ZodString;
+    success: z.ZodString;
+    warning: z.ZodString;
+    error: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    primary: string;
+    secondary: string;
+    accent: string;
+    background: string;
+    foreground: string;
+    success: string;
+    warning: string;
+    error: string;
+}, {
+    primary: string;
+    secondary: string;
+    accent: string;
+    background: string;
+    foreground: string;
+    success: string;
+    warning: string;
+    error: string;
+}>;
+type BrandingColors = z.infer<typeof brandingColorsSchema>;
+declare const brandingTypographySchema: z.ZodObject<{
+    fontSans: z.ZodEnum<["Nunito Sans", "Inter", "DM Sans"]>;
+    fontHeading: z.ZodEnum<["Playfair Display", "Libre Baskerville", "Source Serif 4"]>;
+}, "strip", z.ZodTypeAny, {
+    fontSans: "Nunito Sans" | "Inter" | "DM Sans";
+    fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+}, {
+    fontSans: "Nunito Sans" | "Inter" | "DM Sans";
+    fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+}>;
+type BrandingTypography = z.infer<typeof brandingTypographySchema>;
+declare const brandingLogosSchema: z.ZodObject<{
+    siteHeader: z.ZodOptional<z.ZodObject<{
+        mediaId: z.ZodOptional<z.ZodString>;
+        mediaIdLight: z.ZodOptional<z.ZodString>;
+        mediaIdDark: z.ZodOptional<z.ZodString>;
+        alt: z.ZodOptional<z.ZodObject<{
+            it: z.ZodOptional<z.ZodString>;
+            en: z.ZodOptional<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }>>;
+    }, "strip", z.ZodTypeAny, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }>>;
+    siteFooter: z.ZodOptional<z.ZodObject<{
+        mediaId: z.ZodOptional<z.ZodString>;
+        mediaIdLight: z.ZodOptional<z.ZodString>;
+        mediaIdDark: z.ZodOptional<z.ZodString>;
+        alt: z.ZodOptional<z.ZodObject<{
+            it: z.ZodOptional<z.ZodString>;
+            en: z.ZodOptional<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }>>;
+    }, "strip", z.ZodTypeAny, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }>>;
+    siteFavicon: z.ZodOptional<z.ZodObject<{
+        mediaId: z.ZodOptional<z.ZodString>;
+        mediaIdLight: z.ZodOptional<z.ZodString>;
+        mediaIdDark: z.ZodOptional<z.ZodString>;
+        alt: z.ZodOptional<z.ZodObject<{
+            it: z.ZodOptional<z.ZodString>;
+            en: z.ZodOptional<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }>>;
+    }, "strip", z.ZodTypeAny, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }>>;
+    backofficeLogin: z.ZodOptional<z.ZodObject<{
+        mediaId: z.ZodOptional<z.ZodString>;
+        mediaIdLight: z.ZodOptional<z.ZodString>;
+        mediaIdDark: z.ZodOptional<z.ZodString>;
+        alt: z.ZodOptional<z.ZodObject<{
+            it: z.ZodOptional<z.ZodString>;
+            en: z.ZodOptional<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }>>;
+    }, "strip", z.ZodTypeAny, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }>>;
+    backofficeSidebar: z.ZodOptional<z.ZodObject<{
+        mediaId: z.ZodOptional<z.ZodString>;
+        mediaIdLight: z.ZodOptional<z.ZodString>;
+        mediaIdDark: z.ZodOptional<z.ZodString>;
+        alt: z.ZodOptional<z.ZodObject<{
+            it: z.ZodOptional<z.ZodString>;
+            en: z.ZodOptional<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }>>;
+    }, "strip", z.ZodTypeAny, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }>>;
+    backofficeSidebarCollapsed: z.ZodOptional<z.ZodObject<{
+        mediaId: z.ZodOptional<z.ZodString>;
+        mediaIdLight: z.ZodOptional<z.ZodString>;
+        mediaIdDark: z.ZodOptional<z.ZodString>;
+        alt: z.ZodOptional<z.ZodObject<{
+            it: z.ZodOptional<z.ZodString>;
+            en: z.ZodOptional<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }, {
+            it?: string | undefined;
+            en?: string | undefined;
+        }>>;
+    }, "strip", z.ZodTypeAny, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }, {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    }>>;
+}, "strip", z.ZodTypeAny, {
+    siteHeader?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+    siteFooter?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+    siteFavicon?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+    backofficeLogin?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+    backofficeSidebar?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+    backofficeSidebarCollapsed?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+}, {
+    siteHeader?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+    siteFooter?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+    siteFavicon?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+    backofficeLogin?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+    backofficeSidebar?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+    backofficeSidebarCollapsed?: {
+        mediaId?: string | undefined;
+        mediaIdLight?: string | undefined;
+        mediaIdDark?: string | undefined;
+        alt?: {
+            it?: string | undefined;
+            en?: string | undefined;
+        } | undefined;
+    } | undefined;
+}>;
+type BrandingLogos = z.infer<typeof brandingLogosSchema>;
+declare const DEFAULT_BRANDING_COLORS: BrandingColors;
+declare const DEFAULT_BRANDING_TYPOGRAPHY: BrandingTypography;
+declare const DEFAULT_BRANDING_SCALARS: {
+    themeColor: string;
+    backgroundColor: string;
+    colors: {
+        primary: string;
+        secondary: string;
+        accent: string;
+        background: string;
+        foreground: string;
+        success: string;
+        warning: string;
+        error: string;
+    };
+    typography: {
+        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+    };
+    logos: BrandingLogos;
+};
+/**
+ * Full branding scalars stored on cms_settings.scalars.
+ * `themeColor` / `backgroundColor` stay for webmanifest / meta compat
+ * and are kept in sync with colors.primary / colors.background on write.
+ */
+declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
+    themeColor: z.ZodString;
+    backgroundColor: z.ZodString;
+    colors: z.ZodObject<{
+        primary: z.ZodString;
+        secondary: z.ZodString;
+        accent: z.ZodString;
+        background: z.ZodString;
+        foreground: z.ZodString;
+        success: z.ZodString;
+        warning: z.ZodString;
+        error: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        primary: string;
+        secondary: string;
+        accent: string;
+        background: string;
+        foreground: string;
+        success: string;
+        warning: string;
+        error: string;
+    }, {
+        primary: string;
+        secondary: string;
+        accent: string;
+        background: string;
+        foreground: string;
+        success: string;
+        warning: string;
+        error: string;
+    }>;
+    typography: z.ZodObject<{
+        fontSans: z.ZodEnum<["Nunito Sans", "Inter", "DM Sans"]>;
+        fontHeading: z.ZodEnum<["Playfair Display", "Libre Baskerville", "Source Serif 4"]>;
+    }, "strip", z.ZodTypeAny, {
+        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+    }, {
+        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+    }>;
+    logos: z.ZodDefault<z.ZodObject<{
+        siteHeader: z.ZodOptional<z.ZodObject<{
+            mediaId: z.ZodOptional<z.ZodString>;
+            mediaIdLight: z.ZodOptional<z.ZodString>;
+            mediaIdDark: z.ZodOptional<z.ZodString>;
+            alt: z.ZodOptional<z.ZodObject<{
+                it: z.ZodOptional<z.ZodString>;
+                en: z.ZodOptional<z.ZodString>;
+            }, "strip", z.ZodTypeAny, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }>>;
+        }, "strip", z.ZodTypeAny, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }>>;
+        siteFooter: z.ZodOptional<z.ZodObject<{
+            mediaId: z.ZodOptional<z.ZodString>;
+            mediaIdLight: z.ZodOptional<z.ZodString>;
+            mediaIdDark: z.ZodOptional<z.ZodString>;
+            alt: z.ZodOptional<z.ZodObject<{
+                it: z.ZodOptional<z.ZodString>;
+                en: z.ZodOptional<z.ZodString>;
+            }, "strip", z.ZodTypeAny, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }>>;
+        }, "strip", z.ZodTypeAny, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }>>;
+        siteFavicon: z.ZodOptional<z.ZodObject<{
+            mediaId: z.ZodOptional<z.ZodString>;
+            mediaIdLight: z.ZodOptional<z.ZodString>;
+            mediaIdDark: z.ZodOptional<z.ZodString>;
+            alt: z.ZodOptional<z.ZodObject<{
+                it: z.ZodOptional<z.ZodString>;
+                en: z.ZodOptional<z.ZodString>;
+            }, "strip", z.ZodTypeAny, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }>>;
+        }, "strip", z.ZodTypeAny, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }>>;
+        backofficeLogin: z.ZodOptional<z.ZodObject<{
+            mediaId: z.ZodOptional<z.ZodString>;
+            mediaIdLight: z.ZodOptional<z.ZodString>;
+            mediaIdDark: z.ZodOptional<z.ZodString>;
+            alt: z.ZodOptional<z.ZodObject<{
+                it: z.ZodOptional<z.ZodString>;
+                en: z.ZodOptional<z.ZodString>;
+            }, "strip", z.ZodTypeAny, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }>>;
+        }, "strip", z.ZodTypeAny, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }>>;
+        backofficeSidebar: z.ZodOptional<z.ZodObject<{
+            mediaId: z.ZodOptional<z.ZodString>;
+            mediaIdLight: z.ZodOptional<z.ZodString>;
+            mediaIdDark: z.ZodOptional<z.ZodString>;
+            alt: z.ZodOptional<z.ZodObject<{
+                it: z.ZodOptional<z.ZodString>;
+                en: z.ZodOptional<z.ZodString>;
+            }, "strip", z.ZodTypeAny, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }>>;
+        }, "strip", z.ZodTypeAny, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }>>;
+        backofficeSidebarCollapsed: z.ZodOptional<z.ZodObject<{
+            mediaId: z.ZodOptional<z.ZodString>;
+            mediaIdLight: z.ZodOptional<z.ZodString>;
+            mediaIdDark: z.ZodOptional<z.ZodString>;
+            alt: z.ZodOptional<z.ZodObject<{
+                it: z.ZodOptional<z.ZodString>;
+                en: z.ZodOptional<z.ZodString>;
+            }, "strip", z.ZodTypeAny, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }, {
+                it?: string | undefined;
+                en?: string | undefined;
+            }>>;
+        }, "strip", z.ZodTypeAny, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }, {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        }>>;
+    }, "strip", z.ZodTypeAny, {
+        siteHeader?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFooter?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFavicon?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeLogin?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebar?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebarCollapsed?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+    }, {
+        siteHeader?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFooter?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFavicon?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeLogin?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebar?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebarCollapsed?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+    }>>;
+}, "strip", z.ZodTypeAny, {
+    themeColor: string;
+    backgroundColor: string;
+    colors: {
+        primary: string;
+        secondary: string;
+        accent: string;
+        background: string;
+        foreground: string;
+        success: string;
+        warning: string;
+        error: string;
+    };
+    typography: {
+        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+    };
+    logos: {
+        siteHeader?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFooter?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFavicon?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeLogin?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebar?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebarCollapsed?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+    };
+}, {
+    themeColor: string;
+    backgroundColor: string;
+    colors: {
+        primary: string;
+        secondary: string;
+        accent: string;
+        background: string;
+        foreground: string;
+        success: string;
+        warning: string;
+        error: string;
+    };
+    typography: {
+        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+    };
+    logos?: {
+        siteHeader?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFooter?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFavicon?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeLogin?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebar?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebarCollapsed?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+    } | undefined;
+}>, {
+    themeColor: string;
+    backgroundColor: string;
+    colors: {
+        primary: string;
+        secondary: string;
+        accent: string;
+        background: string;
+        foreground: string;
+        success: string;
+        warning: string;
+        error: string;
+    };
+    typography: {
+        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+    };
+    logos: {
+        siteHeader?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFooter?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFavicon?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeLogin?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebar?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebarCollapsed?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+    };
+}, {
+    themeColor: string;
+    backgroundColor: string;
+    colors: {
+        primary: string;
+        secondary: string;
+        accent: string;
+        background: string;
+        foreground: string;
+        success: string;
+        warning: string;
+        error: string;
+    };
+    typography: {
+        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+    };
+    logos?: {
+        siteHeader?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFooter?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        siteFavicon?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeLogin?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebar?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+        backofficeSidebarCollapsed?: {
+            mediaId?: string | undefined;
+            mediaIdLight?: string | undefined;
+            mediaIdDark?: string | undefined;
+            alt?: {
+                it?: string | undefined;
+                en?: string | undefined;
+            } | undefined;
+        } | undefined;
+    } | undefined;
+}>;
+type SettingsScalars = z.infer<typeof settingsScalarsSchema>;
+/** Deep-merge unknown/partial DB JSON into a valid SettingsScalars. */
+declare function normalizeSettingsScalars(raw: unknown): SettingsScalars;
+/** Map branding scalars to CSS custom properties for :root injection. */
+declare function scalarsToCssVars(scalars: SettingsScalars): Record<string, string>;
+declare function cssVarsToStyleText(vars: Record<string, string>): string;
+/** Collect all media UUIDs referenced by logo slots. */
+declare function collectLogoMediaIds(logos: BrandingLogos | undefined): string[];
 
 declare const organizationSchema: z.ZodEffects<z.ZodObject<{
     legalName: z.ZodString;
@@ -1484,28 +2759,28 @@ type ContactSettings = z.infer<typeof contactSettingsSchema>;
  * Used to fan the organization out across all locales while notes stay translatable.
  */
 declare function mergeSharedOrganization(targetOrg: ContactSettings['organization'], sourceOrg: ContactSettings['organization']): ContactSettings['organization'];
-declare const settingsScalarsSchema: z.ZodObject<{
-    themeColor: z.ZodString;
-    backgroundColor: z.ZodString;
-}, "strip", z.ZodTypeAny, {
-    themeColor: string;
-    backgroundColor: string;
-}, {
-    themeColor: string;
-    backgroundColor: string;
-}>;
-type SettingsScalars = z.infer<typeof settingsScalarsSchema>;
+
 declare const DEFAULT_CONTACT_SETTINGS_IT: ContactSettings;
 
-declare const MAIN_NAV_PATHS: readonly ["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti"];
+declare const MAIN_NAV_PATHS: readonly ["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact"];
+/** Old Italian segments → English-first public paths. */
+declare const LEGACY_NAV_PATH_MAP: {
+    readonly '/chi-siamo': "/about";
+    readonly '/immobili': "/properties";
+    readonly '/trova-immobile': "/property-finder";
+    readonly '/tour-virtuali': "/virtual-tours";
+    readonly '/vendi-con-noi': "/sell-with-us";
+    readonly '/contatti': "/contact";
+};
+declare function normalizeNavPath(to: string): string;
 declare const LEGAL_LINK_PATHS: readonly ["/privacy-policy", "/cookie-policy"];
-declare const FOOTER_NAV_PATHS: readonly ["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti", "/privacy-policy", "/cookie-policy"];
+declare const FOOTER_NAV_PATHS: readonly ["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact", "/privacy-policy", "/cookie-policy"];
 type MainNavPath = (typeof MAIN_NAV_PATHS)[number];
 type LegalLinkPath = (typeof LEGAL_LINK_PATHS)[number];
 type FooterNavPath = (typeof FOOTER_NAV_PATHS)[number];
 declare const cmsNavLinkSchema: z.ZodObject<{
     label: z.ZodString;
-    to: z.ZodUnion<[z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti", "/privacy-policy", "/cookie-policy"]>, z.ZodEffects<z.ZodString, string, string>]>;
+    to: z.ZodUnion<[z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact", "/privacy-policy", "/cookie-policy"]>, "/privacy-policy" | "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact" | "/cookie-policy", unknown>, z.ZodEffects<z.ZodString, string, string>]>;
     external: z.ZodOptional<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
     label: string;
@@ -1513,13 +2788,13 @@ declare const cmsNavLinkSchema: z.ZodObject<{
     external?: boolean | undefined;
 }, {
     label: string;
-    to: string;
+    to?: unknown;
     external?: boolean | undefined;
 }>;
 type CmsNavLink = z.infer<typeof cmsNavLinkSchema>;
 declare const mainNavLinkSchema: z.ZodObject<{
     label: z.ZodString;
-    to: z.ZodUnion<[z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti"]>, z.ZodEffects<z.ZodString, string, string>]>;
+    to: z.ZodUnion<[z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact"]>, "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact", unknown>, z.ZodEffects<z.ZodString, string, string>]>;
     external: z.ZodOptional<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
     label: string;
@@ -1527,7 +2802,7 @@ declare const mainNavLinkSchema: z.ZodObject<{
     external?: boolean | undefined;
 }, {
     label: string;
-    to: string;
+    to?: unknown;
     external?: boolean | undefined;
 }>;
 type MainNavLink = z.infer<typeof mainNavLinkSchema>;
@@ -1595,29 +2870,29 @@ declare const brandSchema: z.ZodObject<{
 }>;
 declare const headerCtaSchema: z.ZodOptional<z.ZodObject<{
     label: z.ZodString;
-    to: z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti"]>;
+    to: z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact"]>, "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact", unknown>;
 }, "strip", z.ZodTypeAny, {
     label: string;
-    to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+    to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
 }, {
     label: string;
-    to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+    to?: unknown;
 }>>;
 declare const headerSecondaryCtaSchema: z.ZodOptional<z.ZodObject<{
     label: z.ZodString;
-    to: z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti"]>;
+    to: z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact"]>, "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact", unknown>;
 }, "strip", z.ZodTypeAny, {
     label: string;
-    to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+    to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
 }, {
     label: string;
-    to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+    to?: unknown;
 }>>;
 declare const footerColumnSchema: z.ZodObject<{
     title: z.ZodString;
     links: z.ZodArray<z.ZodObject<{
         label: z.ZodString;
-        to: z.ZodUnion<[z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti", "/privacy-policy", "/cookie-policy"]>, z.ZodEffects<z.ZodString, string, string>]>;
+        to: z.ZodUnion<[z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact", "/privacy-policy", "/cookie-policy"]>, "/privacy-policy" | "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact" | "/cookie-policy", unknown>, z.ZodEffects<z.ZodString, string, string>]>;
         external: z.ZodOptional<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         label: string;
@@ -1625,7 +2900,7 @@ declare const footerColumnSchema: z.ZodObject<{
         external?: boolean | undefined;
     }, {
         label: string;
-        to: string;
+        to?: unknown;
         external?: boolean | undefined;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
@@ -1639,7 +2914,7 @@ declare const footerColumnSchema: z.ZodObject<{
     title: string;
     links: {
         label: string;
-        to: string;
+        to?: unknown;
         external?: boolean | undefined;
     }[];
 }>;
@@ -1648,7 +2923,7 @@ declare const footerSchema: z.ZodObject<{
         title: z.ZodString;
         links: z.ZodArray<z.ZodObject<{
             label: z.ZodString;
-            to: z.ZodUnion<[z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti", "/privacy-policy", "/cookie-policy"]>, z.ZodEffects<z.ZodString, string, string>]>;
+            to: z.ZodUnion<[z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact", "/privacy-policy", "/cookie-policy"]>, "/privacy-policy" | "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact" | "/cookie-policy", unknown>, z.ZodEffects<z.ZodString, string, string>]>;
             external: z.ZodOptional<z.ZodBoolean>;
         }, "strip", z.ZodTypeAny, {
             label: string;
@@ -1656,7 +2931,7 @@ declare const footerSchema: z.ZodObject<{
             external?: boolean | undefined;
         }, {
             label: string;
-            to: string;
+            to?: unknown;
             external?: boolean | undefined;
         }>, "many">;
     }, "strip", z.ZodTypeAny, {
@@ -1670,7 +2945,7 @@ declare const footerSchema: z.ZodObject<{
         title: string;
         links: {
             label: string;
-            to: string;
+            to?: unknown;
             external?: boolean | undefined;
         }[];
     }>, "many">;
@@ -1688,7 +2963,7 @@ declare const footerSchema: z.ZodObject<{
         title: string;
         links: {
             label: string;
-            to: string;
+            to?: unknown;
             external?: boolean | undefined;
         }[];
     }[];
@@ -1743,7 +3018,7 @@ declare const layoutSettingsSchema: z.ZodObject<{
     }>;
     headerNav: z.ZodArray<z.ZodObject<{
         label: z.ZodString;
-        to: z.ZodUnion<[z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti"]>, z.ZodEffects<z.ZodString, string, string>]>;
+        to: z.ZodUnion<[z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact"]>, "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact", unknown>, z.ZodEffects<z.ZodString, string, string>]>;
         external: z.ZodOptional<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         label: string;
@@ -1751,35 +3026,35 @@ declare const layoutSettingsSchema: z.ZodObject<{
         external?: boolean | undefined;
     }, {
         label: string;
-        to: string;
+        to?: unknown;
         external?: boolean | undefined;
     }>, "many">;
     headerCta: z.ZodOptional<z.ZodObject<{
         label: z.ZodString;
-        to: z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti"]>;
+        to: z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact"]>, "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact", unknown>;
     }, "strip", z.ZodTypeAny, {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
     }, {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to?: unknown;
     }>>;
     headerSecondaryCta: z.ZodOptional<z.ZodObject<{
         label: z.ZodString;
-        to: z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti"]>;
+        to: z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact"]>, "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact", unknown>;
     }, "strip", z.ZodTypeAny, {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
     }, {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to?: unknown;
     }>>;
     footer: z.ZodObject<{
         columns: z.ZodArray<z.ZodObject<{
             title: z.ZodString;
             links: z.ZodArray<z.ZodObject<{
                 label: z.ZodString;
-                to: z.ZodUnion<[z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti", "/privacy-policy", "/cookie-policy"]>, z.ZodEffects<z.ZodString, string, string>]>;
+                to: z.ZodUnion<[z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact", "/privacy-policy", "/cookie-policy"]>, "/privacy-policy" | "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact" | "/cookie-policy", unknown>, z.ZodEffects<z.ZodString, string, string>]>;
                 external: z.ZodOptional<z.ZodBoolean>;
             }, "strip", z.ZodTypeAny, {
                 label: string;
@@ -1787,7 +3062,7 @@ declare const layoutSettingsSchema: z.ZodObject<{
                 external?: boolean | undefined;
             }, {
                 label: string;
-                to: string;
+                to?: unknown;
                 external?: boolean | undefined;
             }>, "many">;
         }, "strip", z.ZodTypeAny, {
@@ -1801,7 +3076,7 @@ declare const layoutSettingsSchema: z.ZodObject<{
             title: string;
             links: {
                 label: string;
-                to: string;
+                to?: unknown;
                 external?: boolean | undefined;
             }[];
         }>, "many">;
@@ -1819,7 +3094,7 @@ declare const layoutSettingsSchema: z.ZodObject<{
             title: string;
             links: {
                 label: string;
-                to: string;
+                to?: unknown;
                 external?: boolean | undefined;
             }[];
         }[];
@@ -1880,11 +3155,11 @@ declare const layoutSettingsSchema: z.ZodObject<{
     }[];
     headerCta?: {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
     } | undefined;
     headerSecondaryCta?: {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
     } | undefined;
 }, {
     brand: {
@@ -1899,7 +3174,7 @@ declare const layoutSettingsSchema: z.ZodObject<{
     };
     headerNav: {
         label: string;
-        to: string;
+        to?: unknown;
         external?: boolean | undefined;
     }[];
     footer: {
@@ -1907,7 +3182,7 @@ declare const layoutSettingsSchema: z.ZodObject<{
             title: string;
             links: {
                 label: string;
-                to: string;
+                to?: unknown;
                 external?: boolean | undefined;
             }[];
         }[];
@@ -1918,11 +3193,11 @@ declare const layoutSettingsSchema: z.ZodObject<{
     }[];
     headerCta?: {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to?: unknown;
     } | undefined;
     headerSecondaryCta?: {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to?: unknown;
     } | undefined;
     social?: {
         platform: "linkedin" | "instagram" | "facebook" | "x" | "youtube" | "tiktok" | "whatsapp";
@@ -2309,7 +3584,7 @@ declare const siteSettingsSchema: z.ZodObject<{
     }>;
     headerNav: z.ZodArray<z.ZodObject<{
         label: z.ZodString;
-        to: z.ZodUnion<[z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti"]>, z.ZodEffects<z.ZodString, string, string>]>;
+        to: z.ZodUnion<[z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact"]>, "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact", unknown>, z.ZodEffects<z.ZodString, string, string>]>;
         external: z.ZodOptional<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         label: string;
@@ -2317,35 +3592,35 @@ declare const siteSettingsSchema: z.ZodObject<{
         external?: boolean | undefined;
     }, {
         label: string;
-        to: string;
+        to?: unknown;
         external?: boolean | undefined;
     }>, "many">;
     headerCta: z.ZodOptional<z.ZodObject<{
         label: z.ZodString;
-        to: z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti"]>;
+        to: z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact"]>, "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact", unknown>;
     }, "strip", z.ZodTypeAny, {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
     }, {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to?: unknown;
     }>>;
     headerSecondaryCta: z.ZodOptional<z.ZodObject<{
         label: z.ZodString;
-        to: z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti"]>;
+        to: z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact"]>, "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact", unknown>;
     }, "strip", z.ZodTypeAny, {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
     }, {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to?: unknown;
     }>>;
     footer: z.ZodObject<{
         columns: z.ZodArray<z.ZodObject<{
             title: z.ZodString;
             links: z.ZodArray<z.ZodObject<{
                 label: z.ZodString;
-                to: z.ZodUnion<[z.ZodEnum<["/", "/chi-siamo", "/immobili", "/trova-immobile", "/tour-virtuali", "/vendi-con-noi", "/contatti", "/privacy-policy", "/cookie-policy"]>, z.ZodEffects<z.ZodString, string, string>]>;
+                to: z.ZodUnion<[z.ZodEffects<z.ZodEnum<["/", "/about", "/properties", "/property-finder", "/virtual-tours", "/sell-with-us", "/contact", "/privacy-policy", "/cookie-policy"]>, "/privacy-policy" | "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact" | "/cookie-policy", unknown>, z.ZodEffects<z.ZodString, string, string>]>;
                 external: z.ZodOptional<z.ZodBoolean>;
             }, "strip", z.ZodTypeAny, {
                 label: string;
@@ -2353,7 +3628,7 @@ declare const siteSettingsSchema: z.ZodObject<{
                 external?: boolean | undefined;
             }, {
                 label: string;
-                to: string;
+                to?: unknown;
                 external?: boolean | undefined;
             }>, "many">;
         }, "strip", z.ZodTypeAny, {
@@ -2367,7 +3642,7 @@ declare const siteSettingsSchema: z.ZodObject<{
             title: string;
             links: {
                 label: string;
-                to: string;
+                to?: unknown;
                 external?: boolean | undefined;
             }[];
         }>, "many">;
@@ -2385,7 +3660,7 @@ declare const siteSettingsSchema: z.ZodObject<{
             title: string;
             links: {
                 label: string;
-                to: string;
+                to?: unknown;
                 external?: boolean | undefined;
             }[];
         }[];
@@ -2495,11 +3770,11 @@ declare const siteSettingsSchema: z.ZodObject<{
     }[];
     headerCta?: {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
     } | undefined;
     headerSecondaryCta?: {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
     } | undefined;
 }, {
     organization: {
@@ -2563,7 +3838,7 @@ declare const siteSettingsSchema: z.ZodObject<{
     };
     headerNav: {
         label: string;
-        to: string;
+        to?: unknown;
         external?: boolean | undefined;
     }[];
     footer: {
@@ -2571,7 +3846,7 @@ declare const siteSettingsSchema: z.ZodObject<{
             title: string;
             links: {
                 label: string;
-                to: string;
+                to?: unknown;
                 external?: boolean | undefined;
             }[];
         }[];
@@ -2582,11 +3857,11 @@ declare const siteSettingsSchema: z.ZodObject<{
     }[];
     headerCta?: {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to?: unknown;
     } | undefined;
     headerSecondaryCta?: {
         label: string;
-        to: "/" | "/chi-siamo" | "/immobili" | "/trova-immobile" | "/tour-virtuali" | "/vendi-con-noi" | "/contatti";
+        to?: unknown;
     } | undefined;
     social?: {
         platform: "linkedin" | "instagram" | "facebook" | "x" | "youtube" | "tiktok" | "whatsapp";
@@ -2596,93 +3871,6 @@ declare const siteSettingsSchema: z.ZodObject<{
 type SiteSettings = z.infer<typeof siteSettingsSchema>;
 declare const DEFAULT_SITE_SETTINGS_IT: SiteSettings;
 declare function mergeSiteSettingsDefaults(document: unknown): SiteSettings;
-
-declare const cmsSeoSchema: z.ZodObject<{
-    title: z.ZodOptional<z.ZodString>;
-    description: z.ZodOptional<z.ZodString>;
-}, "strip", z.ZodTypeAny, {
-    title?: string | undefined;
-    description?: string | undefined;
-}, {
-    title?: string | undefined;
-    description?: string | undefined;
-}>;
-declare const cmsSectionSchema: z.ZodObject<{
-    id: z.ZodString;
-    type: z.ZodString;
-    enabled: z.ZodBoolean;
-    order: z.ZodNumber;
-    content: z.ZodRecord<z.ZodString, z.ZodUnknown>;
-}, "strip", z.ZodTypeAny, {
-    type: string;
-    enabled: boolean;
-    id: string;
-    order: number;
-    content: Record<string, unknown>;
-}, {
-    type: string;
-    enabled: boolean;
-    id: string;
-    order: number;
-    content: Record<string, unknown>;
-}>;
-declare const cmsPageDocumentSchema: z.ZodObject<{
-    seo: z.ZodOptional<z.ZodObject<{
-        title: z.ZodOptional<z.ZodString>;
-        description: z.ZodOptional<z.ZodString>;
-    }, "strip", z.ZodTypeAny, {
-        title?: string | undefined;
-        description?: string | undefined;
-    }, {
-        title?: string | undefined;
-        description?: string | undefined;
-    }>>;
-    sections: z.ZodArray<z.ZodObject<{
-        id: z.ZodString;
-        type: z.ZodString;
-        enabled: z.ZodBoolean;
-        order: z.ZodNumber;
-        content: z.ZodRecord<z.ZodString, z.ZodUnknown>;
-    }, "strip", z.ZodTypeAny, {
-        type: string;
-        enabled: boolean;
-        id: string;
-        order: number;
-        content: Record<string, unknown>;
-    }, {
-        type: string;
-        enabled: boolean;
-        id: string;
-        order: number;
-        content: Record<string, unknown>;
-    }>, "many">;
-}, "strip", z.ZodTypeAny, {
-    sections: {
-        type: string;
-        enabled: boolean;
-        id: string;
-        order: number;
-        content: Record<string, unknown>;
-    }[];
-    seo?: {
-        title?: string | undefined;
-        description?: string | undefined;
-    } | undefined;
-}, {
-    sections: {
-        type: string;
-        enabled: boolean;
-        id: string;
-        order: number;
-        content: Record<string, unknown>;
-    }[];
-    seo?: {
-        title?: string | undefined;
-        description?: string | undefined;
-    } | undefined;
-}>;
-type CmsPageDocument = z.infer<typeof cmsPageDocumentSchema>;
-type CmsSection = z.infer<typeof cmsSectionSchema>;
 
 type PageKey = 'home' | 'chi-siamo' | 'immobili-index' | 'contatti' | 'property-finder' | 'virtual-tours' | 'sell-with-us' | 'privacy-policy' | 'cookie-policy';
 type PageRegistryEntry = {
@@ -2763,4 +3951,4 @@ type FieldMeta = {
 };
 declare function zodToFieldMeta(schema: ZodTypeAny, key?: string): FieldMeta[];
 
-export { type BrandFooterVisibility, type CategoryShowcaseContent, type CategoryShowcaseItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FOOTER_NAV_PATHS, type FieldMeta, type FooterNavPath, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteSettings, type SocialLink, type SocialPlatform, type TimeSlot, WEEKDAY_ORDER, brandFooterVisibilitySchema, brandSchema, categoryShowcaseContentSchema, categoryShowcaseItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, contactFormSchema, contactSettingsSchema, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, openingHoursSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, richTextContentSchema, sectionContentByType, settingsScalarsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, zodToFieldMeta };
+export { type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryShowcaseContent, type CategoryShowcaseItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteSettings, type SocialLink, type SocialPlatform, type TimeSlot, WEEKDAY_ORDER, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryShowcaseContentSchema, categoryShowcaseItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectLogoMediaIds, collectPageMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, zodToFieldMeta };

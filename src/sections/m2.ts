@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { optionalCtaLinkSchema, optionalMediaIdSchema } from './common.js'
 
 export const pageHeaderContentSchema = z.object({
   title: z.string().max(80).describe('Titolo'),
@@ -18,17 +19,32 @@ export const legalPolicyContentSchema = z.object({
 export const splitContentSchema = z.object({
   title: z.string().max(80).describe('Titolo'),
   body: z.string().max(2000).describe('Testo'),
-  image: z.string().describe('Immagine'),
+  mediaId: optionalMediaIdSchema.describe('Immagine'),
   imageAlt: z.string().max(120).optional().describe('Testo alternativo'),
   reverse: z.boolean().optional().describe('Layout invertito'),
+  button: optionalCtaLinkSchema.describe('CTA'),
 })
+
+export const imageSlideshowItemSchema = z.object({
+  mediaId: optionalMediaIdSchema.describe('Immagine'),
+  imageAlt: z.string().max(160).optional().describe('Testo alternativo'),
+  caption: z.string().max(120).optional().describe('Didascalia'),
+})
+
+export const imageSlideshowContentSchema = z.object({
+  items: z.array(imageSlideshowItemSchema).min(2).max(8).describe('Slide'),
+  autoplayMs: z.number().int().min(0).max(12000).optional().describe('Autoplay (ms, 0 = off)'),
+})
+
+export type ImageSlideshowItem = z.infer<typeof imageSlideshowItemSchema>
+export type ImageSlideshowContent = z.infer<typeof imageSlideshowContentSchema>
 
 export const teamContentSchema = z.object({
   title: z.string().max(80).optional().describe('Titolo sezione'),
   name: z.string().max(80).describe('Nome'),
   role: z.string().max(80).describe('Ruolo'),
   bio: z.string().max(500).describe('Biografia'),
-  image: z.string().describe('Foto'),
+  mediaId: optionalMediaIdSchema.describe('Foto'),
 })
 
 export const statsContentSchema = z.object({
