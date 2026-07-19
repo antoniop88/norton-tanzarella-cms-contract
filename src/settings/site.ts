@@ -104,13 +104,17 @@ export function mergeSiteSettingsDefaults(document: unknown): SiteSettings {
     organization: {
       ...DEFAULT_SITE_SETTINGS_IT.organization,
       ...partialOrg,
-      mapUrl: blankToUndefined(partialOrg.mapUrl),
+      ...('mapUrl' in partialOrg ? { mapUrl: blankToUndefined(partialOrg.mapUrl) } : {}),
     },
     contactForm: {
       ...DEFAULT_SITE_SETTINGS_IT.contactForm,
       ...partialForm,
-      leadRecipientEmail: blankToUndefined(partialForm.leadRecipientEmail),
-      privacyPolicyUrl: blankToUndefined(partialForm.privacyPolicyUrl),
+      ...('leadRecipientEmail' in partialForm
+        ? { leadRecipientEmail: blankToUndefined(partialForm.leadRecipientEmail) }
+        : {}),
+      ...('privacyPolicyUrl' in partialForm
+        ? { privacyPolicyUrl: blankToUndefined(partialForm.privacyPolicyUrl) }
+        : {}),
       // Deep-merge nested objects so upgrading stored settings (older shape)
       // keeps the newly added default labels (phone/subject) and messages.
       labels: {
