@@ -5,6 +5,7 @@ export const heroContentSchema = z.object({
   title: z.string().max(80).describe('Titolo'),
   subtitle: z.string().max(600).optional().describe('Sottotitolo'),
   cta: optionalCtaLinkSchema.describe('CTA'),
+  videoMediaId: optionalMediaIdSchema.describe('Video sfondo'),
 })
 
 export const featuresContentSchema = z.object({
@@ -43,11 +44,5 @@ export const categoryShowcaseContentSchema = z.object({
   items: z.array(categoryShowcaseItemSchema).length(4).describe('Categorie'),
 })
 
-export const videoShowcaseContentSchema = z.object({
-  videoMediaId: optionalMediaIdSchema.describe('Video'),
-  hideWhenEmpty: z.boolean().default(true).describe('Nascondi se vuoto'),
-})
-
 export type CategoryShowcaseItem = z.infer<typeof categoryShowcaseItemSchema>
 export type CategoryShowcaseContent = z.infer<typeof categoryShowcaseContentSchema>
-export type VideoShowcaseContent = z.infer<typeof videoShowcaseContentSchema>

@@ -1,4 +1,4 @@
-# CMS — Contratto v0.15.0
+# CMS — Contratto v0.16.0
 
 ## Export
 
@@ -14,7 +14,7 @@
 
 ## Pagine M1
 
-Solo `home` — tipi ammessi: `hero`, `categoryShowcase`, `features`, `featuredCollection`, `videoShowcase`, `cta`.
+Solo `home` — tipi ammessi: `hero`, `categoryShowcase`, `features`, `featuredCollection`, `cta`.
 
 ## Pagine M2 — Chi siamo (v0.14.0)
 
@@ -41,12 +41,10 @@ Pagine M2 stub: `property-finder`, `virtual-tours`, `sell-with-us` (`pageHeader`
 - `split` / `team`: `mediaId` opzionale (v0.13.0)
 - `collectPageMediaIds(document)` — UUID referenziati nelle sezioni
 
-## `videoShowcase` (v0.15.0)
+## Hero video (v0.16.0)
 
-- Dopo `featuredCollection` nei defaults home
-- `videoMediaId?` (uuid shared), `hideWhenEmpty` default true
-- Nessun titolo/CTA; full-bleed autoplay lato web
-- `collectPageMediaIds` include chiavi `*MediaId`
+- `hero.videoMediaId?` (uuid shared) — sfondo full-bleed homepage
+- Sezione `videoShowcase` **rimossa** (v0.15 → v0.16); migrare `videoMediaId` sull’hero in backoffice
 
 ## `featuredCollection`
 

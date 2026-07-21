@@ -57,6 +57,7 @@ declare const heroContentSchema: z.ZodObject<{
         label: string;
         to: string;
     } | undefined, unknown>;
+    videoMediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
 }, "strip", z.ZodTypeAny, {
     title: string;
     subtitle?: string | undefined;
@@ -64,10 +65,12 @@ declare const heroContentSchema: z.ZodObject<{
         label: string;
         to: string;
     } | undefined;
+    videoMediaId?: string | undefined;
 }, {
     title: string;
     subtitle?: string | undefined;
     cta?: unknown;
+    videoMediaId?: unknown;
 }>;
 declare const featuresContentSchema: z.ZodObject<{
     title: z.ZodOptional<z.ZodString>;
@@ -212,19 +215,8 @@ declare const categoryShowcaseContentSchema: z.ZodObject<{
         ctaLabel?: string | undefined;
     }[];
 }>;
-declare const videoShowcaseContentSchema: z.ZodObject<{
-    videoMediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
-    hideWhenEmpty: z.ZodDefault<z.ZodBoolean>;
-}, "strip", z.ZodTypeAny, {
-    hideWhenEmpty: boolean;
-    videoMediaId?: string | undefined;
-}, {
-    hideWhenEmpty?: boolean | undefined;
-    videoMediaId?: unknown;
-}>;
 type CategoryShowcaseItem = z.infer<typeof categoryShowcaseItemSchema>;
 type CategoryShowcaseContent = z.infer<typeof categoryShowcaseContentSchema>;
-type VideoShowcaseContent = z.infer<typeof videoShowcaseContentSchema>;
 
 declare const pageHeaderContentSchema: z.ZodObject<{
     title: z.ZodString;
@@ -546,6 +538,7 @@ declare const sectionContentByType: {
             label: string;
             to: string;
         } | undefined, unknown>;
+        videoMediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
     }, "strip", zod.ZodTypeAny, {
         title: string;
         subtitle?: string | undefined;
@@ -553,10 +546,12 @@ declare const sectionContentByType: {
             label: string;
             to: string;
         } | undefined;
+        videoMediaId?: string | undefined;
     }, {
         title: string;
         subtitle?: string | undefined;
         cta?: unknown;
+        videoMediaId?: unknown;
     }>;
     readonly features: zod.ZodObject<{
         title: zod.ZodOptional<zod.ZodString>;
@@ -681,16 +676,6 @@ declare const sectionContentByType: {
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
         }[];
-    }>;
-    readonly videoShowcase: zod.ZodObject<{
-        videoMediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
-        hideWhenEmpty: zod.ZodDefault<zod.ZodBoolean>;
-    }, "strip", zod.ZodTypeAny, {
-        hideWhenEmpty: boolean;
-        videoMediaId?: string | undefined;
-    }, {
-        hideWhenEmpty?: boolean | undefined;
-        videoMediaId?: unknown;
     }>;
     readonly pageHeader: zod.ZodObject<{
         title: zod.ZodString;
@@ -906,6 +891,7 @@ declare function parseSectionContent(type: string, content: unknown): {
             label: string;
             to: string;
         } | undefined;
+        videoMediaId?: string | undefined;
     } | {
         items: {
             title: string;
@@ -938,9 +924,6 @@ declare function parseSectionContent(type: string, content: unknown): {
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
         }[];
-    } | {
-        hideWhenEmpty: boolean;
-        videoMediaId?: string | undefined;
     } | {
         title: string;
         lead?: string | undefined;
@@ -3981,4 +3964,4 @@ type FieldMeta = {
 };
 declare function zodToFieldMeta(schema: ZodTypeAny, key?: string): FieldMeta[];
 
-export { type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryShowcaseContent, type CategoryShowcaseItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteSettings, type SocialLink, type SocialPlatform, type TimeSlot, type VideoShowcaseContent, WEEKDAY_ORDER, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryShowcaseContentSchema, categoryShowcaseItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectLogoMediaIds, collectPageMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, videoShowcaseContentSchema, zodToFieldMeta };
+export { type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryShowcaseContent, type CategoryShowcaseItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteSettings, type SocialLink, type SocialPlatform, type TimeSlot, WEEKDAY_ORDER, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryShowcaseContentSchema, categoryShowcaseItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectLogoMediaIds, collectPageMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, zodToFieldMeta };

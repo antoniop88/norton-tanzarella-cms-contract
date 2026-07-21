@@ -4072,7 +4072,8 @@ var featureItemSchema = external_exports.object({
 var heroContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
   subtitle: external_exports.string().max(600).optional().describe("Sottotitolo"),
-  cta: optionalCtaLinkSchema.describe("CTA")
+  cta: optionalCtaLinkSchema.describe("CTA"),
+  videoMediaId: optionalMediaIdSchema.describe("Video sfondo")
 });
 var featuresContentSchema = external_exports.object({
   title: external_exports.string().max(80).optional().describe("Titolo"),
@@ -4104,10 +4105,6 @@ var categoryShowcaseItemSchema = external_exports.object({
 var categoryShowcaseContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo sezione"),
   items: external_exports.array(categoryShowcaseItemSchema).length(4).describe("Categorie")
-});
-var videoShowcaseContentSchema = external_exports.object({
-  videoMediaId: optionalMediaIdSchema.describe("Video"),
-  hideWhenEmpty: external_exports.boolean().default(true).describe("Nascondi se vuoto")
 });
 
 // src/sections/m2.ts
@@ -4214,7 +4211,6 @@ var sectionContentByType = {
   cta: ctaContentSchema,
   featuredCollection: featuredCollectionContentSchema,
   categoryShowcase: categoryShowcaseContentSchema,
-  videoShowcase: videoShowcaseContentSchema,
   pageHeader: pageHeaderContentSchema,
   richText: richTextContentSchema,
   legalPolicy: legalPolicyContentSchema,
@@ -4231,7 +4227,6 @@ var SECTION_TYPE_LABELS_IT = {
   cta: "Call to action",
   featuredCollection: "Collezione in evidenza",
   categoryShowcase: "Showcase categorie",
-  videoShowcase: "Showcase video",
   pageHeader: "Intestazione pagina",
   richText: "Testo libero",
   legalPolicy: "Policy legale",
@@ -5180,19 +5175,10 @@ var HOME_DEFAULTS_IT = {
       }
     },
     {
-      id: "00000000-0000-4000-8000-00000000000a",
-      type: "videoShowcase",
-      enabled: true,
-      order: 4,
-      content: {
-        hideWhenEmpty: true
-      }
-    },
-    {
       id: "00000000-0000-4000-8000-000000000004",
       type: "cta",
       enabled: true,
-      order: 5,
+      order: 4,
       content: {
         title: "Hai bisogno di una valutazione?",
         description: "Contattaci per un appuntamento senza impegno a Ostuni.",
@@ -5266,19 +5252,10 @@ var HOME_DEFAULTS_EN = {
       }
     },
     {
-      id: "00000000-0000-4000-8000-00000000000a",
-      type: "videoShowcase",
-      enabled: true,
-      order: 4,
-      content: {
-        hideWhenEmpty: true
-      }
-    },
-    {
       id: "00000000-0000-4000-8000-000000000004",
       type: "cta",
       enabled: true,
-      order: 5,
+      order: 4,
       content: {
         title: "Need a valuation?",
         description: "Contact us for a no-obligation meeting in Ostuni.",
@@ -5566,8 +5543,8 @@ var CHI_SIAMO_DEFAULTS_EN = {
 };
 var PAGE_REGISTRY = {
   home: {
-    allowedTypes: ["hero", "categoryShowcase", "features", "featuredCollection", "videoShowcase", "cta"],
-    reorderable: ["categoryShowcase", "features", "featuredCollection", "videoShowcase", "cta"],
+    allowedTypes: ["hero", "categoryShowcase", "features", "featuredCollection", "cta"],
+    reorderable: ["categoryShowcase", "features", "featuredCollection", "cta"],
     defaults: (locale) => locale === "en" ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT,
     milestone: "M1"
   },
@@ -6190,7 +6167,6 @@ export {
   teamContentSchema,
   testimonialsContentSchema,
   validateOpeningHours,
-  videoShowcaseContentSchema,
   zodToFieldMeta
 };
 //# sourceMappingURL=index.js.map
