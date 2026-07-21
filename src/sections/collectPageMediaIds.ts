@@ -13,7 +13,14 @@ function walkCollectMediaIds(value: unknown, into: Set<string>): void {
   }
   if (typeof value !== 'object') return
   for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
-    if ((key === 'mediaId' || key.startsWith('mediaId')) && typeof entry === 'string' && isUuid(entry)) {
+    if (
+      (key === 'mediaId' ||
+        key.startsWith('mediaId') ||
+        key.endsWith('MediaId') ||
+        key === 'videoMediaId') &&
+      typeof entry === 'string' &&
+      isUuid(entry)
+    ) {
       into.add(entry.toLowerCase())
     } else {
       walkCollectMediaIds(entry, into)

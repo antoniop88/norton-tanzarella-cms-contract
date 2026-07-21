@@ -23,6 +23,13 @@ export type FieldMeta =
       localeScope: LocaleScope
     }
   | {
+      kind: 'video'
+      key: string
+      label: string
+      required: boolean
+      localeScope: LocaleScope
+    }
+  | {
       kind: 'number'
       key: string
       label: string
@@ -83,7 +90,13 @@ function resolveLocaleScope(
   fieldKey: string,
   format?: 'url' | 'email' | 'time',
 ): LocaleScope {
-  if (kind === 'image' || kind === 'boolean' || kind === 'number' || kind === 'enum') {
+  if (
+    kind === 'image' ||
+    kind === 'video' ||
+    kind === 'boolean' ||
+    kind === 'number' ||
+    kind === 'enum'
+  ) {
     return 'shared'
   }
   if (kind === 'string' && (SHARED_STRING_KEYS.has(fieldKey) || format === 'email' || format === 'url')) {
@@ -197,8 +210,26 @@ export function zodToFieldMeta(schema: ZodTypeAny, key = 'root'): FieldMeta[] {
       if (inner instanceof z.ZodString) {
         const maxLength = getMaxLength(inner)
         const format = resolveStringFormat(fieldSchema)
+        const isVideoField =
+          fieldKey === 'videoMediaId' ||
+          fieldKey.endsWith('VideoMediaId') ||
+          fieldKey.endsWith('VideoId')
+        if (isVideoField && format !== 'url' && format !== 'email' && format !== 'time') {
+          fields.push({
+            kind: 'video',
+            key: fieldKey,
+            label: resolveLabel(fieldSchema, fieldKey),
+            required,
+            localeScope: resolveLocaleScope('video', fieldKey),
+          })
+          continue
+        }
         const isImageField =
-          fieldKey === 'image' || fieldKey === 'mediaId' || fieldKey.endsWith('Image') || fieldKey.endsWith('image') || fieldKey.endsWith('MediaId')
+          fieldKey === 'image' ||
+          fieldKey === 'mediaId' ||
+          fieldKey.endsWith('Image') ||
+          fieldKey.endsWith('image') ||
+          fieldKey.endsWith('MediaId')
         if (isImageField && format !== 'url' && format !== 'email' && format !== 'time') {
           fields.push({
             kind: 'image',

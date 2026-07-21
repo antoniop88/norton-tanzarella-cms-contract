@@ -43,5 +43,11 @@ export const categoryShowcaseContentSchema = z.object({
   items: z.array(categoryShowcaseItemSchema).length(4).describe('Categorie'),
 })
 
+export const videoShowcaseContentSchema = z.object({
+  videoMediaId: optionalMediaIdSchema.describe('Video'),
+  hideWhenEmpty: z.boolean().default(true).describe('Nascondi se vuoto'),
+})
+
 export type CategoryShowcaseItem = z.infer<typeof categoryShowcaseItemSchema>
 export type CategoryShowcaseContent = z.infer<typeof categoryShowcaseContentSchema>
+export type VideoShowcaseContent = z.infer<typeof videoShowcaseContentSchema>

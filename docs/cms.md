@@ -1,20 +1,20 @@
-# CMS — Contratto v0.14.0
+# CMS — Contratto v0.15.0
 
 ## Export
 
 - `PAGE_REGISTRY`, `PAGE_KEYS`, `isPageKey`, `getM1PageKeys`
 - `cmsPageDocumentSchema`, `cmsSectionSchema`
 - `sectionContentByType`, `parseSectionContent`
-- `zodToFieldMeta` (kind `image`, `localeScope: shared | i18n`)
+- `zodToFieldMeta` (kind `image` | `video`, `localeScope: shared | i18n`)
 
 ## FieldMeta.localeScope (v0.9.0)
 
 - `i18n` — stringhe editabili per lingua (default)
-- `shared` — image, boolean, number, enum, `to`, `href`, `iubendaPolicyId`, oggetti/array strutturali
+- `shared` — image, video, boolean, number, enum, `to`, `href`, `iubendaPolicyId`, oggetti/array strutturali
 
 ## Pagine M1
 
-Solo `home` — tipi ammessi: `hero`, `categoryShowcase`, `features`, `featuredCollection`, `cta`.
+Solo `home` — tipi ammessi: `hero`, `categoryShowcase`, `features`, `featuredCollection`, `videoShowcase`, `cta`.
 
 ## Pagine M2 — Chi siamo (v0.14.0)
 
@@ -40,6 +40,13 @@ Pagine M2 stub: `property-finder`, `virtual-tours`, `sell-with-us` (`pageHeader`
 - Sezioni `hero` / `split` / `team`: campo `mediaId` (uuid) al posto di `image`
 - `split` / `team`: `mediaId` opzionale (v0.13.0)
 - `collectPageMediaIds(document)` — UUID referenziati nelle sezioni
+
+## `videoShowcase` (v0.15.0)
+
+- Dopo `featuredCollection` nei defaults home
+- `videoMediaId?` (uuid shared), `hideWhenEmpty` default true
+- Nessun titolo/CTA; full-bleed autoplay lato web
+- `collectPageMediaIds` include chiavi `*MediaId`
 
 ## `featuredCollection`
 

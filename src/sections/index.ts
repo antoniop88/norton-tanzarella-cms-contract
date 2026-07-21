@@ -4,6 +4,7 @@ import {
   featuredCollectionContentSchema,
   featuresContentSchema,
   heroContentSchema,
+  videoShowcaseContentSchema,
 } from './m1.js'
 import {
   faqContentSchema,
@@ -25,6 +26,7 @@ export const sectionContentByType = {
   cta: ctaContentSchema,
   featuredCollection: featuredCollectionContentSchema,
   categoryShowcase: categoryShowcaseContentSchema,
+  videoShowcase: videoShowcaseContentSchema,
   pageHeader: pageHeaderContentSchema,
   richText: richTextContentSchema,
   legalPolicy: legalPolicyContentSchema,
@@ -44,6 +46,7 @@ export const SECTION_TYPE_LABELS_IT: Record<SectionType, string> = {
   cta: 'Call to action',
   featuredCollection: 'Collezione in evidenza',
   categoryShowcase: 'Showcase categorie',
+  videoShowcase: 'Showcase video',
   pageHeader: 'Intestazione pagina',
   richText: 'Testo libero',
   legalPolicy: 'Policy legale',

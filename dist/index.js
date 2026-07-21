@@ -4105,6 +4105,10 @@ var categoryShowcaseContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo sezione"),
   items: external_exports.array(categoryShowcaseItemSchema).length(4).describe("Categorie")
 });
+var videoShowcaseContentSchema = external_exports.object({
+  videoMediaId: optionalMediaIdSchema.describe("Video"),
+  hideWhenEmpty: external_exports.boolean().default(true).describe("Nascondi se vuoto")
+});
 
 // src/sections/m2.ts
 var pageHeaderContentSchema = external_exports.object({
@@ -4185,7 +4189,7 @@ function walkCollectMediaIds(value, into) {
   }
   if (typeof value !== "object") return;
   for (const [key, entry] of Object.entries(value)) {
-    if ((key === "mediaId" || key.startsWith("mediaId")) && typeof entry === "string" && isUuid(entry)) {
+    if ((key === "mediaId" || key.startsWith("mediaId") || key.endsWith("MediaId") || key === "videoMediaId") && typeof entry === "string" && isUuid(entry)) {
       into.add(entry.toLowerCase());
     } else {
       walkCollectMediaIds(entry, into);
@@ -4210,6 +4214,7 @@ var sectionContentByType = {
   cta: ctaContentSchema,
   featuredCollection: featuredCollectionContentSchema,
   categoryShowcase: categoryShowcaseContentSchema,
+  videoShowcase: videoShowcaseContentSchema,
   pageHeader: pageHeaderContentSchema,
   richText: richTextContentSchema,
   legalPolicy: legalPolicyContentSchema,
@@ -4226,6 +4231,7 @@ var SECTION_TYPE_LABELS_IT = {
   cta: "Call to action",
   featuredCollection: "Collezione in evidenza",
   categoryShowcase: "Showcase categorie",
+  videoShowcase: "Showcase video",
   pageHeader: "Intestazione pagina",
   richText: "Testo libero",
   legalPolicy: "Policy legale",
@@ -5174,10 +5180,19 @@ var HOME_DEFAULTS_IT = {
       }
     },
     {
+      id: "00000000-0000-4000-8000-00000000000a",
+      type: "videoShowcase",
+      enabled: true,
+      order: 4,
+      content: {
+        hideWhenEmpty: true
+      }
+    },
+    {
       id: "00000000-0000-4000-8000-000000000004",
       type: "cta",
       enabled: true,
-      order: 4,
+      order: 5,
       content: {
         title: "Hai bisogno di una valutazione?",
         description: "Contattaci per un appuntamento senza impegno a Ostuni.",
@@ -5251,10 +5266,19 @@ var HOME_DEFAULTS_EN = {
       }
     },
     {
+      id: "00000000-0000-4000-8000-00000000000a",
+      type: "videoShowcase",
+      enabled: true,
+      order: 4,
+      content: {
+        hideWhenEmpty: true
+      }
+    },
+    {
       id: "00000000-0000-4000-8000-000000000004",
       type: "cta",
       enabled: true,
-      order: 4,
+      order: 5,
       content: {
         title: "Need a valuation?",
         description: "Contact us for a no-obligation meeting in Ostuni.",
@@ -5542,8 +5566,8 @@ var CHI_SIAMO_DEFAULTS_EN = {
 };
 var PAGE_REGISTRY = {
   home: {
-    allowedTypes: ["hero", "categoryShowcase", "features", "featuredCollection", "cta"],
-    reorderable: ["categoryShowcase", "features", "featuredCollection", "cta"],
+    allowedTypes: ["hero", "categoryShowcase", "features", "featuredCollection", "videoShowcase", "cta"],
+    reorderable: ["categoryShowcase", "features", "featuredCollection", "videoShowcase", "cta"],
     defaults: (locale) => locale === "en" ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT,
     milestone: "M1"
   },
@@ -5857,7 +5881,7 @@ var SHARED_STRING_KEYS = /* @__PURE__ */ new Set([
   "platform"
 ]);
 function resolveLocaleScope(kind, fieldKey, format) {
-  if (kind === "image" || kind === "boolean" || kind === "number" || kind === "enum") {
+  if (kind === "image" || kind === "video" || kind === "boolean" || kind === "number" || kind === "enum") {
     return "shared";
   }
   if (kind === "string" && (SHARED_STRING_KEYS.has(fieldKey) || format === "email" || format === "url")) {
@@ -5950,6 +5974,17 @@ function zodToFieldMeta(schema, key = "root") {
       if (inner instanceof external_exports.ZodString) {
         const maxLength = getMaxLength(inner);
         const format = resolveStringFormat(fieldSchema);
+        const isVideoField = fieldKey === "videoMediaId" || fieldKey.endsWith("VideoMediaId") || fieldKey.endsWith("VideoId");
+        if (isVideoField && format !== "url" && format !== "email" && format !== "time") {
+          fields.push({
+            kind: "video",
+            key: fieldKey,
+            label: resolveLabel(fieldSchema, fieldKey),
+            required,
+            localeScope: resolveLocaleScope("video", fieldKey)
+          });
+          continue;
+        }
         const isImageField = fieldKey === "image" || fieldKey === "mediaId" || fieldKey.endsWith("Image") || fieldKey.endsWith("image") || fieldKey.endsWith("MediaId");
         if (isImageField && format !== "url" && format !== "email" && format !== "time") {
           fields.push({
@@ -6155,6 +6190,7 @@ export {
   teamContentSchema,
   testimonialsContentSchema,
   validateOpeningHours,
+  videoShowcaseContentSchema,
   zodToFieldMeta
 };
 //# sourceMappingURL=index.js.map
