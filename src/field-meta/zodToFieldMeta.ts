@@ -76,6 +76,7 @@ export type FieldMeta =
 const SHARED_STRING_KEYS = new Set([
   'to',
   'href',
+  'categorySlug',
   'iubendaPolicyId',
   'collectionKey',
   'leadRecipientEmail',

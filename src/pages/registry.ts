@@ -22,25 +22,25 @@ const CATEGORY_SHOWCASE_ITEMS_IT = [
   {
     label: 'Masserie',
     imageAlt: 'Masseria in Valle d\'Itria',
-    href: '/properties',
+    categorySlug: 'masseria',
     ctaLabel: 'Vedi gli immobili',
   },
   {
     label: 'Rustici',
     imageAlt: 'Rustico in campagna',
-    href: '/properties',
+    categorySlug: 'rustici',
     ctaLabel: 'Vedi gli immobili',
   },
   {
     label: 'Trulli',
     imageAlt: 'Trulli in Valle d\'Itria',
-    href: '/properties',
+    categorySlug: 'trulli',
     ctaLabel: 'Vedi gli immobili',
   },
   {
     label: 'Centro storico Ostuni',
     imageAlt: 'Casa nel centro storico di Ostuni',
-    href: '/properties',
+    categorySlug: 'centro-storico',
     ctaLabel: 'Vedi gli immobili',
   },
 ] as const
@@ -49,25 +49,25 @@ const CATEGORY_SHOWCASE_ITEMS_EN = [
   {
     label: 'Masserie',
     imageAlt: 'Masseria in the Valle d\'Itria',
-    href: '/properties',
+    categorySlug: 'masseria',
     ctaLabel: 'View properties',
   },
   {
     label: 'Rustici',
     imageAlt: 'Country house (rustico)',
-    href: '/properties',
+    categorySlug: 'rustici',
     ctaLabel: 'View properties',
   },
   {
     label: 'Trulli',
     imageAlt: 'Trulli in the Valle d\'Itria',
-    href: '/properties',
+    categorySlug: 'trulli',
     ctaLabel: 'View properties',
   },
   {
     label: 'Ostuni historic centre',
     imageAlt: 'Home in Ostuni historic centre',
-    href: '/properties',
+    categorySlug: 'centro-storico',
     ctaLabel: 'View properties',
   },
 ] as const
@@ -100,10 +100,24 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       },
     },
     {
+      id: '00000000-0000-4000-8000-000000000003',
+      type: 'featuredCollection',
+      enabled: true,
+      order: 2,
+      content: {
+        collectionKey: 'immobili',
+        mode: 'featured',
+        limit: 6,
+        title: 'Immobili in evidenza',
+        viewAllLabel: 'Vedi tutti',
+        hideWhenEmpty: true,
+      },
+    },
+    {
       id: '00000000-0000-4000-8000-000000000002',
       type: 'features',
       enabled: true,
-      order: 2,
+      order: 3,
       content: {
         title: 'Perché sceglierci',
         items: [
@@ -121,20 +135,6 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
             description: 'Trasparenza e relazioni di lungo periodo: la casa come scelta di vita.',
           },
         ],
-      },
-    },
-    {
-      id: '00000000-0000-4000-8000-000000000003',
-      type: 'featuredCollection',
-      enabled: true,
-      order: 3,
-      content: {
-        collectionKey: 'immobili',
-        mode: 'featured',
-        limit: 6,
-        title: 'Immobili in evidenza',
-        viewAllLabel: 'Vedi tutti',
-        hideWhenEmpty: true,
       },
     },
     {
@@ -181,10 +181,24 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
       },
     },
     {
+      id: '00000000-0000-4000-8000-000000000003',
+      type: 'featuredCollection',
+      enabled: true,
+      order: 2,
+      content: {
+        collectionKey: 'immobili',
+        mode: 'featured',
+        limit: 6,
+        title: 'Featured properties',
+        viewAllLabel: 'View all',
+        hideWhenEmpty: true,
+      },
+    },
+    {
       id: '00000000-0000-4000-8000-000000000002',
       type: 'features',
       enabled: true,
-      order: 2,
+      order: 3,
       content: {
         title: 'Why choose us',
         items: [
@@ -202,20 +216,6 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
             description: 'Transparency and long-term relationships: a home as a lifestyle choice.',
           },
         ],
-      },
-    },
-    {
-      id: '00000000-0000-4000-8000-000000000003',
-      type: 'featuredCollection',
-      enabled: true,
-      order: 3,
-      content: {
-        collectionKey: 'immobili',
-        mode: 'featured',
-        limit: 6,
-        title: 'Featured properties',
-        viewAllLabel: 'View all',
-        hideWhenEmpty: true,
       },
     },
     {

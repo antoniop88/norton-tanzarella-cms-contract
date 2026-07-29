@@ -4095,17 +4095,57 @@ var featuredCollectionContentSchema = external_exports.object({
   viewAllLabel: external_exports.string().max(40).optional().describe("Etichetta \xABVedi tutti\xBB"),
   hideWhenEmpty: external_exports.boolean().default(true).describe("Nascondi se vuota")
 });
-var categoryShowcaseItemSchema = external_exports.object({
+var DEFAULT_CATEGORY_SLUGS = ["masseria", "rustici", "trulli", "centro-storico"];
+function categorySlugFromHref(href) {
+  if (typeof href !== "string" || !href.trim()) return void 0;
+  try {
+    const url = new URL(href, "https://norton.local");
+    const slug = url.searchParams.get("category")?.trim();
+    return slug || void 0;
+  } catch {
+    const match = href.match(/[?&]category=([^&]+)/);
+    return match?.[1] ? decodeURIComponent(match[1]) : void 0;
+  }
+}
+var categoryShowcaseItemSchema = external_exports.preprocess((raw) => {
+  if (raw == null || typeof raw !== "object" || Array.isArray(raw)) return raw;
+  const item = raw;
+  const existing = typeof item.categorySlug === "string" && item.categorySlug.trim() ? item.categorySlug.trim() : void 0;
+  const fromHref = categorySlugFromHref(item.href);
+  const { href: _href, ...rest } = item;
+  return {
+    ...rest,
+    categorySlug: existing ?? fromHref
+  };
+}, external_exports.object({
   label: external_exports.string().max(80).describe("Titolo categoria"),
   mediaId: optionalMediaIdSchema.describe("Immagine"),
   imageAlt: external_exports.string().max(160).optional().describe("Testo alternativo"),
-  href: external_exports.string().max(200).describe("Link destinazione"),
+  categorySlug: external_exports.string().min(1).max(80).describe("Slug categoria immobili"),
   ctaLabel: external_exports.string().max(60).optional().describe("Etichetta CTA")
-});
-var categoryShowcaseContentSchema = external_exports.object({
+}));
+var categoryShowcaseContentSchema = external_exports.preprocess((raw) => {
+  if (raw == null || typeof raw !== "object" || Array.isArray(raw)) return raw;
+  const content = raw;
+  if (!Array.isArray(content.items)) return raw;
+  return {
+    ...content,
+    items: content.items.map((item, index) => {
+      if (item == null || typeof item !== "object" || Array.isArray(item)) return item;
+      const row = item;
+      const hasSlug = typeof row.categorySlug === "string" && row.categorySlug.trim().length > 0;
+      const fromHref = categorySlugFromHref(row.href);
+      if (hasSlug || fromHref) return item;
+      const fallback = DEFAULT_CATEGORY_SLUGS[index];
+      if (!fallback) return item;
+      return { ...row, categorySlug: fallback };
+    })
+  };
+}, external_exports.object({
   title: external_exports.string().max(80).describe("Titolo sezione"),
   items: external_exports.array(categoryShowcaseItemSchema).length(4).describe("Categorie")
-});
+}));
+var CATEGORY_SHOWCASE_DEFAULT_SLUGS = DEFAULT_CATEGORY_SLUGS;
 
 // src/sections/m2.ts
 var pageHeaderContentSchema = external_exports.object({
@@ -5062,25 +5102,25 @@ var CATEGORY_SHOWCASE_ITEMS_IT = [
   {
     label: "Masserie",
     imageAlt: "Masseria in Valle d'Itria",
-    href: "/properties",
+    categorySlug: "masseria",
     ctaLabel: "Vedi gli immobili"
   },
   {
     label: "Rustici",
     imageAlt: "Rustico in campagna",
-    href: "/properties",
+    categorySlug: "rustici",
     ctaLabel: "Vedi gli immobili"
   },
   {
     label: "Trulli",
     imageAlt: "Trulli in Valle d'Itria",
-    href: "/properties",
+    categorySlug: "trulli",
     ctaLabel: "Vedi gli immobili"
   },
   {
     label: "Centro storico Ostuni",
     imageAlt: "Casa nel centro storico di Ostuni",
-    href: "/properties",
+    categorySlug: "centro-storico",
     ctaLabel: "Vedi gli immobili"
   }
 ];
@@ -5088,25 +5128,25 @@ var CATEGORY_SHOWCASE_ITEMS_EN = [
   {
     label: "Masserie",
     imageAlt: "Masseria in the Valle d'Itria",
-    href: "/properties",
+    categorySlug: "masseria",
     ctaLabel: "View properties"
   },
   {
     label: "Rustici",
     imageAlt: "Country house (rustico)",
-    href: "/properties",
+    categorySlug: "rustici",
     ctaLabel: "View properties"
   },
   {
     label: "Trulli",
     imageAlt: "Trulli in the Valle d'Itria",
-    href: "/properties",
+    categorySlug: "trulli",
     ctaLabel: "View properties"
   },
   {
     label: "Ostuni historic centre",
     imageAlt: "Home in Ostuni historic centre",
-    href: "/properties",
+    categorySlug: "centro-storico",
     ctaLabel: "View properties"
   }
 ];
@@ -5138,10 +5178,24 @@ var HOME_DEFAULTS_IT = {
       }
     },
     {
+      id: "00000000-0000-4000-8000-000000000003",
+      type: "featuredCollection",
+      enabled: true,
+      order: 2,
+      content: {
+        collectionKey: "immobili",
+        mode: "featured",
+        limit: 6,
+        title: "Immobili in evidenza",
+        viewAllLabel: "Vedi tutti",
+        hideWhenEmpty: true
+      }
+    },
+    {
       id: "00000000-0000-4000-8000-000000000002",
       type: "features",
       enabled: true,
-      order: 2,
+      order: 3,
       content: {
         title: "Perch\xE9 sceglierci",
         items: [
@@ -5158,20 +5212,6 @@ var HOME_DEFAULTS_IT = {
             description: "Trasparenza e relazioni di lungo periodo: la casa come scelta di vita."
           }
         ]
-      }
-    },
-    {
-      id: "00000000-0000-4000-8000-000000000003",
-      type: "featuredCollection",
-      enabled: true,
-      order: 3,
-      content: {
-        collectionKey: "immobili",
-        mode: "featured",
-        limit: 6,
-        title: "Immobili in evidenza",
-        viewAllLabel: "Vedi tutti",
-        hideWhenEmpty: true
       }
     },
     {
@@ -5215,10 +5255,24 @@ var HOME_DEFAULTS_EN = {
       }
     },
     {
+      id: "00000000-0000-4000-8000-000000000003",
+      type: "featuredCollection",
+      enabled: true,
+      order: 2,
+      content: {
+        collectionKey: "immobili",
+        mode: "featured",
+        limit: 6,
+        title: "Featured properties",
+        viewAllLabel: "View all",
+        hideWhenEmpty: true
+      }
+    },
+    {
       id: "00000000-0000-4000-8000-000000000002",
       type: "features",
       enabled: true,
-      order: 2,
+      order: 3,
       content: {
         title: "Why choose us",
         items: [
@@ -5235,20 +5289,6 @@ var HOME_DEFAULTS_EN = {
             description: "Transparency and long-term relationships: a home as a lifestyle choice."
           }
         ]
-      }
-    },
-    {
-      id: "00000000-0000-4000-8000-000000000003",
-      type: "featuredCollection",
-      enabled: true,
-      order: 3,
-      content: {
-        collectionKey: "immobili",
-        mode: "featured",
-        limit: 6,
-        title: "Featured properties",
-        viewAllLabel: "View all",
-        hideWhenEmpty: true
       }
     },
     {
@@ -5849,6 +5889,7 @@ function enumLabelIt(fieldKey, value) {
 var SHARED_STRING_KEYS = /* @__PURE__ */ new Set([
   "to",
   "href",
+  "categorySlug",
   "iubendaPolicyId",
   "collectionKey",
   "leadRecipientEmail",
@@ -6070,6 +6111,7 @@ function zodToFieldMeta(schema, key = "root") {
   return [];
 }
 export {
+  CATEGORY_SHOWCASE_DEFAULT_SLUGS,
   DAY_OF_WEEK_LABELS_IT,
   DEFAULT_BRANDING_COLORS,
   DEFAULT_BRANDING_SCALARS,
