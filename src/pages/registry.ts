@@ -255,7 +255,7 @@ const CHI_SIAMO_DEFAULTS_IT: CmsPageDocument = {
       content: {
         title: 'Chi siamo',
         subtitle:
-          'Norton Tanzarella non si limita alla presentazione di proprietà d\'eccezione. Attraverso incontri, luoghi e progetti si è costruita una visione dell\'immobiliare di prestigio: più sensibile, più umana, più ancorata a un art de vivre. Condividiamo ciò che fa l\'essenza del nostro lavoro — uno sguardo su Ostuni, la Valle d\'Itria e le esperienze che modellano un certo stile di vita in Puglia.',
+          'Uno sguardo su Ostuni, la Valle d\'Itria e l\'immobiliare di prestigio ancorato a un art de vivre.',
       },
     },
     {
@@ -277,7 +277,6 @@ const CHI_SIAMO_DEFAULTS_IT: CmsPageDocument = {
         title: 'La nostra visione',
         body: 'Offriamo un\'esperienza d\'acquisto eccezionale radicata a Ostuni e in Valle d\'Itria. Aiutiamo a realizzare il sogno di una masseria, un rustico o una casa distintiva, rendendo il percorso entusiasmante e senza stress.\n\nServizi personalizzati, conoscenza approfondita del mercato locale e relazioni di lungo periodo: possedere qui non è solo un investimento, è una scelta di vita.',
         imageAlt: 'Ostuni e la Valle d\'Itria',
-        button: { label: 'Scopri le proprietà', to: '/properties' },
       },
     },
     {
@@ -290,7 +289,6 @@ const CHI_SIAMO_DEFAULTS_IT: CmsPageDocument = {
         body: 'Da anni accompagniamo vendite e acquisizioni di prestigio in Valle d\'Itria. Un approccio esigente, una strategia di valorizzazione e una rete solida di acquirenti e prescrittori ci hanno reso un punto di riferimento.\n\nOggi Norton Tanzarella è una marca e una comunità riunita intorno all\'immobiliare di prestigio e all\'art de vivre che incarna.',
         imageAlt: 'Incontro e consulenza immobiliare',
         reverse: true,
-        button: { label: 'Contattaci', to: '/contact' },
       },
     },
     {
@@ -302,7 +300,6 @@ const CHI_SIAMO_DEFAULTS_IT: CmsPageDocument = {
         title: 'Il territorio',
         body: 'Condividiamo i luoghi che fanno la ricchezza della nostra regione: masserie, architetture notevoli, paesaggi ispiratori. Perché l\'immobiliare di prestigio è anche una questione di territorio e di stile di vita.\n\nDa Ostuni alla campagna, ogni indirizzo racconta un pezzo della Valle d\'Itria.',
         imageAlt: 'Masseria e paesaggio pugliese',
-        button: { label: 'Esplora le tipologiche', to: '/properties' },
       },
     },
     {
@@ -320,7 +317,7 @@ const CHI_SIAMO_DEFAULTS_IT: CmsPageDocument = {
     {
       id: '00000000-0000-4000-8000-000000000012',
       type: 'stats',
-      enabled: true,
+      enabled: false,
       order: 6,
       content: {
         items: [
@@ -337,9 +334,9 @@ const CHI_SIAMO_DEFAULTS_IT: CmsPageDocument = {
       enabled: true,
       order: 7,
       content: {
-        title: 'Pronto a trovare la proprietà dei tuoi sogni?',
+        title: 'Parliamone',
         description:
-          'Il nostro obiettivo è rendere l\'acquisto fluido, con tutto il supporto di cui avete bisogno.',
+          'Accompagniamo acquisti e vendite di prestigio in Valle d\'Itria con discrezione e chiarezza.',
         button: { label: 'Contattaci', to: '/contact' },
       },
     },
@@ -397,7 +394,7 @@ const CHI_SIAMO_DEFAULTS_EN: CmsPageDocument = {
       content: {
         title: 'About us',
         subtitle:
-          'Norton Tanzarella is more than showcasing exceptional properties. Through encounters, places and projects, a vision of prestige real estate has taken shape: more sensitive, more human, more rooted in a way of living. We share what makes the essence of our work — a gaze on Ostuni, the Valle d\'Itria and the experiences that shape a certain art of living in Puglia.',
+          'A gaze on Ostuni, the Valle d\'Itria and prestige real estate rooted in a way of living.',
       },
     },
     {
@@ -424,7 +421,6 @@ const CHI_SIAMO_DEFAULTS_EN: CmsPageDocument = {
         title: 'Our vision',
         body: 'We offer an exceptional buying experience rooted in Ostuni and the Valle d\'Itria. We help people achieve the dream of a masseria, rustico or distinctive home, making the journey exciting and stress-free.\n\nTailored services, deep local market knowledge and long-term relationships: owning here is not only an investment — it is a lifestyle choice.',
         imageAlt: 'Ostuni and the Valle d\'Itria',
-        button: { label: 'Explore properties', to: '/properties' },
       },
     },
     {
@@ -437,7 +433,6 @@ const CHI_SIAMO_DEFAULTS_EN: CmsPageDocument = {
         body: 'For years we have accompanied prestige sales and acquisitions in the Valle d\'Itria. A demanding approach, a valorisation strategy and a solid network of buyers and introducers have made us a market reference.\n\nToday Norton Tanzarella is a brand and a community gathered around prestige real estate and the art of living it embodies.',
         imageAlt: 'Property consultation meeting',
         reverse: true,
-        button: { label: 'Contact us', to: '/contact' },
       },
     },
     {
@@ -449,7 +444,6 @@ const CHI_SIAMO_DEFAULTS_EN: CmsPageDocument = {
         title: 'The territory',
         body: 'We share the places that enrich our region: masserie, remarkable architecture, inspiring landscapes. Prestige real estate is also a matter of territory and lifestyle.\n\nFrom Ostuni to the countryside, every address tells a piece of the Valle d\'Itria.',
         imageAlt: 'Masseria and Puglian landscape',
-        button: { label: 'Browse property types', to: '/properties' },
       },
     },
     {
@@ -467,7 +461,7 @@ const CHI_SIAMO_DEFAULTS_EN: CmsPageDocument = {
     {
       id: '00000000-0000-4000-8000-000000000012',
       type: 'stats',
-      enabled: true,
+      enabled: false,
       order: 6,
       content: {
         items: [
@@ -484,9 +478,9 @@ const CHI_SIAMO_DEFAULTS_EN: CmsPageDocument = {
       enabled: true,
       order: 7,
       content: {
-        title: 'Ready to find your dream property?',
+        title: 'Let\'s talk',
         description:
-          'We aim to make the buying process smooth, with all the support you need every step of the way.',
+          'We accompany prestige purchases and sales in the Valle d\'Itria with discretion and clarity.',
         button: { label: 'Contact us', to: '/contact' },
       },
     },
