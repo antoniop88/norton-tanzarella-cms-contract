@@ -1,9 +1,10 @@
 import {
-  categoryShowcaseContentSchema,
+  categoryGridContentSchema,
   ctaContentSchema,
   featuredCollectionContentSchema,
   featuresContentSchema,
   heroContentSchema,
+  statementContentSchema,
 } from './m1.js'
 import {
   faqContentSchema,
@@ -24,7 +25,8 @@ export const sectionContentByType = {
   features: featuresContentSchema,
   cta: ctaContentSchema,
   featuredCollection: featuredCollectionContentSchema,
-  categoryShowcase: categoryShowcaseContentSchema,
+  statement: statementContentSchema,
+  categoryGrid: categoryGridContentSchema,
   pageHeader: pageHeaderContentSchema,
   richText: richTextContentSchema,
   legalPolicy: legalPolicyContentSchema,
@@ -43,7 +45,8 @@ export const SECTION_TYPE_LABELS_IT: Record<SectionType, string> = {
   features: 'Caratteristiche',
   cta: 'Call to action',
   featuredCollection: 'Collezione in evidenza',
-  categoryShowcase: 'Showcase categorie',
+  statement: 'Dichiarazione',
+  categoryGrid: 'Griglia categorie',
   pageHeader: 'Intestazione pagina',
   richText: 'Testo libero',
   legalPolicy: 'Policy legale',

@@ -1,11 +1,10 @@
-# CMS — Contratto v0.17.0
+# CMS — Contratto v0.20.0
 
 ## Export
 
 - `PAGE_REGISTRY`, `PAGE_KEYS`, `isPageKey`, `getM1PageKeys`
 - `cmsPageDocumentSchema`, `cmsSectionSchema`
 - `sectionContentByType`, `parseSectionContent`
-- `CATEGORY_SHOWCASE_DEFAULT_SLUGS`
 - `zodToFieldMeta` (kind `image` | `video`, `localeScope: shared | i18n`)
 
 ## FieldMeta.localeScope (v0.9.0)
@@ -15,9 +14,28 @@
 
 ## Pagine M1
 
-Solo `home` — tipi ammessi: `hero`, `categoryShowcase`, `features`, `featuredCollection`, `cta`.
+Solo `home` — tipi ammessi: `hero`, `statement`, `categoryGrid`, `features`, `featuredCollection`, `cta`.
 
-Defaults ordine: hero → categoryShowcase → featuredCollection → features → cta.
+Defaults ordine: hero → statement → categoryGrid → featuredCollection → features → cta.
+
+## `statement` (v0.19.0)
+
+- `title` (max 80) — titolo serif
+- `body` (max 600) — paragrafo
+- `tagline?` (max 120) — riga uppercase spaced
+- Sostituisce le immagini "pietra" del vecchio `categoryShowcase` sulla homepage
+
+## `categoryGrid` (v0.20.0)
+
+- `title?` (max 80) — eyebrow opzionale sopra la griglia
+- `items[4]` (lunghezza fissa): `label` (max 60, i18n), `mediaId?` (shared), `imageAlt?` (max 160, i18n), `categorySlug` (max 80, shared), `ctaLabel?` (max 60, i18n)
+- Ripristina la navigazione per categoria rimossa per errore con `categoryShowcase`; estetica sobria (griglia rettangolare, no maschere a pietra)
+
+## Branding / tipografia (v0.19.0)
+
+- `fontSans`: Minion Pro (default, self-hosted), Montserrat, Nunito Sans, Inter, DM Sans
+- `fontHeading`: Cormorant Garamond (default), Playfair Display, Libre Baskerville, Source Serif 4
+- CSS vars `--font-sans` / `--font-display` da `scalarsToCssVars`
 
 ## Pagine M2 — Chi siamo (v0.14.0)
 
@@ -25,7 +43,7 @@ Defaults ordine: hero → categoryShowcase → featuredCollection → features �
 
 Defaults: hero → slideshow → split×3 → team → stats → cta → faq (IT|EN).
 
-- `imageSlideshow`: 2–8 slide (`mediaId?`, `imageAlt?`, `caption?`), `autoplayMs?` — full-viewport, **non** riusa `categoryShowcase`
+- `imageSlideshow`: 2–8 slide (`mediaId?`, `imageAlt?`, `caption?`), `autoplayMs?` — full-viewport
 - `split`: `mediaId?`, `button?` (CTA); `hero.subtitle` max 600
 - Immagini shared (`mediaId`) su slideshow / split / team; upload folder `cms/chi-siamo/`
 
@@ -36,13 +54,9 @@ Pagine M2 stub: `property-finder`, `virtual-tours`, `sell-with-us` (`pageHeader`
 - `headerCta` — Contattaci
 - `headerSecondaryCta` — Vendi con noi (`/vendi-con-noi`); sul sito pubblico va nel footer (non nell’header)
 
-## `categoryShowcase` (v0.17.0)
+## Media sezioni
 
-- `title` obbligatorio
-- `items` length 4: `label`, `mediaId` (uuid), `imageAlt?`, `categorySlug` (shared), `ctaLabel?`
-- `href` rimosso — destinazione = `/properties?category={categorySlug}`
-- Preprocess: `href?category=` legacy → `categorySlug`; fallback indice → `masseria` / `rustici` / `trulli` / `centro-storico`
-- Sezioni `hero` / `split` / `team`: campo `mediaId` (uuid) al posto di `image`
+- Sezioni `hero` / `split` / `team`: campo `mediaId` (uuid)
 - `split` / `team`: `mediaId` opzionale (v0.13.0)
 - `collectPageMediaIds(document)` — UUID referenziati nelle sezioni
 

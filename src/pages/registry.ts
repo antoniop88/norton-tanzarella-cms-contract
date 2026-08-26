@@ -18,7 +18,19 @@ export type PageRegistryEntry = {
   milestone: 'M1' | 'M2' | 'M3'
 }
 
-const CATEGORY_SHOWCASE_ITEMS_IT = [
+const HOME_STATEMENT_IT = {
+  title: 'Investire in Italia',
+  body: 'Investire in Italia, e in particolare in Valle d\'Itria, significa scegliere un patrimonio di luce, pietra e paesaggio: case che custodiscono storia e generano valore nel tempo.',
+  tagline: 'ITALIA. VALLE D\'ITRIA. VALORE CHE DURA.',
+} as const
+
+const HOME_STATEMENT_EN = {
+  title: 'Investing in Italy',
+  body: 'Investing in Italy — and in the Valle d\'Itria — means choosing a heritage of light, stone and landscape: homes that hold history and build lasting value.',
+  tagline: 'ITALY. VALLE D\'ITRIA. ENDURING VALUE.',
+} as const
+
+const HOME_CATEGORY_GRID_ITEMS_IT = [
   {
     label: 'Masserie',
     imageAlt: 'Masseria in Valle d\'Itria',
@@ -45,7 +57,7 @@ const CATEGORY_SHOWCASE_ITEMS_IT = [
   },
 ] as const
 
-const CATEGORY_SHOWCASE_ITEMS_EN = [
+const HOME_CATEGORY_GRID_ITEMS_EN = [
   {
     label: 'Masserie',
     imageAlt: 'Masseria in the Valle d\'Itria',
@@ -91,19 +103,25 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
     },
     {
       id: '00000000-0000-4000-8000-000000000005',
-      type: 'categoryShowcase',
+      type: 'statement',
       enabled: true,
       order: 1,
+      content: { ...HOME_STATEMENT_IT },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000006',
+      type: 'categoryGrid',
+      enabled: true,
+      order: 2,
       content: {
-        title: 'Masserie, rustici e trulli in Valle d\'Itria',
-        items: [...CATEGORY_SHOWCASE_ITEMS_IT],
+        items: [...HOME_CATEGORY_GRID_ITEMS_IT],
       },
     },
     {
       id: '00000000-0000-4000-8000-000000000003',
       type: 'featuredCollection',
       enabled: true,
-      order: 2,
+      order: 3,
       content: {
         collectionKey: 'immobili',
         mode: 'featured',
@@ -117,7 +135,7 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       id: '00000000-0000-4000-8000-000000000002',
       type: 'features',
       enabled: true,
-      order: 3,
+      order: 4,
       content: {
         title: 'Perché sceglierci',
         items: [
@@ -141,7 +159,7 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       id: '00000000-0000-4000-8000-000000000004',
       type: 'cta',
       enabled: true,
-      order: 4,
+      order: 5,
       content: {
         title: 'Hai bisogno di una valutazione?',
         description: 'Contattaci per un appuntamento senza impegno a Ostuni.',
@@ -172,19 +190,25 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
     },
     {
       id: '00000000-0000-4000-8000-000000000005',
-      type: 'categoryShowcase',
+      type: 'statement',
       enabled: true,
       order: 1,
+      content: { ...HOME_STATEMENT_EN },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000006',
+      type: 'categoryGrid',
+      enabled: true,
+      order: 2,
       content: {
-        title: 'Masserie, rustici and trulli in the Valle d\'Itria',
-        items: [...CATEGORY_SHOWCASE_ITEMS_EN],
+        items: [...HOME_CATEGORY_GRID_ITEMS_EN],
       },
     },
     {
       id: '00000000-0000-4000-8000-000000000003',
       type: 'featuredCollection',
       enabled: true,
-      order: 2,
+      order: 3,
       content: {
         collectionKey: 'immobili',
         mode: 'featured',
@@ -198,7 +222,7 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
       id: '00000000-0000-4000-8000-000000000002',
       type: 'features',
       enabled: true,
-      order: 3,
+      order: 4,
       content: {
         title: 'Why choose us',
         items: [
@@ -222,7 +246,7 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
       id: '00000000-0000-4000-8000-000000000004',
       type: 'cta',
       enabled: true,
-      order: 4,
+      order: 5,
       content: {
         title: 'Need a valuation?',
         description: 'Contact us for a no-obligation meeting in Ostuni.',
@@ -526,8 +550,8 @@ const CHI_SIAMO_DEFAULTS_EN: CmsPageDocument = {
 
 export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
   home: {
-    allowedTypes: ['hero', 'categoryShowcase', 'features', 'featuredCollection', 'cta'],
-    reorderable: ['categoryShowcase', 'features', 'featuredCollection', 'cta'],
+    allowedTypes: ['hero', 'statement', 'categoryGrid', 'features', 'featuredCollection', 'cta'],
+    reorderable: ['statement', 'categoryGrid', 'features', 'featuredCollection', 'cta'],
     defaults: (locale) => (locale === 'en' ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT),
     milestone: 'M1',
   },

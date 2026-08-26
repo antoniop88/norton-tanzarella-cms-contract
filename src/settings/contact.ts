@@ -179,6 +179,7 @@ export {
   settingsScalarsSchema,
   normalizeSettingsScalars,
   scalarsToCssVars,
+  fontSansCssValue,
   cssVarsToStyleText,
   collectLogoMediaIds,
 } from './branding.js'

@@ -4095,57 +4095,22 @@ var featuredCollectionContentSchema = external_exports.object({
   viewAllLabel: external_exports.string().max(40).optional().describe("Etichetta \xABVedi tutti\xBB"),
   hideWhenEmpty: external_exports.boolean().default(true).describe("Nascondi se vuota")
 });
-var DEFAULT_CATEGORY_SLUGS = ["masseria", "rustici", "trulli", "centro-storico"];
-function categorySlugFromHref(href) {
-  if (typeof href !== "string" || !href.trim()) return void 0;
-  try {
-    const url = new URL(href, "https://norton.local");
-    const slug = url.searchParams.get("category")?.trim();
-    return slug || void 0;
-  } catch {
-    const match = href.match(/[?&]category=([^&]+)/);
-    return match?.[1] ? decodeURIComponent(match[1]) : void 0;
-  }
-}
-var categoryShowcaseItemSchema = external_exports.preprocess((raw) => {
-  if (raw == null || typeof raw !== "object" || Array.isArray(raw)) return raw;
-  const item = raw;
-  const existing = typeof item.categorySlug === "string" && item.categorySlug.trim() ? item.categorySlug.trim() : void 0;
-  const fromHref = categorySlugFromHref(item.href);
-  const { href: _href, ...rest } = item;
-  return {
-    ...rest,
-    categorySlug: existing ?? fromHref
-  };
-}, external_exports.object({
-  label: external_exports.string().max(80).describe("Titolo categoria"),
+var statementContentSchema = external_exports.object({
+  title: external_exports.string().max(80).describe("Titolo"),
+  body: external_exports.string().max(600).describe("Testo"),
+  tagline: external_exports.string().max(120).optional().describe("Tagline")
+});
+var categoryGridItemSchema = external_exports.object({
+  label: external_exports.string().max(60).describe("Etichetta categoria"),
   mediaId: optionalMediaIdSchema.describe("Immagine"),
   imageAlt: external_exports.string().max(160).optional().describe("Testo alternativo"),
   categorySlug: external_exports.string().min(1).max(80).describe("Slug categoria immobili"),
-  ctaLabel: external_exports.string().max(60).optional().describe("Etichetta CTA")
-}));
-var categoryShowcaseContentSchema = external_exports.preprocess((raw) => {
-  if (raw == null || typeof raw !== "object" || Array.isArray(raw)) return raw;
-  const content = raw;
-  if (!Array.isArray(content.items)) return raw;
-  return {
-    ...content,
-    items: content.items.map((item, index) => {
-      if (item == null || typeof item !== "object" || Array.isArray(item)) return item;
-      const row = item;
-      const hasSlug = typeof row.categorySlug === "string" && row.categorySlug.trim().length > 0;
-      const fromHref = categorySlugFromHref(row.href);
-      if (hasSlug || fromHref) return item;
-      const fallback = DEFAULT_CATEGORY_SLUGS[index];
-      if (!fallback) return item;
-      return { ...row, categorySlug: fallback };
-    })
-  };
-}, external_exports.object({
-  title: external_exports.string().max(80).describe("Titolo sezione"),
-  items: external_exports.array(categoryShowcaseItemSchema).length(4).describe("Categorie")
-}));
-var CATEGORY_SHOWCASE_DEFAULT_SLUGS = DEFAULT_CATEGORY_SLUGS;
+  ctaLabel: external_exports.string().max(60).optional().describe("Etichetta link (lettori schermo)")
+});
+var categoryGridContentSchema = external_exports.object({
+  title: external_exports.string().max(80).optional().describe("Titolo sezione"),
+  items: external_exports.array(categoryGridItemSchema).length(4).describe("Categorie")
+});
 
 // src/sections/m2.ts
 var pageHeaderContentSchema = external_exports.object({
@@ -4250,7 +4215,8 @@ var sectionContentByType = {
   features: featuresContentSchema,
   cta: ctaContentSchema,
   featuredCollection: featuredCollectionContentSchema,
-  categoryShowcase: categoryShowcaseContentSchema,
+  statement: statementContentSchema,
+  categoryGrid: categoryGridContentSchema,
   pageHeader: pageHeaderContentSchema,
   richText: richTextContentSchema,
   legalPolicy: legalPolicyContentSchema,
@@ -4266,7 +4232,8 @@ var SECTION_TYPE_LABELS_IT = {
   features: "Caratteristiche",
   cta: "Call to action",
   featuredCollection: "Collezione in evidenza",
-  categoryShowcase: "Showcase categorie",
+  statement: "Dichiarazione",
+  categoryGrid: "Griglia categorie",
   pageHeader: "Intestazione pagina",
   richText: "Testo libero",
   legalPolicy: "Policy legale",
@@ -4471,8 +4438,15 @@ var DEFAULT_OPENING_HOURS_IT = [
 
 // src/settings/branding.ts
 var hexColorSchema = external_exports.string().regex(/^#[0-9A-Fa-f]{6}$/, "Must be a hex color (#RRGGBB)");
-var FONT_SANS_WHITELIST = ["Nunito Sans", "Inter", "DM Sans"];
+var FONT_SANS_WHITELIST = [
+  "Minion Pro",
+  "Montserrat",
+  "Nunito Sans",
+  "Inter",
+  "DM Sans"
+];
 var FONT_HEADING_WHITELIST = [
+  "Cormorant Garamond",
   "Playfair Display",
   "Libre Baskerville",
   "Source Serif 4"
@@ -4533,8 +4507,8 @@ var DEFAULT_BRANDING_COLORS = {
   error: "#C42B2B"
 };
 var DEFAULT_BRANDING_TYPOGRAPHY = {
-  fontSans: "Nunito Sans",
-  fontHeading: "Playfair Display"
+  fontSans: "Minion Pro",
+  fontHeading: "Cormorant Garamond"
 };
 var DEFAULT_BRANDING_SCALARS = {
   themeColor: DEFAULT_BRANDING_COLORS.primary,
@@ -4597,6 +4571,11 @@ function normalizeSettingsScalars(raw) {
   if (parsed.success) return parsed.data;
   return settingsScalarsSchema.parse(base);
 }
+var SERIF_BODY_FONTS = /* @__PURE__ */ new Set(["Minion Pro"]);
+function fontSansCssValue(fontSans) {
+  const fallback = SERIF_BODY_FONTS.has(fontSans) ? "ui-serif, Georgia, serif" : "ui-sans-serif, system-ui, sans-serif";
+  return `'${fontSans}', ${fallback}`;
+}
 function scalarsToCssVars(scalars) {
   const { colors, typography } = scalars;
   return {
@@ -4614,7 +4593,7 @@ function scalarsToCssVars(scalars) {
     "--color-warning": colors.warning,
     "--color-error": colors.error,
     "--color-destructive": colors.error,
-    "--font-sans": `'${typography.fontSans}', ui-sans-serif, system-ui, sans-serif`,
+    "--font-sans": fontSansCssValue(typography.fontSans),
     "--font-display": `'${typography.fontHeading}', ui-serif, Georgia, serif`
   };
 }
@@ -5098,7 +5077,17 @@ var cmsPageDocumentSchema = external_exports.object({
 });
 
 // src/pages/registry.ts
-var CATEGORY_SHOWCASE_ITEMS_IT = [
+var HOME_STATEMENT_IT = {
+  title: "Investire in Italia",
+  body: "Investire in Italia, e in particolare in Valle d'Itria, significa scegliere un patrimonio di luce, pietra e paesaggio: case che custodiscono storia e generano valore nel tempo.",
+  tagline: "ITALIA. VALLE D'ITRIA. VALORE CHE DURA."
+};
+var HOME_STATEMENT_EN = {
+  title: "Investing in Italy",
+  body: "Investing in Italy \u2014 and in the Valle d'Itria \u2014 means choosing a heritage of light, stone and landscape: homes that hold history and build lasting value.",
+  tagline: "ITALY. VALLE D'ITRIA. ENDURING VALUE."
+};
+var HOME_CATEGORY_GRID_ITEMS_IT = [
   {
     label: "Masserie",
     imageAlt: "Masseria in Valle d'Itria",
@@ -5124,7 +5113,7 @@ var CATEGORY_SHOWCASE_ITEMS_IT = [
     ctaLabel: "Vedi gli immobili"
   }
 ];
-var CATEGORY_SHOWCASE_ITEMS_EN = [
+var HOME_CATEGORY_GRID_ITEMS_EN = [
   {
     label: "Masserie",
     imageAlt: "Masseria in the Valle d'Itria",
@@ -5169,19 +5158,25 @@ var HOME_DEFAULTS_IT = {
     },
     {
       id: "00000000-0000-4000-8000-000000000005",
-      type: "categoryShowcase",
+      type: "statement",
       enabled: true,
       order: 1,
+      content: { ...HOME_STATEMENT_IT }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000006",
+      type: "categoryGrid",
+      enabled: true,
+      order: 2,
       content: {
-        title: "Masserie, rustici e trulli in Valle d'Itria",
-        items: [...CATEGORY_SHOWCASE_ITEMS_IT]
+        items: [...HOME_CATEGORY_GRID_ITEMS_IT]
       }
     },
     {
       id: "00000000-0000-4000-8000-000000000003",
       type: "featuredCollection",
       enabled: true,
-      order: 2,
+      order: 3,
       content: {
         collectionKey: "immobili",
         mode: "featured",
@@ -5195,7 +5190,7 @@ var HOME_DEFAULTS_IT = {
       id: "00000000-0000-4000-8000-000000000002",
       type: "features",
       enabled: true,
-      order: 3,
+      order: 4,
       content: {
         title: "Perch\xE9 sceglierci",
         items: [
@@ -5218,7 +5213,7 @@ var HOME_DEFAULTS_IT = {
       id: "00000000-0000-4000-8000-000000000004",
       type: "cta",
       enabled: true,
-      order: 4,
+      order: 5,
       content: {
         title: "Hai bisogno di una valutazione?",
         description: "Contattaci per un appuntamento senza impegno a Ostuni.",
@@ -5246,19 +5241,25 @@ var HOME_DEFAULTS_EN = {
     },
     {
       id: "00000000-0000-4000-8000-000000000005",
-      type: "categoryShowcase",
+      type: "statement",
       enabled: true,
       order: 1,
+      content: { ...HOME_STATEMENT_EN }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000006",
+      type: "categoryGrid",
+      enabled: true,
+      order: 2,
       content: {
-        title: "Masserie, rustici and trulli in the Valle d'Itria",
-        items: [...CATEGORY_SHOWCASE_ITEMS_EN]
+        items: [...HOME_CATEGORY_GRID_ITEMS_EN]
       }
     },
     {
       id: "00000000-0000-4000-8000-000000000003",
       type: "featuredCollection",
       enabled: true,
-      order: 2,
+      order: 3,
       content: {
         collectionKey: "immobili",
         mode: "featured",
@@ -5272,7 +5273,7 @@ var HOME_DEFAULTS_EN = {
       id: "00000000-0000-4000-8000-000000000002",
       type: "features",
       enabled: true,
-      order: 3,
+      order: 4,
       content: {
         title: "Why choose us",
         items: [
@@ -5295,7 +5296,7 @@ var HOME_DEFAULTS_EN = {
       id: "00000000-0000-4000-8000-000000000004",
       type: "cta",
       enabled: true,
-      order: 4,
+      order: 5,
       content: {
         title: "Need a valuation?",
         description: "Contact us for a no-obligation meeting in Ostuni.",
@@ -5577,8 +5578,8 @@ var CHI_SIAMO_DEFAULTS_EN = {
 };
 var PAGE_REGISTRY = {
   home: {
-    allowedTypes: ["hero", "categoryShowcase", "features", "featuredCollection", "cta"],
-    reorderable: ["categoryShowcase", "features", "featuredCollection", "cta"],
+    allowedTypes: ["hero", "statement", "categoryGrid", "features", "featuredCollection", "cta"],
+    reorderable: ["statement", "categoryGrid", "features", "featuredCollection", "cta"],
     defaults: (locale) => locale === "en" ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT,
     milestone: "M1"
   },
@@ -6105,7 +6106,6 @@ function zodToFieldMeta(schema, key = "root") {
   return [];
 }
 export {
-  CATEGORY_SHOWCASE_DEFAULT_SLUGS,
   DAY_OF_WEEK_LABELS_IT,
   DEFAULT_BRANDING_COLORS,
   DEFAULT_BRANDING_SCALARS,
@@ -6138,8 +6138,8 @@ export {
   brandingColorsSchema,
   brandingLogosSchema,
   brandingTypographySchema,
-  categoryShowcaseContentSchema,
-  categoryShowcaseItemSchema,
+  categoryGridContentSchema,
+  categoryGridItemSchema,
   cmsNavLinkSchema,
   cmsPageDocumentSchema,
   cmsSectionSchema,
@@ -6158,6 +6158,7 @@ export {
   featuredCollectionContentSchema,
   featuresContentSchema,
   flattenDaySchedules,
+  fontSansCssValue,
   footerColumnSchema,
   footerSchema,
   getM1PageKeys,
@@ -6199,6 +6200,7 @@ export {
   socialPlatformIconSlug,
   socialPlatformLabelIt,
   splitContentSchema,
+  statementContentSchema,
   statsContentSchema,
   teamContentSchema,
   testimonialsContentSchema,

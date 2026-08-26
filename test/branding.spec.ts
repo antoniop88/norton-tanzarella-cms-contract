@@ -16,7 +16,8 @@ describe('branding scalars', () => {
     expect(scalars.colors.primary).toBe('#112233')
     expect(scalars.colors.background).toBe('#abcdef')
     expect(scalars.themeColor).toBe('#112233')
-    expect(scalars.typography.fontSans).toBe('Nunito Sans')
+    expect(scalars.typography.fontSans).toBe('Minion Pro')
+    expect(scalars.typography.fontHeading).toBe('Cormorant Garamond')
   })
 
   it('parses full defaults', () => {
@@ -27,7 +28,9 @@ describe('branding scalars', () => {
   it('builds css vars without FOUC-critical missing keys', () => {
     const vars = scalarsToCssVars(normalizeSettingsScalars(undefined))
     expect(vars['--brand-primary']).toMatch(/^#/)
-    expect(vars['--font-display']).toContain('Playfair Display')
+    expect(vars['--font-sans']).toContain('Minion Pro')
+    expect(vars['--font-sans']).toContain('ui-serif')
+    expect(vars['--font-display']).toContain('Cormorant Garamond')
     const css = cssVarsToStyleText(vars)
     expect(css.startsWith(':root{')).toBe(true)
   })

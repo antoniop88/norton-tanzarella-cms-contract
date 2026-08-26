@@ -4,8 +4,15 @@ export const hexColorSchema = z
   .string()
   .regex(/^#[0-9A-Fa-f]{6}$/, 'Must be a hex color (#RRGGBB)')
 
-export const FONT_SANS_WHITELIST = ['Nunito Sans', 'Inter', 'DM Sans'] as const
+export const FONT_SANS_WHITELIST = [
+  'Minion Pro',
+  'Montserrat',
+  'Nunito Sans',
+  'Inter',
+  'DM Sans',
+] as const
 export const FONT_HEADING_WHITELIST = [
+  'Cormorant Garamond',
   'Playfair Display',
   'Libre Baskerville',
   'Source Serif 4',
@@ -88,8 +95,8 @@ export const DEFAULT_BRANDING_COLORS: BrandingColors = {
 }
 
 export const DEFAULT_BRANDING_TYPOGRAPHY: BrandingTypography = {
-  fontSans: 'Nunito Sans',
-  fontHeading: 'Playfair Display',
+  fontSans: 'Minion Pro',
+  fontHeading: 'Cormorant Garamond',
 }
 
 export const DEFAULT_BRANDING_SCALARS = {
@@ -187,6 +194,15 @@ export function normalizeSettingsScalars(raw: unknown): SettingsScalars {
   return settingsScalarsSchema.parse(base)
 }
 
+const SERIF_BODY_FONTS = new Set<string>(['Minion Pro'])
+
+export function fontSansCssValue(fontSans: string): string {
+  const fallback = SERIF_BODY_FONTS.has(fontSans)
+    ? 'ui-serif, Georgia, serif'
+    : 'ui-sans-serif, system-ui, sans-serif'
+  return `'${fontSans}', ${fallback}`
+}
+
 /** Map branding scalars to CSS custom properties for :root injection. */
 export function scalarsToCssVars(scalars: SettingsScalars): Record<string, string> {
   const { colors, typography } = scalars
@@ -205,7 +221,7 @@ export function scalarsToCssVars(scalars: SettingsScalars): Record<string, strin
     '--color-warning': colors.warning,
     '--color-error': colors.error,
     '--color-destructive': colors.error,
-    '--font-sans': `'${typography.fontSans}', ui-sans-serif, system-ui, sans-serif`,
+    '--font-sans': fontSansCssValue(typography.fontSans),
     '--font-display': `'${typography.fontHeading}', ui-serif, Georgia, serif`,
   }
 }

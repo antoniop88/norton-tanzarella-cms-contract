@@ -156,7 +156,21 @@ declare const featuredCollectionContentSchema: z.ZodObject<{
     viewAllLabel?: string | undefined;
     hideWhenEmpty?: boolean | undefined;
 }>;
-declare const categoryShowcaseItemSchema: z.ZodEffects<z.ZodObject<{
+declare const statementContentSchema: z.ZodObject<{
+    title: z.ZodString;
+    body: z.ZodString;
+    tagline: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    title: string;
+    body: string;
+    tagline?: string | undefined;
+}, {
+    title: string;
+    body: string;
+    tagline?: string | undefined;
+}>;
+type StatementContent = z.infer<typeof statementContentSchema>;
+declare const categoryGridItemSchema: z.ZodObject<{
     label: z.ZodString;
     mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
     imageAlt: z.ZodOptional<z.ZodString>;
@@ -174,16 +188,10 @@ declare const categoryShowcaseItemSchema: z.ZodEffects<z.ZodObject<{
     mediaId?: unknown;
     imageAlt?: string | undefined;
     ctaLabel?: string | undefined;
-}>, {
-    label: string;
-    categorySlug: string;
-    mediaId?: string | undefined;
-    imageAlt?: string | undefined;
-    ctaLabel?: string | undefined;
-}, unknown>;
-declare const categoryShowcaseContentSchema: z.ZodEffects<z.ZodObject<{
-    title: z.ZodString;
-    items: z.ZodArray<z.ZodEffects<z.ZodObject<{
+}>;
+declare const categoryGridContentSchema: z.ZodObject<{
+    title: z.ZodOptional<z.ZodString>;
+    items: z.ZodArray<z.ZodObject<{
         label: z.ZodString;
         mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
         imageAlt: z.ZodOptional<z.ZodString>;
@@ -201,15 +209,8 @@ declare const categoryShowcaseContentSchema: z.ZodEffects<z.ZodObject<{
         mediaId?: unknown;
         imageAlt?: string | undefined;
         ctaLabel?: string | undefined;
-    }>, {
-        label: string;
-        categorySlug: string;
-        mediaId?: string | undefined;
-        imageAlt?: string | undefined;
-        ctaLabel?: string | undefined;
-    }, unknown>, "many">;
+    }>, "many">;
 }, "strip", z.ZodTypeAny, {
-    title: string;
     items: {
         label: string;
         categorySlug: string;
@@ -217,23 +218,19 @@ declare const categoryShowcaseContentSchema: z.ZodEffects<z.ZodObject<{
         imageAlt?: string | undefined;
         ctaLabel?: string | undefined;
     }[];
+    title?: string | undefined;
 }, {
-    title: string;
-    items: unknown[];
-}>, {
-    title: string;
     items: {
         label: string;
         categorySlug: string;
-        mediaId?: string | undefined;
+        mediaId?: unknown;
         imageAlt?: string | undefined;
         ctaLabel?: string | undefined;
     }[];
-}, unknown>;
-/** Default showcase slugs by tile index (home migration fallback). */
-declare const CATEGORY_SHOWCASE_DEFAULT_SLUGS: readonly ["masseria", "rustici", "trulli", "centro-storico"];
-type CategoryShowcaseItem = z.infer<typeof categoryShowcaseItemSchema>;
-type CategoryShowcaseContent = z.infer<typeof categoryShowcaseContentSchema>;
+    title?: string | undefined;
+}>;
+type CategoryGridItem = z.infer<typeof categoryGridItemSchema>;
+type CategoryGridContent = z.infer<typeof categoryGridContentSchema>;
 
 declare const pageHeaderContentSchema: z.ZodObject<{
     title: z.ZodString;
@@ -654,9 +651,22 @@ declare const sectionContentByType: {
         viewAllLabel?: string | undefined;
         hideWhenEmpty?: boolean | undefined;
     }>;
-    readonly categoryShowcase: zod.ZodEffects<zod.ZodObject<{
+    readonly statement: zod.ZodObject<{
         title: zod.ZodString;
-        items: zod.ZodArray<zod.ZodEffects<zod.ZodObject<{
+        body: zod.ZodString;
+        tagline: zod.ZodOptional<zod.ZodString>;
+    }, "strip", zod.ZodTypeAny, {
+        title: string;
+        body: string;
+        tagline?: string | undefined;
+    }, {
+        title: string;
+        body: string;
+        tagline?: string | undefined;
+    }>;
+    readonly categoryGrid: zod.ZodObject<{
+        title: zod.ZodOptional<zod.ZodString>;
+        items: zod.ZodArray<zod.ZodObject<{
             label: zod.ZodString;
             mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
             imageAlt: zod.ZodOptional<zod.ZodString>;
@@ -674,15 +684,8 @@ declare const sectionContentByType: {
             mediaId?: unknown;
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
-        }>, {
-            label: string;
-            categorySlug: string;
-            mediaId?: string | undefined;
-            imageAlt?: string | undefined;
-            ctaLabel?: string | undefined;
-        }, unknown>, "many">;
+        }>, "many">;
     }, "strip", zod.ZodTypeAny, {
-        title: string;
         items: {
             label: string;
             categorySlug: string;
@@ -690,19 +693,17 @@ declare const sectionContentByType: {
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
         }[];
+        title?: string | undefined;
     }, {
-        title: string;
-        items: unknown[];
-    }>, {
-        title: string;
         items: {
             label: string;
             categorySlug: string;
-            mediaId?: string | undefined;
+            mediaId?: unknown;
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
         }[];
-    }, unknown>;
+        title?: string | undefined;
+    }>;
     readonly pageHeader: zod.ZodObject<{
         title: zod.ZodString;
         lead: zod.ZodOptional<zod.ZodString>;
@@ -942,7 +943,6 @@ declare function parseSectionContent(type: string, content: unknown): {
         itemIds?: string[] | undefined;
         viewAllLabel?: string | undefined;
     } | {
-        title: string;
         items: {
             label: string;
             categorySlug: string;
@@ -950,6 +950,7 @@ declare function parseSectionContent(type: string, content: unknown): {
             imageAlt?: string | undefined;
             ctaLabel?: string | undefined;
         }[];
+        title?: string | undefined;
     } | {
         title: string;
         lead?: string | undefined;
@@ -1057,9 +1058,9 @@ declare function validateOpeningHours(entries: OpeningHoursEntry[]): OpeningHour
 declare const DEFAULT_OPENING_HOURS_IT: OpeningHoursEntry[];
 
 declare const hexColorSchema: z.ZodString;
-declare const FONT_SANS_WHITELIST: readonly ["Nunito Sans", "Inter", "DM Sans"];
-declare const FONT_HEADING_WHITELIST: readonly ["Playfair Display", "Libre Baskerville", "Source Serif 4"];
-declare const FONT_WHITELIST: readonly ["Nunito Sans", "Inter", "DM Sans", "Playfair Display", "Libre Baskerville", "Source Serif 4"];
+declare const FONT_SANS_WHITELIST: readonly ["Minion Pro", "Montserrat", "Nunito Sans", "Inter", "DM Sans"];
+declare const FONT_HEADING_WHITELIST: readonly ["Cormorant Garamond", "Playfair Display", "Libre Baskerville", "Source Serif 4"];
+declare const FONT_WHITELIST: readonly ["Minion Pro", "Montserrat", "Nunito Sans", "Inter", "DM Sans", "Cormorant Garamond", "Playfair Display", "Libre Baskerville", "Source Serif 4"];
 type FontSans = (typeof FONT_SANS_WHITELIST)[number];
 type FontHeading = (typeof FONT_HEADING_WHITELIST)[number];
 declare const LOGO_SLOTS: readonly ["siteHeader", "siteFooter", "siteFavicon", "backofficeLogin", "backofficeSidebar", "backofficeSidebarCollapsed"];
@@ -1136,14 +1137,14 @@ declare const brandingColorsSchema: z.ZodObject<{
 }>;
 type BrandingColors = z.infer<typeof brandingColorsSchema>;
 declare const brandingTypographySchema: z.ZodObject<{
-    fontSans: z.ZodEnum<["Nunito Sans", "Inter", "DM Sans"]>;
-    fontHeading: z.ZodEnum<["Playfair Display", "Libre Baskerville", "Source Serif 4"]>;
+    fontSans: z.ZodEnum<["Minion Pro", "Montserrat", "Nunito Sans", "Inter", "DM Sans"]>;
+    fontHeading: z.ZodEnum<["Cormorant Garamond", "Playfair Display", "Libre Baskerville", "Source Serif 4"]>;
 }, "strip", z.ZodTypeAny, {
-    fontSans: "Nunito Sans" | "Inter" | "DM Sans";
-    fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+    fontSans: "Minion Pro" | "Montserrat" | "Nunito Sans" | "Inter" | "DM Sans";
+    fontHeading: "Cormorant Garamond" | "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
 }, {
-    fontSans: "Nunito Sans" | "Inter" | "DM Sans";
-    fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+    fontSans: "Minion Pro" | "Montserrat" | "Nunito Sans" | "Inter" | "DM Sans";
+    fontHeading: "Cormorant Garamond" | "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
 }>;
 type BrandingTypography = z.infer<typeof brandingTypographySchema>;
 declare const brandingLogosSchema: z.ZodObject<{
@@ -1461,8 +1462,8 @@ declare const DEFAULT_BRANDING_SCALARS: {
         error: string;
     };
     typography: {
-        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
-        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+        fontSans: "Minion Pro" | "Montserrat" | "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Cormorant Garamond" | "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
     };
     logos: BrandingLogos;
 };
@@ -1503,14 +1504,14 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         error: string;
     }>;
     typography: z.ZodObject<{
-        fontSans: z.ZodEnum<["Nunito Sans", "Inter", "DM Sans"]>;
-        fontHeading: z.ZodEnum<["Playfair Display", "Libre Baskerville", "Source Serif 4"]>;
+        fontSans: z.ZodEnum<["Minion Pro", "Montserrat", "Nunito Sans", "Inter", "DM Sans"]>;
+        fontHeading: z.ZodEnum<["Cormorant Garamond", "Playfair Display", "Libre Baskerville", "Source Serif 4"]>;
     }, "strip", z.ZodTypeAny, {
-        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
-        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+        fontSans: "Minion Pro" | "Montserrat" | "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Cormorant Garamond" | "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
     }, {
-        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
-        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+        fontSans: "Minion Pro" | "Montserrat" | "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Cormorant Garamond" | "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
     }>;
     logos: z.ZodDefault<z.ZodObject<{
         siteHeader: z.ZodOptional<z.ZodObject<{
@@ -1824,8 +1825,8 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         error: string;
     };
     typography: {
-        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
-        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+        fontSans: "Minion Pro" | "Montserrat" | "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Cormorant Garamond" | "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
     };
     logos: {
         siteHeader?: {
@@ -1897,8 +1898,8 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         error: string;
     };
     typography: {
-        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
-        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+        fontSans: "Minion Pro" | "Montserrat" | "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Cormorant Garamond" | "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
     };
     logos?: {
         siteHeader?: {
@@ -1970,8 +1971,8 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         error: string;
     };
     typography: {
-        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
-        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+        fontSans: "Minion Pro" | "Montserrat" | "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Cormorant Garamond" | "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
     };
     logos: {
         siteHeader?: {
@@ -2043,8 +2044,8 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         error: string;
     };
     typography: {
-        fontSans: "Nunito Sans" | "Inter" | "DM Sans";
-        fontHeading: "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
+        fontSans: "Minion Pro" | "Montserrat" | "Nunito Sans" | "Inter" | "DM Sans";
+        fontHeading: "Cormorant Garamond" | "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
     };
     logos?: {
         siteHeader?: {
@@ -2106,6 +2107,7 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
 type SettingsScalars = z.infer<typeof settingsScalarsSchema>;
 /** Deep-merge unknown/partial DB JSON into a valid SettingsScalars. */
 declare function normalizeSettingsScalars(raw: unknown): SettingsScalars;
+declare function fontSansCssValue(fontSans: string): string;
 /** Map branding scalars to CSS custom properties for :root injection. */
 declare function scalarsToCssVars(scalars: SettingsScalars): Record<string, string>;
 declare function cssVarsToStyleText(vars: Record<string, string>): string;
@@ -2856,12 +2858,12 @@ declare const brandFooterVisibilitySchema: z.ZodObject<{
     description: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
     description: boolean;
-    name: boolean;
     tagline: boolean;
+    name: boolean;
 }, {
     description?: boolean | undefined;
-    name?: boolean | undefined;
     tagline?: boolean | undefined;
+    name?: boolean | undefined;
 }>;
 type BrandFooterVisibility = z.infer<typeof brandFooterVisibilitySchema>;
 declare const DEFAULT_BRAND_FOOTER_VISIBILITY: BrandFooterVisibility;
@@ -2875,19 +2877,19 @@ declare const brandSchema: z.ZodObject<{
         description: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         description: boolean;
-        name: boolean;
         tagline: boolean;
+        name: boolean;
     }, {
         description?: boolean | undefined;
-        name?: boolean | undefined;
         tagline?: boolean | undefined;
+        name?: boolean | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     name: string;
     footerVisibility: {
         description: boolean;
-        name: boolean;
         tagline: boolean;
+        name: boolean;
     };
     description?: string | undefined;
     tagline?: string | undefined;
@@ -2895,8 +2897,8 @@ declare const brandSchema: z.ZodObject<{
     name: string;
     footerVisibility: {
         description?: boolean | undefined;
-        name?: boolean | undefined;
         tagline?: boolean | undefined;
+        name?: boolean | undefined;
     };
     description?: string | undefined;
     tagline?: string | undefined;
@@ -3023,19 +3025,19 @@ declare const layoutSettingsSchema: z.ZodObject<{
             description: z.ZodDefault<z.ZodBoolean>;
         }, "strip", z.ZodTypeAny, {
             description: boolean;
-            name: boolean;
             tagline: boolean;
+            name: boolean;
         }, {
             description?: boolean | undefined;
-            name?: boolean | undefined;
             tagline?: boolean | undefined;
+            name?: boolean | undefined;
         }>;
     }, "strip", z.ZodTypeAny, {
         name: string;
         footerVisibility: {
             description: boolean;
-            name: boolean;
             tagline: boolean;
+            name: boolean;
         };
         description?: string | undefined;
         tagline?: string | undefined;
@@ -3043,8 +3045,8 @@ declare const layoutSettingsSchema: z.ZodObject<{
         name: string;
         footerVisibility: {
             description?: boolean | undefined;
-            name?: boolean | undefined;
             tagline?: boolean | undefined;
+            name?: boolean | undefined;
         };
         description?: string | undefined;
         tagline?: string | undefined;
@@ -3157,8 +3159,8 @@ declare const layoutSettingsSchema: z.ZodObject<{
         name: string;
         footerVisibility: {
             description: boolean;
-            name: boolean;
             tagline: boolean;
+            name: boolean;
         };
         description?: string | undefined;
         tagline?: string | undefined;
@@ -3199,8 +3201,8 @@ declare const layoutSettingsSchema: z.ZodObject<{
         name: string;
         footerVisibility: {
             description?: boolean | undefined;
-            name?: boolean | undefined;
             tagline?: boolean | undefined;
+            name?: boolean | undefined;
         };
         description?: string | undefined;
         tagline?: string | undefined;
@@ -3589,19 +3591,19 @@ declare const siteSettingsSchema: z.ZodObject<{
             description: z.ZodDefault<z.ZodBoolean>;
         }, "strip", z.ZodTypeAny, {
             description: boolean;
-            name: boolean;
             tagline: boolean;
+            name: boolean;
         }, {
             description?: boolean | undefined;
-            name?: boolean | undefined;
             tagline?: boolean | undefined;
+            name?: boolean | undefined;
         }>;
     }, "strip", z.ZodTypeAny, {
         name: string;
         footerVisibility: {
             description: boolean;
-            name: boolean;
             tagline: boolean;
+            name: boolean;
         };
         description?: string | undefined;
         tagline?: string | undefined;
@@ -3609,8 +3611,8 @@ declare const siteSettingsSchema: z.ZodObject<{
         name: string;
         footerVisibility: {
             description?: boolean | undefined;
-            name?: boolean | undefined;
             tagline?: boolean | undefined;
+            name?: boolean | undefined;
         };
         description?: string | undefined;
         tagline?: string | undefined;
@@ -3772,8 +3774,8 @@ declare const siteSettingsSchema: z.ZodObject<{
         name: string;
         footerVisibility: {
             description: boolean;
-            name: boolean;
             tagline: boolean;
+            name: boolean;
         };
         description?: string | undefined;
         tagline?: string | undefined;
@@ -3863,8 +3865,8 @@ declare const siteSettingsSchema: z.ZodObject<{
         name: string;
         footerVisibility: {
             description?: boolean | undefined;
-            name?: boolean | undefined;
             tagline?: boolean | undefined;
+            name?: boolean | undefined;
         };
         description?: string | undefined;
         tagline?: string | undefined;
@@ -3990,4 +3992,4 @@ type FieldMeta = {
 };
 declare function zodToFieldMeta(schema: ZodTypeAny, key?: string): FieldMeta[];
 
-export { type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, CATEGORY_SHOWCASE_DEFAULT_SLUGS, type CategoryShowcaseContent, type CategoryShowcaseItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteSettings, type SocialLink, type SocialPlatform, type TimeSlot, WEEKDAY_ORDER, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryShowcaseContentSchema, categoryShowcaseItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectLogoMediaIds, collectPageMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, zodToFieldMeta };
+export { type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteSettings, type SocialLink, type SocialPlatform, type StatementContent, type TimeSlot, WEEKDAY_ORDER, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectLogoMediaIds, collectPageMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statementContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, zodToFieldMeta };

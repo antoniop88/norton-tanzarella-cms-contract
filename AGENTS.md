@@ -27,4 +27,4 @@ pnpm test
 
 ## Milestone corrente
 
-**v0.1.0 (M1):** sezioni `hero`, `features`, `featuredCollection`, `cta`; registry `home` only.
+**M1 homepage:** sezioni `hero`, `statement`, `categoryGrid`, `features`, `featuredCollection`, `cta`.
