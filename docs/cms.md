@@ -1,4 +1,4 @@
-# CMS — Contratto v0.20.0
+# CMS — Contratto v0.21.0
 
 ## Export
 
@@ -54,10 +54,16 @@ Pagine M2 stub: `property-finder`, `virtual-tours`, `sell-with-us` (`pageHeader`
 - `headerCta` — Contattaci
 - `headerSecondaryCta` — Vendi con noi (`/vendi-con-noi`); sul sito pubblico va nel footer (non nell’header)
 
+## `cta` (v0.21.0)
+
+- `title`, `description?`, `button`
+- `mediaId?` (shared) — immagine sfondo full-bleed
+- `imageAlt?` (max 160, i18n) — testo alternativo
+
 ## Media sezioni
 
-- Sezioni `hero` / `split` / `team`: campo `mediaId` (uuid)
-- `split` / `team`: `mediaId` opzionale (v0.13.0)
+- Sezioni `hero` / `split` / `team` / `cta`: campo `mediaId` (uuid)
+- `split` / `team` / `cta`: `mediaId` opzionale
 - `collectPageMediaIds(document)` — UUID referenziati nelle sezioni
 
 ## Hero video (v0.16.0)

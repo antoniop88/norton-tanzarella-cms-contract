@@ -116,6 +116,8 @@ declare const ctaContentSchema: z.ZodObject<{
         label: string;
         to: string;
     }>;
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+    imageAlt: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     title: string;
     button: {
@@ -123,6 +125,8 @@ declare const ctaContentSchema: z.ZodObject<{
         to: string;
     };
     description?: string | undefined;
+    mediaId?: string | undefined;
+    imageAlt?: string | undefined;
 }, {
     title: string;
     button: {
@@ -130,6 +134,8 @@ declare const ctaContentSchema: z.ZodObject<{
         to: string;
     };
     description?: string | undefined;
+    mediaId?: unknown;
+    imageAlt?: string | undefined;
 }>;
 declare const featuredCollectionContentSchema: z.ZodObject<{
     collectionKey: z.ZodLiteral<"immobili">;
@@ -611,6 +617,8 @@ declare const sectionContentByType: {
             label: string;
             to: string;
         }>;
+        mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
+        imageAlt: zod.ZodOptional<zod.ZodString>;
     }, "strip", zod.ZodTypeAny, {
         title: string;
         button: {
@@ -618,6 +626,8 @@ declare const sectionContentByType: {
             to: string;
         };
         description?: string | undefined;
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
     }, {
         title: string;
         button: {
@@ -625,6 +635,8 @@ declare const sectionContentByType: {
             to: string;
         };
         description?: string | undefined;
+        mediaId?: unknown;
+        imageAlt?: string | undefined;
     }>;
     readonly featuredCollection: zod.ZodObject<{
         collectionKey: zod.ZodLiteral<"immobili">;
@@ -934,6 +946,8 @@ declare function parseSectionContent(type: string, content: unknown): {
             to: string;
         };
         description?: string | undefined;
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
     } | {
         collectionKey: "immobili";
         mode: "featured" | "manual";

@@ -4084,7 +4084,9 @@ var featuresContentSchema = external_exports.object({
 var ctaContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
   description: external_exports.string().max(200).optional().describe("Descrizione"),
-  button: ctaLinkSchema.describe("Pulsante")
+  button: ctaLinkSchema.describe("Pulsante"),
+  mediaId: optionalMediaIdSchema.describe("Immagine sfondo"),
+  imageAlt: external_exports.string().max(160).optional().describe("Alt immagine")
 });
 var featuredCollectionContentSchema = external_exports.object({
   collectionKey: external_exports.literal("immobili").describe("Collezione"),

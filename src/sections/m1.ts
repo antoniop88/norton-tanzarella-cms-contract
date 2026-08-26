@@ -19,6 +19,8 @@ export const ctaContentSchema = z.object({
   title: z.string().max(80).describe('Titolo'),
   description: z.string().max(200).optional().describe('Descrizione'),
   button: ctaLinkSchema.describe('Pulsante'),
+  mediaId: optionalMediaIdSchema.describe('Immagine sfondo'),
+  imageAlt: z.string().max(160).optional().describe('Alt immagine'),
 })
 
 export const featuredCollectionContentSchema = z.object({
