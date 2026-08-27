@@ -7,7 +7,7 @@ export const pageHeaderContentSchema = z.object({
 })
 
 export const richTextContentSchema = z.object({
-  body: z.string().max(3000).describe('Contenuto'),
+  body: z.string().max(10000).describe('Contenuto'),
 })
 
 export const legalPolicyContentSchema = z.object({

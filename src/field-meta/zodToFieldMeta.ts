@@ -13,7 +13,7 @@ export type FieldMeta =
       localeScope: LocaleScope
       maxLength?: number
       multiline?: boolean
-      format?: 'url' | 'email' | 'time'
+      format?: 'url' | 'email' | 'time' | 'markdown'
     }
   | {
       kind: 'image'
@@ -24,6 +24,13 @@ export type FieldMeta =
     }
   | {
       kind: 'video'
+      key: string
+      label: string
+      required: boolean
+      localeScope: LocaleScope
+    }
+  | {
+      kind: 'icon'
       key: string
       label: string
       required: boolean
@@ -86,14 +93,18 @@ const SHARED_STRING_KEYS = new Set([
   'platform',
 ])
 
+/** Long-form `body` fields (richText / legalPolicy) edited as Markdown like property descriptions. */
+const MARKDOWN_BODY_MIN_MAX_LENGTH = 10000
+
 function resolveLocaleScope(
   kind: FieldMeta['kind'],
   fieldKey: string,
-  format?: 'url' | 'email' | 'time',
+  format?: 'url' | 'email' | 'time' | 'markdown',
 ): LocaleScope {
   if (
     kind === 'image' ||
     kind === 'video' ||
+    kind === 'icon' ||
     kind === 'boolean' ||
     kind === 'number' ||
     kind === 'enum'
@@ -165,12 +176,19 @@ function isTimeString(schema: ZodTypeAny): boolean {
   )
 }
 
-function resolveStringFormat(schema: ZodTypeAny): 'url' | 'email' | 'time' | undefined {
+function resolveStringFormat(
+  schema: ZodTypeAny,
+  fieldKey?: string,
+): 'url' | 'email' | 'time' | 'markdown' | undefined {
   const inner = unwrap(schema)
   if (!(inner instanceof z.ZodString)) return undefined
   if (inner._def.checks?.some((check) => check.kind === 'url')) return 'url'
   if (isEmailString(inner)) return 'email'
   if (isTimeString(inner)) return 'time'
+  if (fieldKey === 'body') {
+    const maxLength = getMaxLength(inner)
+    if (maxLength !== undefined && maxLength >= MARKDOWN_BODY_MIN_MAX_LENGTH) return 'markdown'
+  }
   return undefined
 }
 
@@ -210,12 +228,18 @@ export function zodToFieldMeta(schema: ZodTypeAny, key = 'root'): FieldMeta[] {
 
       if (inner instanceof z.ZodString) {
         const maxLength = getMaxLength(inner)
-        const format = resolveStringFormat(fieldSchema)
+        const format = resolveStringFormat(fieldSchema, fieldKey)
         const isVideoField =
           fieldKey === 'videoMediaId' ||
           fieldKey.endsWith('VideoMediaId') ||
           fieldKey.endsWith('VideoId')
-        if (isVideoField && format !== 'url' && format !== 'email' && format !== 'time') {
+        if (
+          isVideoField &&
+          format !== 'url' &&
+          format !== 'email' &&
+          format !== 'time' &&
+          format !== 'markdown'
+        ) {
           fields.push({
             kind: 'video',
             key: fieldKey,
@@ -231,13 +255,29 @@ export function zodToFieldMeta(schema: ZodTypeAny, key = 'root'): FieldMeta[] {
           fieldKey.endsWith('Image') ||
           fieldKey.endsWith('image') ||
           fieldKey.endsWith('MediaId')
-        if (isImageField && format !== 'url' && format !== 'email' && format !== 'time') {
+        if (
+          isImageField &&
+          format !== 'url' &&
+          format !== 'email' &&
+          format !== 'time' &&
+          format !== 'markdown'
+        ) {
           fields.push({
             kind: 'image',
             key: fieldKey,
             label: resolveLabel(fieldSchema, fieldKey),
             required,
             localeScope: resolveLocaleScope('image', fieldKey),
+          })
+          continue
+        }
+        if (fieldKey === 'iconKey' || fieldKey.endsWith('IconKey')) {
+          fields.push({
+            kind: 'icon',
+            key: fieldKey,
+            label: resolveLabel(fieldSchema, fieldKey),
+            required,
+            localeScope: resolveLocaleScope('icon', fieldKey),
           })
           continue
         }
@@ -248,7 +288,9 @@ export function zodToFieldMeta(schema: ZodTypeAny, key = 'root'): FieldMeta[] {
           required,
           localeScope: resolveLocaleScope('string', fieldKey, format),
           maxLength,
-          multiline: format === undefined && maxLength !== undefined && maxLength > 200,
+          multiline:
+            format === 'markdown' ||
+            (format === undefined && maxLength !== undefined && maxLength > 200),
           format,
         })
         continue

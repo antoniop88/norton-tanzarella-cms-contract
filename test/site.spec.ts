@@ -32,4 +32,23 @@ describe('mergeSiteSettingsDefaults', () => {
       DEFAULT_SITE_SETTINGS_IT.contactForm.privacyPolicyUrl,
     )
   })
+
+  it('fills default menu panel when menu key is absent', () => {
+    const merged = mergeSiteSettingsDefaults({})
+    expect(merged.menu.quote).toBe(DEFAULT_SITE_SETTINGS_IT.menu.quote)
+    expect(merged.menu.attribution).toBe(DEFAULT_SITE_SETTINGS_IT.menu.attribution)
+    expect(merged.menu.mediaId).toBeUndefined()
+  })
+
+  it('keeps stored menu mediaId and quote', () => {
+    const mediaId = '11111111-1111-4111-8111-111111111111'
+    const merged = mergeSiteSettingsDefaults({
+      menu: { mediaId, quote: 'Custom quote', attribution: '— Test' },
+    })
+    expect(merged.menu).toEqual({
+      mediaId,
+      quote: 'Custom quote',
+      attribution: '— Test',
+    })
+  })
 })

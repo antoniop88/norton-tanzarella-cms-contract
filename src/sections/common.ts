@@ -27,9 +27,19 @@ export const optionalCtaLinkSchema = z.preprocess((val) => {
   return { label, to }
 }, ctaLinkSchema.optional())
 
+/** Empty string / null from forms → omitted; otherwise Iconify `mdi:` / `tabler:` key. */
+export const optionalIconKeySchema = z.preprocess(
+  (val) => (val === '' || val === null ? undefined : val),
+  z
+    .string()
+    .regex(/^(mdi|tabler):[a-z0-9-]+$/)
+    .optional(),
+)
+
 export const featureItemSchema = z
   .object({
     title: z.string().max(80).describe('Titolo'),
     description: z.string().max(300).describe('Descrizione'),
+    iconKey: optionalIconKeySchema.describe('Icona'),
   })
   .describe('Elemento')

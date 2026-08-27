@@ -137,20 +137,32 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       enabled: true,
       order: 4,
       content: {
+        eyebrow: 'PERCHÉ SCEGLIERCI',
         title: 'Perché sceglierci',
         items: [
           {
+            title: 'Vendita di immobili di prestigio',
+            description:
+              'Masserie, trulli, ville tra gli ulivi, dimore fronte mare e residenze di carattere.',
+            iconKey: 'mdi:crown-outline',
+          },
+          {
+            title: 'Valutazioni immobiliari',
+            description:
+              'Stime esperte, con conoscenza profonda del mercato locale e delle tipologiche in pietra.',
+            iconKey: 'mdi:file-document-outline',
+          },
+          {
             title: 'Territorio e tipologiche',
             description:
-              'Conosciamo Ostuni e la Valle d\'Itria: masserie, rustici, trulli e case nel centro storico.',
+              'Conosciamo il territorio: masserie, rustici, trulli, lamie e case nei borghi bianchi.',
+            iconKey: 'mdi:map-outline',
           },
           {
-            title: 'Assistenza completa',
-            description: 'Dalla ricerca alla firma del rogito, con servizi su misura per ogni cliente.',
-          },
-          {
-            title: 'Fiducia e relazioni',
-            description: 'Trasparenza e relazioni di lungo periodo: la casa come scelta di vita.',
+            title: 'Architetture in pietra',
+            description:
+              'Volte a stella, chianche, muretti a secco e calce bianca: il linguaggio della terra di pietra.',
+            iconKey: 'mdi:home-city-outline',
           },
         ],
       },
@@ -224,20 +236,32 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
       enabled: true,
       order: 4,
       content: {
+        eyebrow: 'WHY CHOOSE US',
         title: 'Why choose us',
         items: [
           {
-            title: 'Territory and property types',
+            title: 'Prestige Property Sales',
             description:
-              'We know Ostuni and the Valle d\'Itria: masserie, rustici, trulli and historic-centre homes.',
+              'Masserie, trulli, olive-grove villas, seafront homes and character residences.',
+            iconKey: 'mdi:crown-outline',
           },
           {
-            title: 'End-to-end support',
-            description: 'From search to completion, with tailored services for every client.',
+            title: 'Property Valuations',
+            description:
+              'Expert valuations, with deep knowledge of the local market and stone property types.',
+            iconKey: 'mdi:file-document-outline',
           },
           {
-            title: 'Trust and relationships',
-            description: 'Transparency and long-term relationships: a home as a lifestyle choice.',
+            title: 'Territory and Property Types',
+            description:
+              'We know the territory: masserie, rustici, trulli, lamie and homes in whitewashed towns.',
+            iconKey: 'mdi:map-outline',
+          },
+          {
+            title: 'Stone Architecture',
+            description:
+              'Star vaults, chianche floors, dry-stone walls and whitewashed lime: the language of stone country.',
+            iconKey: 'mdi:home-city-outline',
           },
         ],
       },
@@ -562,12 +586,15 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
     milestone: 'M2',
   },
   'immobili-index': {
-    allowedTypes: ['pageHeader'],
-    reorderable: [],
+    allowedTypes: ['pageHeader', 'cta'],
+    reorderable: ['cta'],
     defaults: (locale) =>
       locale === 'en'
         ? {
-            seo: { title: 'Properties', description: 'Browse masserie, rustici and homes in Ostuni and the Valle d\'Itria.' },
+            seo: {
+              title: 'Properties',
+              description: "Browse masserie, rustici and homes in Ostuni and the Valle d'Itria.",
+            },
             sections: [
               {
                 id: '00000000-0000-4000-8000-000000000050',
@@ -576,13 +603,27 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 order: 0,
                 content: {
                   title: 'Properties',
-                  lead: 'Find a masseria, rustico or home in Ostuni and the Valle d\'Itria.',
+                  lead: "Find a masseria, rustico or home in Ostuni and the Valle d'Itria.",
+                },
+              },
+              {
+                id: '00000000-0000-4000-8000-000000000051',
+                type: 'cta',
+                enabled: true,
+                order: 1,
+                content: {
+                  title: 'Selling Distinction',
+                  description: 'Let us tell the story of your property',
+                  button: { label: 'Contact our agency', to: '/sell-with-us' },
                 },
               },
             ],
           }
         : {
-            seo: { title: 'Immobili', description: 'Sfoglia masserie, rustici e case a Ostuni e in Valle d\'Itria.' },
+            seo: {
+              title: 'Immobili',
+              description: "Sfoglia masserie, rustici e case a Ostuni e in Valle d'Itria.",
+            },
             sections: [
               {
                 id: '00000000-0000-4000-8000-000000000050',
@@ -591,7 +632,18 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 order: 0,
                 content: {
                   title: 'Immobili',
-                  lead: 'Trova masseria, rustico o casa a Ostuni e in Valle d\'Itria.',
+                  lead: "Trova masseria, rustico o casa a Ostuni e in Valle d'Itria.",
+                },
+              },
+              {
+                id: '00000000-0000-4000-8000-000000000051',
+                type: 'cta',
+                enabled: true,
+                order: 1,
+                content: {
+                  title: 'Vendi con distinzione',
+                  description: 'Raccontiamo insieme la storia del tuo immobile',
+                  button: { label: 'Contatta la nostra agenzia', to: '/sell-with-us' },
                 },
               },
             ],
@@ -646,14 +698,15 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
     milestone: 'M2',
   },
   'property-finder': {
-    allowedTypes: ['pageHeader'],
+    allowedTypes: ['pageHeader', 'richText'],
     reorderable: [],
     defaults: (locale) =>
       locale === 'en'
         ? {
             seo: {
               title: 'Property Finder',
-              description: 'Find your next property with Norton Tanzarella.',
+              description:
+                'Full property finder service in Italy: tailored search, viewings, negotiation, legal and tax support.',
             },
             sections: [
               {
@@ -662,8 +715,37 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 enabled: true,
                 order: 0,
                 content: {
-                  title: 'Property Finder',
-                  lead: 'Page under construction.',
+                  title: 'Our Comprehensive Property Finder Service',
+                  lead: 'From the first consultation to the final purchase, we guide you every step of the way.',
+                },
+              },
+              {
+                id: '00000000-0000-4000-8000-000000000061',
+                type: 'richText',
+                enabled: true,
+                order: 1,
+                content: {
+                  body: `At our estate agency, we understand that **purchasing a property in a foreign country** can be a daunting and complex process, which is why we are committed to taking care of everything for our clients. From the *initial consultation* to the *final purchase*, we will be there every step of the way to guide you through the process and ensure that everything runs smoothly. Our team of experts will help you to **identify the right properties**, arrange viewings, **negotiate the best possible price** and manage all aspects of the purchase process, including legal and financial matters. We work with a network of trusted legal and financial advisors to ensure that all aspects of the purchase process are fully taken care of, including *title searches*, *property registration*, *tax matters* and more.
+
+> Our goal is to provide our clients with a **stress-free and seamless experience**, allowing them to relax and enjoy the excitement of owning a property in Italy.
+
+---
+
+### A tailored search
+
+To begin the process, we will craft a **customized profile** based on your specific requirements. With this information in hand, we will conduct an extensive search of all available properties in your desired areas, carefully filtering out those that do not meet your criteria and presenting only the finest options for your consideration.
+
+### Viewings, handled for you
+
+Once we have identified a selection of potential properties, we will work with various agencies to create a **comprehensive itinerary for viewing**. You can rest assured that we will handle all communication and coordination with these agencies, sparing you any unnecessary hassle.
+
+During the viewing process, we will be at your side every step of the way, providing invaluable **translation services** and *expert advice* on each property that you see.
+
+---
+
+## Large Coverage
+
+At our estate agency, we take pride in our **large coverage**, which extends to some of the most desirable locations throughout **Italy**. Our extensive network of local agents and partners allows us to offer our clients a wide selection of properties in popular destinations such as **Tuscany**, the **Amalfi Coast**, the **Italian Lakes**, and more. We are dedicated to providing our clients with an exceptional level of service, no matter where they are looking to buy a property in Italy. Whether you are seeking a *rustic countryside retreat* or a *chic urban apartment*, we have the expertise and resources to help you find the perfect property in the location that best suits your needs and lifestyle.`,
                 },
               },
             ],
@@ -671,7 +753,8 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
         : {
             seo: {
               title: 'Trova immobile',
-              description: 'Trova il prossimo immobile con Norton Tanzarella.',
+              description:
+                'Servizio completo di ricerca immobili in Italia: profilo su misura, visite, negoziazione e gestione legale e fiscale.',
             },
             sections: [
               {
@@ -680,8 +763,37 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 enabled: true,
                 order: 0,
                 content: {
-                  title: 'Trova immobile',
-                  lead: 'Pagina in costruzione.',
+                  title: 'Il nostro servizio completo di ricerca immobili',
+                  lead: 'Dalla prima consulenza all’acquisto, ti accompagniamo in ogni fase.',
+                },
+              },
+              {
+                id: '00000000-0000-4000-8000-000000000061',
+                type: 'richText',
+                enabled: true,
+                order: 1,
+                content: {
+                  body: `Nella nostra agenzia immobiliare sappiamo quanto possa risultare impegnativo e complesso **acquistare un immobile all’estero**: per questo ci impegnamo a occuparci di tutto per i nostri clienti. Dalla *prima consulenza* fino all’*acquisto finale*, saremo al vostro fianco in ogni fase per guidarvi nel percorso e garantire che tutto proceda senza intoppi. Il nostro team di esperti vi aiuterà a **individuare le proprietà giuste**, organizzare le visite, **negoziare il miglior prezzo possibile** e gestire tutti gli aspetti dell’acquisto, comprese le questioni legali e finanziarie. Collaboriamo con una rete di consulenti legali e finanziari di fiducia per assicurarci che ogni aspetto del processo sia pienamente curato, dalle *ricerche ipotecarie* alla *registrazione dell’immobile*, dalle *questioni fiscali* e oltre.
+
+> Il nostro obiettivo è offrire un’**esperienza serena e senza stress**, così potrete godervi l’emozione di possedere un immobile in Italia.
+
+---
+
+### Una ricerca su misura
+
+Per iniziare, costruiremo un **profilo personalizzato** basato sulle vostre esigenze specifiche. Con queste informazioni condurremo una ricerca approfondita di tutte le proprietà disponibili nelle zone di vostro interesse, filtrando con cura quelle che non corrispondono ai criteri e presentandovi solo le opzioni migliori da valutare.
+
+### Visite, gestite per voi
+
+Una volta individuata una selezione di immobili potenziali, collaboreremo con varie agenzie per creare un **itinerario completo di visite**. Potrete contare sul fatto che gestiamo noi tutta la comunicazione e il coordinamento con queste agenzie, evitandovi ogni inutile complicazione.
+
+Durante le visite saremo al vostro fianco in ogni momento, offrendo **servizi di traduzione** e *consigli esperti* su ciascuna proprietà che vedrete.
+
+---
+
+## Ampia copertura
+
+Nella nostra agenzia siamo orgogliosi della nostra **ampia copertura**, che si estende ad alcune delle località più desiderabili di tutta **Italia**. La nostra vasta rete di agenti e partner locali ci consente di offrire una vasta selezione di immobili in destinazioni come la **Toscana**, la **Costiera Amalfitana**, i **laghi italiani** e oltre. Siamo dedicati a fornire un livello di servizio eccezionale, ovunque stiate cercando di acquistare in Italia. Che cerchiate un *rifugio rustico in campagna* o un *appartamento urbano raffinato*, abbiamo l’esperienza e le risorse per aiutarvi a trovare la proprietà perfetta nella località più adatta alle vostre esigenze e al vostro stile di vita.`,
                 },
               },
             ],

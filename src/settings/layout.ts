@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { optionalMediaIdSchema } from '../sections/common.js'
 import { SOCIAL_PLATFORM_IDS } from './socialPlatforms.js'
 
 export const MAIN_NAV_PATHS = [
@@ -137,6 +138,28 @@ export const socialLinkSchema = z
 
 export type SocialLink = z.infer<typeof socialLinkSchema>
 
+/** Fullscreen site-menu overlay panel (image + quote). Not headerNav. */
+export const siteMenuSettingsSchema = z
+  .object({
+    mediaId: optionalMediaIdSchema.describe('Immagine pannello menu'),
+    quote: z.string().min(1).max(240).describe('Frase'),
+    attribution: z.string().max(80).optional().describe('Attribuzione'),
+  })
+  .describe('Pannello menu fullscreen')
+
+export type SiteMenuSettings = z.infer<typeof siteMenuSettingsSchema>
+
+export const DEFAULT_SITE_MENU_SETTINGS_IT: SiteMenuSettings = {
+  quote: 'Ogni pietra racconta una storia di luce, terra e appartenenza.',
+  attribution: '— Ostuni',
+}
+
+/** English seed for locale `en` (merge still uses IT as base when fields missing). */
+export const DEFAULT_SITE_MENU_SETTINGS_EN: SiteMenuSettings = {
+  quote: 'Every stone tells a story of light, land, and belonging.',
+  attribution: '— Ostuni',
+}
+
 export const layoutSettingsSchema = z.object({
   brand: brandSchema,
   headerNav: z.array(mainNavLinkSchema).min(1).max(8).describe('Menu principale'),
@@ -145,9 +168,16 @@ export const layoutSettingsSchema = z.object({
   footer: footerSchema,
   legalLinks: z.array(legalNavLinkSchema).min(1).max(6).describe('Link legali'),
   social: z.array(socialLinkSchema).max(6).default([]).describe('Social'),
+  menu: siteMenuSettingsSchema.describe('Pannello menu fullscreen'),
 })
 
 export type LayoutSettings = z.infer<typeof layoutSettingsSchema>
+
+/** Collect media UUIDs referenced by site menu overlay settings. */
+export function collectMenuMediaIds(menu: SiteMenuSettings | undefined | null): string[] {
+  if (!menu?.mediaId) return []
+  return [menu.mediaId]
+}
 
 export const DEFAULT_LAYOUT_SETTINGS_IT: LayoutSettings = {
   brand: {
@@ -194,4 +224,5 @@ export const DEFAULT_LAYOUT_SETTINGS_IT: LayoutSettings = {
     { platform: 'linkedin', url: 'https://linkedin.com/company/norton-tanzarella' },
     { platform: 'instagram', url: 'https://instagram.com/norton.tanzarella' },
   ],
+  menu: { ...DEFAULT_SITE_MENU_SETTINGS_IT },
 }

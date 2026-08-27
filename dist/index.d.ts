@@ -30,15 +30,20 @@ declare const optionalCtaLinkSchema: z.ZodEffects<z.ZodOptional<z.ZodObject<{
     label: string;
     to: string;
 } | undefined, unknown>;
+/** Empty string / null from forms → omitted; otherwise Iconify `mdi:` / `tabler:` key. */
+declare const optionalIconKeySchema: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
 declare const featureItemSchema: z.ZodObject<{
     title: z.ZodString;
     description: z.ZodString;
+    iconKey: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
 }, "strip", z.ZodTypeAny, {
     title: string;
     description: string;
+    iconKey?: string | undefined;
 }, {
     title: string;
     description: string;
+    iconKey?: unknown;
 }>;
 
 declare const heroContentSchema: z.ZodObject<{
@@ -73,33 +78,41 @@ declare const heroContentSchema: z.ZodObject<{
     videoMediaId?: unknown;
 }>;
 declare const featuresContentSchema: z.ZodObject<{
+    eyebrow: z.ZodOptional<z.ZodString>;
     title: z.ZodOptional<z.ZodString>;
     lead: z.ZodOptional<z.ZodString>;
     outro: z.ZodOptional<z.ZodString>;
     items: z.ZodArray<z.ZodObject<{
         title: z.ZodString;
         description: z.ZodString;
+        iconKey: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
     }, "strip", z.ZodTypeAny, {
         title: string;
         description: string;
+        iconKey?: string | undefined;
     }, {
         title: string;
         description: string;
+        iconKey?: unknown;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
     items: {
         title: string;
         description: string;
+        iconKey?: string | undefined;
     }[];
     title?: string | undefined;
+    eyebrow?: string | undefined;
     lead?: string | undefined;
     outro?: string | undefined;
 }, {
     items: {
         title: string;
         description: string;
+        iconKey?: unknown;
     }[];
     title?: string | undefined;
+    eyebrow?: string | undefined;
     lead?: string | undefined;
     outro?: string | undefined;
 }>;
@@ -574,33 +587,41 @@ declare const sectionContentByType: {
         videoMediaId?: unknown;
     }>;
     readonly features: zod.ZodObject<{
+        eyebrow: zod.ZodOptional<zod.ZodString>;
         title: zod.ZodOptional<zod.ZodString>;
         lead: zod.ZodOptional<zod.ZodString>;
         outro: zod.ZodOptional<zod.ZodString>;
         items: zod.ZodArray<zod.ZodObject<{
             title: zod.ZodString;
             description: zod.ZodString;
+            iconKey: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
         }, "strip", zod.ZodTypeAny, {
             title: string;
             description: string;
+            iconKey?: string | undefined;
         }, {
             title: string;
             description: string;
+            iconKey?: unknown;
         }>, "many">;
     }, "strip", zod.ZodTypeAny, {
         items: {
             title: string;
             description: string;
+            iconKey?: string | undefined;
         }[];
         title?: string | undefined;
+        eyebrow?: string | undefined;
         lead?: string | undefined;
         outro?: string | undefined;
     }, {
         items: {
             title: string;
             description: string;
+            iconKey?: unknown;
         }[];
         title?: string | undefined;
+        eyebrow?: string | undefined;
         lead?: string | undefined;
         outro?: string | undefined;
     }>;
@@ -935,8 +956,10 @@ declare function parseSectionContent(type: string, content: unknown): {
         items: {
             title: string;
             description: string;
+            iconKey?: string | undefined;
         }[];
         title?: string | undefined;
+        eyebrow?: string | undefined;
         lead?: string | undefined;
         outro?: string | undefined;
     } | {
@@ -3028,6 +3051,24 @@ declare const socialLinkSchema: z.ZodObject<{
     url: string;
 }>;
 type SocialLink = z.infer<typeof socialLinkSchema>;
+/** Fullscreen site-menu overlay panel (image + quote). Not headerNav. */
+declare const siteMenuSettingsSchema: z.ZodObject<{
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+    quote: z.ZodString;
+    attribution: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    quote: string;
+    mediaId?: string | undefined;
+    attribution?: string | undefined;
+}, {
+    quote: string;
+    mediaId?: unknown;
+    attribution?: string | undefined;
+}>;
+type SiteMenuSettings = z.infer<typeof siteMenuSettingsSchema>;
+declare const DEFAULT_SITE_MENU_SETTINGS_IT: SiteMenuSettings;
+/** English seed for locale `en` (merge still uses IT as base when fields missing). */
+declare const DEFAULT_SITE_MENU_SETTINGS_EN: SiteMenuSettings;
 declare const layoutSettingsSchema: z.ZodObject<{
     brand: z.ZodObject<{
         name: z.ZodString;
@@ -3168,6 +3209,19 @@ declare const layoutSettingsSchema: z.ZodObject<{
         platform: "linkedin" | "instagram" | "facebook" | "x" | "youtube" | "tiktok" | "whatsapp";
         url: string;
     }>, "many">>;
+    menu: z.ZodObject<{
+        mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+        quote: z.ZodString;
+        attribution: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        quote: string;
+        mediaId?: string | undefined;
+        attribution?: string | undefined;
+    }, {
+        quote: string;
+        mediaId?: unknown;
+        attribution?: string | undefined;
+    }>;
 }, "strip", z.ZodTypeAny, {
     brand: {
         name: string;
@@ -3202,6 +3256,11 @@ declare const layoutSettingsSchema: z.ZodObject<{
         platform: "linkedin" | "instagram" | "facebook" | "x" | "youtube" | "tiktok" | "whatsapp";
         url: string;
     }[];
+    menu: {
+        quote: string;
+        mediaId?: string | undefined;
+        attribution?: string | undefined;
+    };
     headerCta?: {
         label: string;
         to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
@@ -3240,6 +3299,11 @@ declare const layoutSettingsSchema: z.ZodObject<{
         label: string;
         to: "/privacy-policy" | "/cookie-policy";
     }[];
+    menu: {
+        quote: string;
+        mediaId?: unknown;
+        attribution?: string | undefined;
+    };
     headerCta?: {
         label: string;
         to?: unknown;
@@ -3254,6 +3318,8 @@ declare const layoutSettingsSchema: z.ZodObject<{
     }[] | undefined;
 }>;
 type LayoutSettings = z.infer<typeof layoutSettingsSchema>;
+/** Collect media UUIDs referenced by site menu overlay settings. */
+declare function collectMenuMediaIds(menu: SiteMenuSettings | undefined | null): string[];
 declare const DEFAULT_LAYOUT_SETTINGS_IT: LayoutSettings;
 
 declare const SOCIAL_PLATFORMS: readonly [{
@@ -3734,6 +3800,19 @@ declare const siteSettingsSchema: z.ZodObject<{
         platform: "linkedin" | "instagram" | "facebook" | "x" | "youtube" | "tiktok" | "whatsapp";
         url: string;
     }>, "many">>;
+    menu: z.ZodObject<{
+        mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+        quote: z.ZodString;
+        attribution: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        quote: string;
+        mediaId?: string | undefined;
+        attribution?: string | undefined;
+    }, {
+        quote: string;
+        mediaId?: unknown;
+        attribution?: string | undefined;
+    }>;
 }, "strip", z.ZodTypeAny, {
     organization: {
         openingHours: {
@@ -3817,6 +3896,11 @@ declare const siteSettingsSchema: z.ZodObject<{
         platform: "linkedin" | "instagram" | "facebook" | "x" | "youtube" | "tiktok" | "whatsapp";
         url: string;
     }[];
+    menu: {
+        quote: string;
+        mediaId?: string | undefined;
+        attribution?: string | undefined;
+    };
     headerCta?: {
         label: string;
         to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
@@ -3904,6 +3988,11 @@ declare const siteSettingsSchema: z.ZodObject<{
         label: string;
         to: "/privacy-policy" | "/cookie-policy";
     }[];
+    menu: {
+        quote: string;
+        mediaId?: unknown;
+        attribution?: string | undefined;
+    };
     headerCta?: {
         label: string;
         to?: unknown;
@@ -3950,7 +4039,7 @@ type FieldMeta = {
     localeScope: LocaleScope;
     maxLength?: number;
     multiline?: boolean;
-    format?: 'url' | 'email' | 'time';
+    format?: 'url' | 'email' | 'time' | 'markdown';
 } | {
     kind: 'image';
     key: string;
@@ -3959,6 +4048,12 @@ type FieldMeta = {
     localeScope: LocaleScope;
 } | {
     kind: 'video';
+    key: string;
+    label: string;
+    required: boolean;
+    localeScope: LocaleScope;
+} | {
+    kind: 'icon';
     key: string;
     label: string;
     required: boolean;
@@ -4006,4 +4101,4 @@ type FieldMeta = {
 };
 declare function zodToFieldMeta(schema: ZodTypeAny, key?: string): FieldMeta[];
 
-export { type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteSettings, type SocialLink, type SocialPlatform, type StatementContent, type TimeSlot, WEEKDAY_ORDER, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectLogoMediaIds, collectPageMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statementContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, zodToFieldMeta };
+export { type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type StatementContent, type TimeSlot, WEEKDAY_ORDER, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statementContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, zodToFieldMeta };

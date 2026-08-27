@@ -2,10 +2,13 @@ import { z } from 'zod'
 import { DEFAULT_CONTACT_SETTINGS_IT, contactSettingsSchema } from './contact.js'
 import {
   DEFAULT_LAYOUT_SETTINGS_IT,
+  DEFAULT_SITE_MENU_SETTINGS_IT,
   layoutSettingsSchema,
   normalizeNavPath,
+  siteMenuSettingsSchema,
   type MainNavLink,
   type MainNavPath,
+  type SiteMenuSettings,
 } from './layout.js'
 
 export const siteSettingsSchema = contactSettingsSchema.merge(layoutSettingsSchema)
@@ -90,6 +93,22 @@ function normalizeFooter(value: unknown): SiteSettings['footer'] | undefined {
   }
 }
 
+function normalizeMenu(value: unknown): SiteMenuSettings {
+  const defaults = DEFAULT_SITE_MENU_SETTINGS_IT
+  if (!value || typeof value !== 'object') return { ...defaults }
+  const parsed = siteMenuSettingsSchema.safeParse({
+    ...defaults,
+    ...value,
+    mediaId:
+      (value as { mediaId?: unknown }).mediaId === '' ||
+      (value as { mediaId?: unknown }).mediaId === null
+        ? undefined
+        : (value as { mediaId?: unknown }).mediaId,
+  })
+  if (!parsed.success) return { ...defaults }
+  return parsed.data
+}
+
 export function mergeSiteSettingsDefaults(document: unknown): SiteSettings {
   const partial = (document && typeof document === 'object' ? document : {}) as Record<string, unknown>
   const partialOrg = (partial.organization as Record<string, unknown> | undefined) ?? {}
@@ -141,5 +160,6 @@ export function mergeSiteSettingsDefaults(document: unknown): SiteSettings {
     footer: normalizeFooter(partial.footer) ?? DEFAULT_SITE_SETTINGS_IT.footer,
     legalLinks: partial.legalLinks ?? DEFAULT_SITE_SETTINGS_IT.legalLinks,
     social: partial.social ?? DEFAULT_SITE_SETTINGS_IT.social,
+    menu: normalizeMenu(partial.menu),
   })
 }

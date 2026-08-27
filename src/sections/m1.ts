@@ -9,6 +9,7 @@ export const heroContentSchema = z.object({
 })
 
 export const featuresContentSchema = z.object({
+  eyebrow: z.string().max(40).optional().describe('Sopratitolo'),
   title: z.string().max(80).optional().describe('Titolo'),
   lead: z.string().max(200).optional().describe('Introduzione'),
   outro: z.string().max(200).optional().describe('Chiusura'),
@@ -16,8 +17,8 @@ export const featuresContentSchema = z.object({
 })
 
 export const ctaContentSchema = z.object({
-  title: z.string().max(80).describe('Titolo'),
-  description: z.string().max(200).optional().describe('Descrizione'),
+  title: z.string().max(80).describe('Frase principale'),
+  description: z.string().max(200).optional().describe('Didascalia'),
   button: ctaLinkSchema.describe('Pulsante'),
   mediaId: optionalMediaIdSchema.describe('Immagine sfondo'),
   imageAlt: z.string().max(160).optional().describe('Alt immagine'),

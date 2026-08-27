@@ -4063,9 +4063,14 @@ var optionalCtaLinkSchema = external_exports.preprocess((val) => {
   if (!label && !to) return void 0;
   return { label, to };
 }, ctaLinkSchema.optional());
+var optionalIconKeySchema = external_exports.preprocess(
+  (val) => val === "" || val === null ? void 0 : val,
+  external_exports.string().regex(/^(mdi|tabler):[a-z0-9-]+$/).optional()
+);
 var featureItemSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
-  description: external_exports.string().max(300).describe("Descrizione")
+  description: external_exports.string().max(300).describe("Descrizione"),
+  iconKey: optionalIconKeySchema.describe("Icona")
 }).describe("Elemento");
 
 // src/sections/m1.ts
@@ -4076,14 +4081,15 @@ var heroContentSchema = external_exports.object({
   videoMediaId: optionalMediaIdSchema.describe("Video sfondo")
 });
 var featuresContentSchema = external_exports.object({
+  eyebrow: external_exports.string().max(40).optional().describe("Sopratitolo"),
   title: external_exports.string().max(80).optional().describe("Titolo"),
   lead: external_exports.string().max(200).optional().describe("Introduzione"),
   outro: external_exports.string().max(200).optional().describe("Chiusura"),
   items: external_exports.array(featureItemSchema).min(1).max(12).describe("Elementi")
 });
 var ctaContentSchema = external_exports.object({
-  title: external_exports.string().max(80).describe("Titolo"),
-  description: external_exports.string().max(200).optional().describe("Descrizione"),
+  title: external_exports.string().max(80).describe("Frase principale"),
+  description: external_exports.string().max(200).optional().describe("Didascalia"),
   button: ctaLinkSchema.describe("Pulsante"),
   mediaId: optionalMediaIdSchema.describe("Immagine sfondo"),
   imageAlt: external_exports.string().max(160).optional().describe("Alt immagine")
@@ -4120,7 +4126,7 @@ var pageHeaderContentSchema = external_exports.object({
   lead: external_exports.string().max(200).optional().describe("Introduzione")
 });
 var richTextContentSchema = external_exports.object({
-  body: external_exports.string().max(3e3).describe("Contenuto")
+  body: external_exports.string().max(1e4).describe("Contenuto")
 });
 var legalPolicyContentSchema = external_exports.object({
   source: external_exports.enum(["manual", "iubenda"]).describe("Fonte"),
@@ -4892,6 +4898,19 @@ var socialLinkSchema = external_exports.object({
   platform: external_exports.enum(SOCIAL_PLATFORM_IDS).describe("Piattaforma"),
   url: httpsUrlSchema.describe("URL")
 }).describe("Link social");
+var siteMenuSettingsSchema = external_exports.object({
+  mediaId: optionalMediaIdSchema.describe("Immagine pannello menu"),
+  quote: external_exports.string().min(1).max(240).describe("Frase"),
+  attribution: external_exports.string().max(80).optional().describe("Attribuzione")
+}).describe("Pannello menu fullscreen");
+var DEFAULT_SITE_MENU_SETTINGS_IT = {
+  quote: "Ogni pietra racconta una storia di luce, terra e appartenenza.",
+  attribution: "\u2014 Ostuni"
+};
+var DEFAULT_SITE_MENU_SETTINGS_EN = {
+  quote: "Every stone tells a story of light, land, and belonging.",
+  attribution: "\u2014 Ostuni"
+};
 var layoutSettingsSchema = external_exports.object({
   brand: brandSchema,
   headerNav: external_exports.array(mainNavLinkSchema).min(1).max(8).describe("Menu principale"),
@@ -4899,8 +4918,13 @@ var layoutSettingsSchema = external_exports.object({
   headerSecondaryCta: headerSecondaryCtaSchema,
   footer: footerSchema,
   legalLinks: external_exports.array(legalNavLinkSchema).min(1).max(6).describe("Link legali"),
-  social: external_exports.array(socialLinkSchema).max(6).default([]).describe("Social")
+  social: external_exports.array(socialLinkSchema).max(6).default([]).describe("Social"),
+  menu: siteMenuSettingsSchema.describe("Pannello menu fullscreen")
 });
+function collectMenuMediaIds(menu) {
+  if (!menu?.mediaId) return [];
+  return [menu.mediaId];
+}
 var DEFAULT_LAYOUT_SETTINGS_IT = {
   brand: {
     name: "Norton Tanzarella",
@@ -4945,7 +4969,8 @@ var DEFAULT_LAYOUT_SETTINGS_IT = {
   social: [
     { platform: "linkedin", url: "https://linkedin.com/company/norton-tanzarella" },
     { platform: "instagram", url: "https://instagram.com/norton.tanzarella" }
-  ]
+  ],
+  menu: { ...DEFAULT_SITE_MENU_SETTINGS_IT }
 };
 
 // src/settings/site.ts
@@ -5015,6 +5040,17 @@ function normalizeFooter(value) {
     })
   };
 }
+function normalizeMenu(value) {
+  const defaults = DEFAULT_SITE_MENU_SETTINGS_IT;
+  if (!value || typeof value !== "object") return { ...defaults };
+  const parsed = siteMenuSettingsSchema.safeParse({
+    ...defaults,
+    ...value,
+    mediaId: value.mediaId === "" || value.mediaId === null ? void 0 : value.mediaId
+  });
+  if (!parsed.success) return { ...defaults };
+  return parsed.data;
+}
 function mergeSiteSettingsDefaults(document) {
   const partial = document && typeof document === "object" ? document : {};
   const partialOrg = partial.organization ?? {};
@@ -5057,7 +5093,8 @@ function mergeSiteSettingsDefaults(document) {
     headerSecondaryCta: normalizeHeaderCta(partial.headerSecondaryCta) ?? DEFAULT_SITE_SETTINGS_IT.headerSecondaryCta,
     footer: normalizeFooter(partial.footer) ?? DEFAULT_SITE_SETTINGS_IT.footer,
     legalLinks: partial.legalLinks ?? DEFAULT_SITE_SETTINGS_IT.legalLinks,
-    social: partial.social ?? DEFAULT_SITE_SETTINGS_IT.social
+    social: partial.social ?? DEFAULT_SITE_SETTINGS_IT.social,
+    menu: normalizeMenu(partial.menu)
   });
 }
 
@@ -5194,19 +5231,28 @@ var HOME_DEFAULTS_IT = {
       enabled: true,
       order: 4,
       content: {
+        eyebrow: "PERCH\xC9 SCEGLIERCI",
         title: "Perch\xE9 sceglierci",
         items: [
           {
+            title: "Vendita di immobili di prestigio",
+            description: "Masserie, trulli, ville tra gli ulivi, dimore fronte mare e residenze di carattere.",
+            iconKey: "mdi:crown-outline"
+          },
+          {
+            title: "Valutazioni immobiliari",
+            description: "Stime esperte, con conoscenza profonda del mercato locale e delle tipologiche in pietra.",
+            iconKey: "mdi:file-document-outline"
+          },
+          {
             title: "Territorio e tipologiche",
-            description: "Conosciamo Ostuni e la Valle d'Itria: masserie, rustici, trulli e case nel centro storico."
+            description: "Conosciamo il territorio: masserie, rustici, trulli, lamie e case nei borghi bianchi.",
+            iconKey: "mdi:map-outline"
           },
           {
-            title: "Assistenza completa",
-            description: "Dalla ricerca alla firma del rogito, con servizi su misura per ogni cliente."
-          },
-          {
-            title: "Fiducia e relazioni",
-            description: "Trasparenza e relazioni di lungo periodo: la casa come scelta di vita."
+            title: "Architetture in pietra",
+            description: "Volte a stella, chianche, muretti a secco e calce bianca: il linguaggio della terra di pietra.",
+            iconKey: "mdi:home-city-outline"
           }
         ]
       }
@@ -5277,19 +5323,28 @@ var HOME_DEFAULTS_EN = {
       enabled: true,
       order: 4,
       content: {
+        eyebrow: "WHY CHOOSE US",
         title: "Why choose us",
         items: [
           {
-            title: "Territory and property types",
-            description: "We know Ostuni and the Valle d'Itria: masserie, rustici, trulli and historic-centre homes."
+            title: "Prestige Property Sales",
+            description: "Masserie, trulli, olive-grove villas, seafront homes and character residences.",
+            iconKey: "mdi:crown-outline"
           },
           {
-            title: "End-to-end support",
-            description: "From search to completion, with tailored services for every client."
+            title: "Property Valuations",
+            description: "Expert valuations, with deep knowledge of the local market and stone property types.",
+            iconKey: "mdi:file-document-outline"
           },
           {
-            title: "Trust and relationships",
-            description: "Transparency and long-term relationships: a home as a lifestyle choice."
+            title: "Territory and Property Types",
+            description: "We know the territory: masserie, rustici, trulli, lamie and homes in whitewashed towns.",
+            iconKey: "mdi:map-outline"
+          },
+          {
+            title: "Stone Architecture",
+            description: "Star vaults, chianche floors, dry-stone walls and whitewashed lime: the language of stone country.",
+            iconKey: "mdi:home-city-outline"
           }
         ]
       }
@@ -5592,10 +5647,13 @@ var PAGE_REGISTRY = {
     milestone: "M2"
   },
   "immobili-index": {
-    allowedTypes: ["pageHeader"],
-    reorderable: [],
+    allowedTypes: ["pageHeader", "cta"],
+    reorderable: ["cta"],
     defaults: (locale) => locale === "en" ? {
-      seo: { title: "Properties", description: "Browse masserie, rustici and homes in Ostuni and the Valle d'Itria." },
+      seo: {
+        title: "Properties",
+        description: "Browse masserie, rustici and homes in Ostuni and the Valle d'Itria."
+      },
       sections: [
         {
           id: "00000000-0000-4000-8000-000000000050",
@@ -5606,10 +5664,24 @@ var PAGE_REGISTRY = {
             title: "Properties",
             lead: "Find a masseria, rustico or home in Ostuni and the Valle d'Itria."
           }
+        },
+        {
+          id: "00000000-0000-4000-8000-000000000051",
+          type: "cta",
+          enabled: true,
+          order: 1,
+          content: {
+            title: "Selling Distinction",
+            description: "Let us tell the story of your property",
+            button: { label: "Contact our agency", to: "/sell-with-us" }
+          }
         }
       ]
     } : {
-      seo: { title: "Immobili", description: "Sfoglia masserie, rustici e case a Ostuni e in Valle d'Itria." },
+      seo: {
+        title: "Immobili",
+        description: "Sfoglia masserie, rustici e case a Ostuni e in Valle d'Itria."
+      },
       sections: [
         {
           id: "00000000-0000-4000-8000-000000000050",
@@ -5619,6 +5691,17 @@ var PAGE_REGISTRY = {
           content: {
             title: "Immobili",
             lead: "Trova masseria, rustico o casa a Ostuni e in Valle d'Itria."
+          }
+        },
+        {
+          id: "00000000-0000-4000-8000-000000000051",
+          type: "cta",
+          enabled: true,
+          order: 1,
+          content: {
+            title: "Vendi con distinzione",
+            description: "Raccontiamo insieme la storia del tuo immobile",
+            button: { label: "Contatta la nostra agenzia", to: "/sell-with-us" }
           }
         }
       ]
@@ -5670,12 +5753,12 @@ var PAGE_REGISTRY = {
     milestone: "M2"
   },
   "property-finder": {
-    allowedTypes: ["pageHeader"],
+    allowedTypes: ["pageHeader", "richText"],
     reorderable: [],
     defaults: (locale) => locale === "en" ? {
       seo: {
         title: "Property Finder",
-        description: "Find your next property with Norton Tanzarella."
+        description: "Full property finder service in Italy: tailored search, viewings, negotiation, legal and tax support."
       },
       sections: [
         {
@@ -5684,15 +5767,44 @@ var PAGE_REGISTRY = {
           enabled: true,
           order: 0,
           content: {
-            title: "Property Finder",
-            lead: "Page under construction."
+            title: "Our Comprehensive Property Finder Service",
+            lead: "From the first consultation to the final purchase, we guide you every step of the way."
+          }
+        },
+        {
+          id: "00000000-0000-4000-8000-000000000061",
+          type: "richText",
+          enabled: true,
+          order: 1,
+          content: {
+            body: `At our estate agency, we understand that **purchasing a property in a foreign country** can be a daunting and complex process, which is why we are committed to taking care of everything for our clients. From the *initial consultation* to the *final purchase*, we will be there every step of the way to guide you through the process and ensure that everything runs smoothly. Our team of experts will help you to **identify the right properties**, arrange viewings, **negotiate the best possible price** and manage all aspects of the purchase process, including legal and financial matters. We work with a network of trusted legal and financial advisors to ensure that all aspects of the purchase process are fully taken care of, including *title searches*, *property registration*, *tax matters* and more.
+
+> Our goal is to provide our clients with a **stress-free and seamless experience**, allowing them to relax and enjoy the excitement of owning a property in Italy.
+
+---
+
+### A tailored search
+
+To begin the process, we will craft a **customized profile** based on your specific requirements. With this information in hand, we will conduct an extensive search of all available properties in your desired areas, carefully filtering out those that do not meet your criteria and presenting only the finest options for your consideration.
+
+### Viewings, handled for you
+
+Once we have identified a selection of potential properties, we will work with various agencies to create a **comprehensive itinerary for viewing**. You can rest assured that we will handle all communication and coordination with these agencies, sparing you any unnecessary hassle.
+
+During the viewing process, we will be at your side every step of the way, providing invaluable **translation services** and *expert advice* on each property that you see.
+
+---
+
+## Large Coverage
+
+At our estate agency, we take pride in our **large coverage**, which extends to some of the most desirable locations throughout **Italy**. Our extensive network of local agents and partners allows us to offer our clients a wide selection of properties in popular destinations such as **Tuscany**, the **Amalfi Coast**, the **Italian Lakes**, and more. We are dedicated to providing our clients with an exceptional level of service, no matter where they are looking to buy a property in Italy. Whether you are seeking a *rustic countryside retreat* or a *chic urban apartment*, we have the expertise and resources to help you find the perfect property in the location that best suits your needs and lifestyle.`
           }
         }
       ]
     } : {
       seo: {
         title: "Trova immobile",
-        description: "Trova il prossimo immobile con Norton Tanzarella."
+        description: "Servizio completo di ricerca immobili in Italia: profilo su misura, visite, negoziazione e gestione legale e fiscale."
       },
       sections: [
         {
@@ -5701,8 +5813,37 @@ var PAGE_REGISTRY = {
           enabled: true,
           order: 0,
           content: {
-            title: "Trova immobile",
-            lead: "Pagina in costruzione."
+            title: "Il nostro servizio completo di ricerca immobili",
+            lead: "Dalla prima consulenza all\u2019acquisto, ti accompagniamo in ogni fase."
+          }
+        },
+        {
+          id: "00000000-0000-4000-8000-000000000061",
+          type: "richText",
+          enabled: true,
+          order: 1,
+          content: {
+            body: `Nella nostra agenzia immobiliare sappiamo quanto possa risultare impegnativo e complesso **acquistare un immobile all\u2019estero**: per questo ci impegnamo a occuparci di tutto per i nostri clienti. Dalla *prima consulenza* fino all\u2019*acquisto finale*, saremo al vostro fianco in ogni fase per guidarvi nel percorso e garantire che tutto proceda senza intoppi. Il nostro team di esperti vi aiuter\xE0 a **individuare le propriet\xE0 giuste**, organizzare le visite, **negoziare il miglior prezzo possibile** e gestire tutti gli aspetti dell\u2019acquisto, comprese le questioni legali e finanziarie. Collaboriamo con una rete di consulenti legali e finanziari di fiducia per assicurarci che ogni aspetto del processo sia pienamente curato, dalle *ricerche ipotecarie* alla *registrazione dell\u2019immobile*, dalle *questioni fiscali* e oltre.
+
+> Il nostro obiettivo \xE8 offrire un\u2019**esperienza serena e senza stress**, cos\xEC potrete godervi l\u2019emozione di possedere un immobile in Italia.
+
+---
+
+### Una ricerca su misura
+
+Per iniziare, costruiremo un **profilo personalizzato** basato sulle vostre esigenze specifiche. Con queste informazioni condurremo una ricerca approfondita di tutte le propriet\xE0 disponibili nelle zone di vostro interesse, filtrando con cura quelle che non corrispondono ai criteri e presentandovi solo le opzioni migliori da valutare.
+
+### Visite, gestite per voi
+
+Una volta individuata una selezione di immobili potenziali, collaboreremo con varie agenzie per creare un **itinerario completo di visite**. Potrete contare sul fatto che gestiamo noi tutta la comunicazione e il coordinamento con queste agenzie, evitandovi ogni inutile complicazione.
+
+Durante le visite saremo al vostro fianco in ogni momento, offrendo **servizi di traduzione** e *consigli esperti* su ciascuna propriet\xE0 che vedrete.
+
+---
+
+## Ampia copertura
+
+Nella nostra agenzia siamo orgogliosi della nostra **ampia copertura**, che si estende ad alcune delle localit\xE0 pi\xF9 desiderabili di tutta **Italia**. La nostra vasta rete di agenti e partner locali ci consente di offrire una vasta selezione di immobili in destinazioni come la **Toscana**, la **Costiera Amalfitana**, i **laghi italiani** e oltre. Siamo dedicati a fornire un livello di servizio eccezionale, ovunque stiate cercando di acquistare in Italia. Che cerchiate un *rifugio rustico in campagna* o un *appartamento urbano raffinato*, abbiamo l\u2019esperienza e le risorse per aiutarvi a trovare la propriet\xE0 perfetta nella localit\xE0 pi\xF9 adatta alle vostre esigenze e al vostro stile di vita.`
           }
         }
       ]
@@ -5895,8 +6036,9 @@ var SHARED_STRING_KEYS = /* @__PURE__ */ new Set([
   "url",
   "platform"
 ]);
+var MARKDOWN_BODY_MIN_MAX_LENGTH = 1e4;
 function resolveLocaleScope(kind, fieldKey, format) {
-  if (kind === "image" || kind === "video" || kind === "boolean" || kind === "number" || kind === "enum") {
+  if (kind === "image" || kind === "video" || kind === "icon" || kind === "boolean" || kind === "number" || kind === "enum") {
     return "shared";
   }
   if (kind === "string" && (SHARED_STRING_KEYS.has(fieldKey) || format === "email" || format === "url")) {
@@ -5950,12 +6092,16 @@ function isTimeString(schema) {
     return check.regex.test("09:00") && check.regex.test("23:59") && !check.regex.test("9:00");
   }) ?? false;
 }
-function resolveStringFormat(schema) {
+function resolveStringFormat(schema, fieldKey) {
   const inner = unwrap(schema);
   if (!(inner instanceof external_exports.ZodString)) return void 0;
   if (inner._def.checks?.some((check) => check.kind === "url")) return "url";
   if (isEmailString(inner)) return "email";
   if (isTimeString(inner)) return "time";
+  if (fieldKey === "body") {
+    const maxLength = getMaxLength(inner);
+    if (maxLength !== void 0 && maxLength >= MARKDOWN_BODY_MIN_MAX_LENGTH) return "markdown";
+  }
   return void 0;
 }
 function resolveArrayItemMeta(itemSchema, fieldKey) {
@@ -5988,9 +6134,9 @@ function zodToFieldMeta(schema, key = "root") {
       const inner = unwrap(fieldSchema);
       if (inner instanceof external_exports.ZodString) {
         const maxLength = getMaxLength(inner);
-        const format = resolveStringFormat(fieldSchema);
+        const format = resolveStringFormat(fieldSchema, fieldKey);
         const isVideoField = fieldKey === "videoMediaId" || fieldKey.endsWith("VideoMediaId") || fieldKey.endsWith("VideoId");
-        if (isVideoField && format !== "url" && format !== "email" && format !== "time") {
+        if (isVideoField && format !== "url" && format !== "email" && format !== "time" && format !== "markdown") {
           fields.push({
             kind: "video",
             key: fieldKey,
@@ -6001,13 +6147,23 @@ function zodToFieldMeta(schema, key = "root") {
           continue;
         }
         const isImageField = fieldKey === "image" || fieldKey === "mediaId" || fieldKey.endsWith("Image") || fieldKey.endsWith("image") || fieldKey.endsWith("MediaId");
-        if (isImageField && format !== "url" && format !== "email" && format !== "time") {
+        if (isImageField && format !== "url" && format !== "email" && format !== "time" && format !== "markdown") {
           fields.push({
             kind: "image",
             key: fieldKey,
             label: resolveLabel(fieldSchema, fieldKey),
             required,
             localeScope: resolveLocaleScope("image", fieldKey)
+          });
+          continue;
+        }
+        if (fieldKey === "iconKey" || fieldKey.endsWith("IconKey")) {
+          fields.push({
+            kind: "icon",
+            key: fieldKey,
+            label: resolveLabel(fieldSchema, fieldKey),
+            required,
+            localeScope: resolveLocaleScope("icon", fieldKey)
           });
           continue;
         }
@@ -6018,7 +6174,7 @@ function zodToFieldMeta(schema, key = "root") {
           required,
           localeScope: resolveLocaleScope("string", fieldKey, format),
           maxLength,
-          multiline: format === void 0 && maxLength !== void 0 && maxLength > 200,
+          multiline: format === "markdown" || format === void 0 && maxLength !== void 0 && maxLength > 200,
           format
         });
         continue;
@@ -6116,6 +6272,8 @@ export {
   DEFAULT_CONTACT_SETTINGS_IT,
   DEFAULT_LAYOUT_SETTINGS_IT,
   DEFAULT_OPENING_HOURS_IT,
+  DEFAULT_SITE_MENU_SETTINGS_EN,
+  DEFAULT_SITE_MENU_SETTINGS_IT,
   DEFAULT_SITE_SETTINGS_IT,
   EDITOR_DAY_ORDER,
   FEATURED_COLLECTION_MODE_LABELS_IT,
@@ -6147,6 +6305,7 @@ export {
   cmsSectionSchema,
   cmsSeoSchema,
   collectLogoMediaIds,
+  collectMenuMediaIds,
   collectPageMediaIds,
   contactFormSchema,
   contactSettingsSchema,
@@ -6188,6 +6347,7 @@ export {
   normalizeSettingsScalars,
   openingHoursSchema,
   optionalCtaLinkSchema,
+  optionalIconKeySchema,
   optionalMediaIdSchema,
   organizationSchema,
   pageHeaderContentSchema,
@@ -6196,6 +6356,7 @@ export {
   scalarsToCssVars,
   sectionContentByType,
   settingsScalarsSchema,
+  siteMenuSettingsSchema,
   siteSettingsSchema,
   socialLinkSchema,
   socialPlatformIcon,
