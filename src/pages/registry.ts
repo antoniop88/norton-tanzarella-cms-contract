@@ -663,7 +663,7 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 type: 'pageHeader',
                 enabled: true,
                 order: 0,
-                content: { title: 'Contact us', lead: 'We are here to help with your property needs.' },
+                content: { title: 'Contact us' },
               },
               {
                 id: '00000000-0000-4000-8000-000000000021',
@@ -682,7 +682,7 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 type: 'pageHeader',
                 enabled: true,
                 order: 0,
-                content: { title: 'Contattaci', lead: 'Siamo a disposizione per ogni esigenza immobiliare.' },
+                content: { title: 'Contattaci' },
               },
               {
                 id: '00000000-0000-4000-8000-000000000021',
@@ -801,7 +801,7 @@ Nella nostra agenzia siamo orgogliosi della nostra **ampia copertura**, che si e
     milestone: 'M2',
   },
   'virtual-tours': {
-    allowedTypes: ['pageHeader'],
+    allowedTypes: ['pageHeader', 'youtubeGallery'],
     reorderable: [],
     defaults: (locale) =>
       locale === 'en'
@@ -818,7 +818,21 @@ Nella nostra agenzia siamo orgogliosi della nostra **ampia copertura**, che si e
                 order: 0,
                 content: {
                   title: 'Virtual Tours',
-                  lead: 'Page under construction.',
+                  lead:
+                    'Explore trulli, masserie and character homes across the Valle d\'Itria through our video tours — an authentic first glimpse of each property, before you travel.',
+                },
+              },
+              {
+                id: '00000000-0000-4000-8000-000000000071',
+                type: 'youtubeGallery',
+                enabled: true,
+                order: 1,
+                content: {
+                  playlistId: 'UU2weLZdp6gU82cmEb2URPvA',
+                  pageSize: 15,
+                  columns: 3,
+                  subscribeChannelUrl: 'https://www.youtube.com/@nortontanzarella98',
+                  subscribeLabel: 'Subscribe to Our channel',
                 },
               },
             ],
@@ -836,7 +850,21 @@ Nella nostra agenzia siamo orgogliosi della nostra **ampia copertura**, che si e
                 order: 0,
                 content: {
                   title: 'Tour virtuali',
-                  lead: 'Pagina in costruzione.',
+                  lead:
+                    'Attraversate trulli, masserie e case di charme in Valle d\'Itria con i nostri tour video — un primo incontro autentico con ogni spazio, prima del vostro viaggio.',
+                },
+              },
+              {
+                id: '00000000-0000-4000-8000-000000000071',
+                type: 'youtubeGallery',
+                enabled: true,
+                order: 1,
+                content: {
+                  playlistId: 'UU2weLZdp6gU82cmEb2URPvA',
+                  pageSize: 15,
+                  columns: 3,
+                  subscribeChannelUrl: 'https://www.youtube.com/@nortontanzarella98',
+                  subscribeLabel: 'Iscriviti al nostro canale',
                 },
               },
             ],

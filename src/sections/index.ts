@@ -16,6 +16,7 @@ import {
   statsContentSchema,
   teamContentSchema,
   testimonialsContentSchema,
+  youtubeGalleryContentSchema,
 } from './m2.js'
 
 export { collectPageMediaIds } from './collectPageMediaIds.js'
@@ -36,6 +37,7 @@ export const sectionContentByType = {
   stats: statsContentSchema,
   faq: faqContentSchema,
   testimonials: testimonialsContentSchema,
+  youtubeGallery: youtubeGalleryContentSchema,
 } as const
 
 export type SectionType = keyof typeof sectionContentByType
@@ -56,6 +58,7 @@ export const SECTION_TYPE_LABELS_IT: Record<SectionType, string> = {
   stats: 'Statistiche',
   faq: 'FAQ',
   testimonials: 'Testimonianze',
+  youtubeGallery: 'Gallery YouTube',
 }
 
 export function parseSectionContent(type: string, content: unknown) {

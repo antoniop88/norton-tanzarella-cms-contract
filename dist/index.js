@@ -4185,6 +4185,14 @@ var testimonialsContentSchema = external_exports.object({
     })
   ).min(1).max(10).describe("Testimonianze")
 });
+var youtubePlaylistIdSchema = external_exports.string().min(10).max(64).regex(/^UU[\w-]+$/, "ID playlist uploads YouTube (prefisso UU)");
+var youtubeGalleryContentSchema = external_exports.object({
+  playlistId: youtubePlaylistIdSchema.describe("ID playlist YouTube"),
+  pageSize: external_exports.number().int().min(1).max(50).default(15).describe("Video per pagina"),
+  columns: external_exports.number().int().min(1).max(4).default(3).describe("Colonne griglia"),
+  subscribeChannelUrl: external_exports.string().url().max(500).describe("URL canale YouTube"),
+  subscribeLabel: external_exports.string().max(80).describe("Testo pulsante subscribe")
+});
 
 // src/sections/collectPageMediaIds.ts
 function isUuid(value) {
@@ -4233,7 +4241,8 @@ var sectionContentByType = {
   team: teamContentSchema,
   stats: statsContentSchema,
   faq: faqContentSchema,
-  testimonials: testimonialsContentSchema
+  testimonials: testimonialsContentSchema,
+  youtubeGallery: youtubeGalleryContentSchema
 };
 var SECTION_TYPE_LABELS_IT = {
   hero: "Hero",
@@ -4250,7 +4259,8 @@ var SECTION_TYPE_LABELS_IT = {
   team: "Team",
   stats: "Statistiche",
   faq: "FAQ",
-  testimonials: "Testimonianze"
+  testimonials: "Testimonianze",
+  youtubeGallery: "Gallery YouTube"
 };
 function parseSectionContent(type, content) {
   const schema = sectionContentByType[type];
@@ -5719,7 +5729,7 @@ var PAGE_REGISTRY = {
           type: "pageHeader",
           enabled: true,
           order: 0,
-          content: { title: "Contact us", lead: "We are here to help with your property needs." }
+          content: { title: "Contact us" }
         },
         {
           id: "00000000-0000-4000-8000-000000000021",
@@ -5737,7 +5747,7 @@ var PAGE_REGISTRY = {
           type: "pageHeader",
           enabled: true,
           order: 0,
-          content: { title: "Contattaci", lead: "Siamo a disposizione per ogni esigenza immobiliare." }
+          content: { title: "Contattaci" }
         },
         {
           id: "00000000-0000-4000-8000-000000000021",
@@ -5851,7 +5861,7 @@ Nella nostra agenzia siamo orgogliosi della nostra **ampia copertura**, che si e
     milestone: "M2"
   },
   "virtual-tours": {
-    allowedTypes: ["pageHeader"],
+    allowedTypes: ["pageHeader", "youtubeGallery"],
     reorderable: [],
     defaults: (locale) => locale === "en" ? {
       seo: {
@@ -5866,7 +5876,20 @@ Nella nostra agenzia siamo orgogliosi della nostra **ampia copertura**, che si e
           order: 0,
           content: {
             title: "Virtual Tours",
-            lead: "Page under construction."
+            lead: "Explore trulli, masserie and character homes across the Valle d'Itria through our video tours \u2014 an authentic first glimpse of each property, before you travel."
+          }
+        },
+        {
+          id: "00000000-0000-4000-8000-000000000071",
+          type: "youtubeGallery",
+          enabled: true,
+          order: 1,
+          content: {
+            playlistId: "UU2weLZdp6gU82cmEb2URPvA",
+            pageSize: 15,
+            columns: 3,
+            subscribeChannelUrl: "https://www.youtube.com/@nortontanzarella98",
+            subscribeLabel: "Subscribe to Our channel"
           }
         }
       ]
@@ -5883,7 +5906,20 @@ Nella nostra agenzia siamo orgogliosi della nostra **ampia copertura**, che si e
           order: 0,
           content: {
             title: "Tour virtuali",
-            lead: "Pagina in costruzione."
+            lead: "Attraversate trulli, masserie e case di charme in Valle d'Itria con i nostri tour video \u2014 un primo incontro autentico con ogni spazio, prima del vostro viaggio."
+          }
+        },
+        {
+          id: "00000000-0000-4000-8000-000000000071",
+          type: "youtubeGallery",
+          enabled: true,
+          order: 1,
+          content: {
+            playlistId: "UU2weLZdp6gU82cmEb2URPvA",
+            pageSize: 15,
+            columns: 3,
+            subscribeChannelUrl: "https://www.youtube.com/@nortontanzarella98",
+            subscribeLabel: "Iscriviti al nostro canale"
           }
         }
       ]
@@ -6368,6 +6404,7 @@ export {
   teamContentSchema,
   testimonialsContentSchema,
   validateOpeningHours,
+  youtubeGalleryContentSchema,
   zodToFieldMeta
 };
 //# sourceMappingURL=index.js.map

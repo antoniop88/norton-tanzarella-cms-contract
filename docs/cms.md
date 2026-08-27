@@ -1,4 +1,4 @@
-# CMS — Contratto v0.25.0
+# CMS — Contratto v0.26.0
 
 ## Export
 
@@ -55,12 +55,17 @@ Defaults: hero → slideshow → split×3 → team → stats → cta → faq (IT
 - `split`: `mediaId?`, `button?` (CTA); `hero.subtitle` max 600
 - Immagini shared (`mediaId`) su slideshow / split / team; upload folder `cms/chi-siamo/`
 
+## `virtual-tours` (v0.26.0)
+
+- `pageHeader` + `youtubeGallery` (`playlistId`, `pageSize`, `columns`, `subscribeChannelUrl`, `subscribeLabel`)
+- Defaults: playlist Norton Tanzarella `UU2weLZdp6gU82cmEb2URPvA`, 15/pagina, 3 colonne
+
 ## `property-finder` (v0.25.0)
 
 `pageHeader` + `richText` (servizio ricerca immobili). Defaults IT|EN con copy completo (non stub).
 
 - `richText.body` max 10000, `format: 'markdown'` (TipTap BO → Markdown string → `marked` sul web)
-- Stub restanti: `virtual-tours`, `sell-with-us` (`pageHeader`, placeholder in costruzione); policy con body «in costruzione»
+- Stub restanti: `sell-with-us` (`pageHeader`, placeholder in costruzione); policy con body «in costruzione»
 
 `immobili-index` (v0.24.0): `pageHeader` + `cta` (reorderable); CTA defaults verso `/sell-with-us` (frase / didascalia / immagine / pulsante).
 

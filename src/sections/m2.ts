@@ -89,3 +89,19 @@ export const testimonialsContentSchema = z.object({
     .max(10)
     .describe('Testimonianze'),
 })
+
+const youtubePlaylistIdSchema = z
+  .string()
+  .min(10)
+  .max(64)
+  .regex(/^UU[\w-]+$/, 'ID playlist uploads YouTube (prefisso UU)')
+
+export const youtubeGalleryContentSchema = z.object({
+  playlistId: youtubePlaylistIdSchema.describe('ID playlist YouTube'),
+  pageSize: z.number().int().min(1).max(50).default(15).describe('Video per pagina'),
+  columns: z.number().int().min(1).max(4).default(3).describe('Colonne griglia'),
+  subscribeChannelUrl: z.string().url().max(500).describe('URL canale YouTube'),
+  subscribeLabel: z.string().max(80).describe('Testo pulsante subscribe'),
+})
+
+export type YoutubeGalleryContent = z.infer<typeof youtubeGalleryContentSchema>
