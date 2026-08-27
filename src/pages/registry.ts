@@ -168,10 +168,22 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       },
     },
     {
+      id: '00000000-0000-4000-8000-000000000007',
+      type: 'googleReviews',
+      enabled: true,
+      order: 5,
+      content: {
+        title: 'GOOGLE REVIEWS',
+        maxItems: 5,
+        hideWhenEmpty: true,
+        showSummary: true,
+      },
+    },
+    {
       id: '00000000-0000-4000-8000-000000000004',
       type: 'cta',
       enabled: true,
-      order: 5,
+      order: 6,
       content: {
         title: 'Hai bisogno di una valutazione?',
         description: 'Contattaci per un appuntamento senza impegno a Ostuni.',
@@ -267,10 +279,22 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
       },
     },
     {
+      id: '00000000-0000-4000-8000-000000000007',
+      type: 'googleReviews',
+      enabled: true,
+      order: 5,
+      content: {
+        title: 'GOOGLE REVIEWS',
+        maxItems: 5,
+        hideWhenEmpty: true,
+        showSummary: true,
+      },
+    },
+    {
       id: '00000000-0000-4000-8000-000000000004',
       type: 'cta',
       enabled: true,
-      order: 5,
+      order: 6,
       content: {
         title: 'Need a valuation?',
         description: 'Contact us for a no-obligation meeting in Ostuni.',
@@ -574,8 +598,23 @@ const CHI_SIAMO_DEFAULTS_EN: CmsPageDocument = {
 
 export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
   home: {
-    allowedTypes: ['hero', 'statement', 'categoryGrid', 'features', 'featuredCollection', 'cta'],
-    reorderable: ['statement', 'categoryGrid', 'features', 'featuredCollection', 'cta'],
+    allowedTypes: [
+      'hero',
+      'statement',
+      'categoryGrid',
+      'features',
+      'featuredCollection',
+      'googleReviews',
+      'cta',
+    ],
+    reorderable: [
+      'statement',
+      'categoryGrid',
+      'features',
+      'featuredCollection',
+      'googleReviews',
+      'cta',
+    ],
     defaults: (locale) => (locale === 'en' ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT),
     milestone: 'M1',
   },

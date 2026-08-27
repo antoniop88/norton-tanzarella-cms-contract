@@ -105,3 +105,12 @@ export const youtubeGalleryContentSchema = z.object({
 })
 
 export type YoutubeGalleryContent = z.infer<typeof youtubeGalleryContentSchema>
+
+export const googleReviewsContentSchema = z.object({
+  title: z.string().max(80).optional().describe('Titolo sezione'),
+  maxItems: z.number().int().min(1).max(5).default(5).describe('Recensioni da mostrare (max 5)'),
+  hideWhenEmpty: z.boolean().default(true).describe('Nascondi se nessuna recensione'),
+  showSummary: z.boolean().default(true).describe('Mostra rating e totale Google'),
+})
+
+export type GoogleReviewsContent = z.infer<typeof googleReviewsContentSchema>

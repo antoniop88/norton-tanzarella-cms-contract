@@ -1,4 +1,4 @@
-# CMS — Contratto v0.26.0
+# CMS — Contratto v0.27.0
 
 ## Export
 
@@ -15,9 +15,18 @@
 
 ## Pagine M1
 
-Solo `home` — tipi ammessi: `hero`, `statement`, `categoryGrid`, `features`, `featuredCollection`, `cta`.
+Solo `home` — tipi ammessi: `hero`, `statement`, `categoryGrid`, `features`, `featuredCollection`, `googleReviews`, `cta`.
 
-Defaults ordine: hero → statement → categoryGrid → featuredCollection → features → cta.
+Defaults ordine (v0.27.0): hero → statement → categoryGrid → featuredCollection → features → googleReviews → cta.
+
+## `googleReviews` (v0.27.0)
+
+- `title?` (max 80, i18n) — es. «GOOGLE REVIEWS»
+- `maxItems` (1–5, default 5, shared)
+- `hideWhenEmpty` (default true, shared)
+- `showSummary` (default true, shared) — rating + totale + link Maps
+- Dati review da Places API (settings admin: Place ID + API key); non nel documento CMS
+- Limite Google Place Details: tipicamente ~5 review
 
 ## `features` (v0.23.0)
 

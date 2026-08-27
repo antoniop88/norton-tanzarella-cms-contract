@@ -4193,6 +4193,12 @@ var youtubeGalleryContentSchema = external_exports.object({
   subscribeChannelUrl: external_exports.string().url().max(500).describe("URL canale YouTube"),
   subscribeLabel: external_exports.string().max(80).describe("Testo pulsante subscribe")
 });
+var googleReviewsContentSchema = external_exports.object({
+  title: external_exports.string().max(80).optional().describe("Titolo sezione"),
+  maxItems: external_exports.number().int().min(1).max(5).default(5).describe("Recensioni da mostrare (max 5)"),
+  hideWhenEmpty: external_exports.boolean().default(true).describe("Nascondi se nessuna recensione"),
+  showSummary: external_exports.boolean().default(true).describe("Mostra rating e totale Google")
+});
 
 // src/sections/collectPageMediaIds.ts
 function isUuid(value) {
@@ -4242,7 +4248,8 @@ var sectionContentByType = {
   stats: statsContentSchema,
   faq: faqContentSchema,
   testimonials: testimonialsContentSchema,
-  youtubeGallery: youtubeGalleryContentSchema
+  youtubeGallery: youtubeGalleryContentSchema,
+  googleReviews: googleReviewsContentSchema
 };
 var SECTION_TYPE_LABELS_IT = {
   hero: "Hero",
@@ -4260,7 +4267,8 @@ var SECTION_TYPE_LABELS_IT = {
   stats: "Statistiche",
   faq: "FAQ",
   testimonials: "Testimonianze",
-  youtubeGallery: "Gallery YouTube"
+  youtubeGallery: "Gallery YouTube",
+  googleReviews: "Google Reviews"
 };
 function parseSectionContent(type, content) {
   const schema = sectionContentByType[type];
@@ -5268,10 +5276,22 @@ var HOME_DEFAULTS_IT = {
       }
     },
     {
+      id: "00000000-0000-4000-8000-000000000007",
+      type: "googleReviews",
+      enabled: true,
+      order: 5,
+      content: {
+        title: "GOOGLE REVIEWS",
+        maxItems: 5,
+        hideWhenEmpty: true,
+        showSummary: true
+      }
+    },
+    {
       id: "00000000-0000-4000-8000-000000000004",
       type: "cta",
       enabled: true,
-      order: 5,
+      order: 6,
       content: {
         title: "Hai bisogno di una valutazione?",
         description: "Contattaci per un appuntamento senza impegno a Ostuni.",
@@ -5360,10 +5380,22 @@ var HOME_DEFAULTS_EN = {
       }
     },
     {
+      id: "00000000-0000-4000-8000-000000000007",
+      type: "googleReviews",
+      enabled: true,
+      order: 5,
+      content: {
+        title: "GOOGLE REVIEWS",
+        maxItems: 5,
+        hideWhenEmpty: true,
+        showSummary: true
+      }
+    },
+    {
       id: "00000000-0000-4000-8000-000000000004",
       type: "cta",
       enabled: true,
-      order: 5,
+      order: 6,
       content: {
         title: "Need a valuation?",
         description: "Contact us for a no-obligation meeting in Ostuni.",
@@ -5645,8 +5677,23 @@ var CHI_SIAMO_DEFAULTS_EN = {
 };
 var PAGE_REGISTRY = {
   home: {
-    allowedTypes: ["hero", "statement", "categoryGrid", "features", "featuredCollection", "cta"],
-    reorderable: ["statement", "categoryGrid", "features", "featuredCollection", "cta"],
+    allowedTypes: [
+      "hero",
+      "statement",
+      "categoryGrid",
+      "features",
+      "featuredCollection",
+      "googleReviews",
+      "cta"
+    ],
+    reorderable: [
+      "statement",
+      "categoryGrid",
+      "features",
+      "featuredCollection",
+      "googleReviews",
+      "cta"
+    ],
     defaults: (locale) => locale === "en" ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT,
     milestone: "M1"
   },
@@ -6361,6 +6408,7 @@ export {
   getM1PageKeys,
   getM2PageKeys,
   getM3PageKeys,
+  googleReviewsContentSchema,
   groupConsecutiveSchedules,
   groupOpeningHoursByDay,
   headerCtaSchema,
