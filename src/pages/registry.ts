@@ -84,6 +84,18 @@ const HOME_CATEGORY_GRID_ITEMS_EN = [
   },
 ] as const
 
+const HOME_ABOUT_TEASER_CAROUSEL_IT = [
+  { imageAlt: 'Ostuni al tramonto' },
+  { imageAlt: 'Masseria in Valle d\'Itria' },
+  { imageAlt: 'Interior di prestigio' },
+] as const
+
+const HOME_ABOUT_TEASER_CAROUSEL_EN = [
+  { imageAlt: 'Ostuni at sunset' },
+  { imageAlt: 'Masseria in the Valle d\'Itria' },
+  { imageAlt: 'Prestige interior' },
+] as const
+
 const HOME_DEFAULTS_IT: CmsPageDocument = {
   seo: {
     title: 'Norton Tanzarella',
@@ -180,10 +192,25 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       },
     },
     {
+      id: '00000000-0000-4000-8000-000000000008',
+      type: 'aboutTeaser',
+      enabled: true,
+      order: 6,
+      content: {
+        title: 'Chi siamo',
+        body:
+          'Da Norton Tanzarella accompagniamo chi sceglie di investire e vivere in Valle d\'Itria — tra Ostuni, masserie e borghi bianchi. La soddisfazione di chi acquista è la nostra priorità: consulenza personalizzata dalla prima visita alla firma, per trovare la casa giusta tra rustici, trulli e dimore di carattere.',
+        button: { label: 'Scopri chi siamo', to: '/about' },
+        backgroundImageAlt: 'Paesaggio della Valle d\'Itria',
+        carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_IT],
+        autoplayMs: 5000,
+      },
+    },
+    {
       id: '00000000-0000-4000-8000-000000000004',
       type: 'cta',
       enabled: true,
-      order: 6,
+      order: 7,
       content: {
         title: 'Hai bisogno di una valutazione?',
         description: 'Contattaci per un appuntamento senza impegno a Ostuni.',
@@ -291,10 +318,25 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
       },
     },
     {
+      id: '00000000-0000-4000-8000-000000000008',
+      type: 'aboutTeaser',
+      enabled: true,
+      order: 6,
+      content: {
+        title: 'About us',
+        body:
+          'At Norton Tanzarella we guide international buyers investing and living in the Valle d\'Itria — Ostuni, masserie and whitewashed hill towns. Client satisfaction comes first: tailored advice from first viewing to completion, to match each buyer with the right home among rustici, trulli and character properties.',
+        button: { label: 'Read more', to: '/about' },
+        backgroundImageAlt: 'Valle d\'Itria landscape',
+        carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_EN],
+        autoplayMs: 5000,
+      },
+    },
+    {
       id: '00000000-0000-4000-8000-000000000004',
       type: 'cta',
       enabled: true,
-      order: 6,
+      order: 7,
       content: {
         title: 'Need a valuation?',
         description: 'Contact us for a no-obligation meeting in Ostuni.',
@@ -605,6 +647,7 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
       'features',
       'featuredCollection',
       'googleReviews',
+      'aboutTeaser',
       'cta',
     ],
     reorderable: [
@@ -613,6 +656,7 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
       'features',
       'featuredCollection',
       'googleReviews',
+      'aboutTeaser',
       'cta',
     ],
     defaults: (locale) => (locale === 'en' ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT),

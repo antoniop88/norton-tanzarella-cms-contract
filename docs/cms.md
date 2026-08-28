@@ -1,4 +1,4 @@
-# CMS — Contratto v0.28.0
+# CMS — Contratto v0.29.0
 
 ## Export
 
@@ -15,9 +15,17 @@
 
 ## Pagine M1
 
-Solo `home` — tipi ammessi: `hero`, `statement`, `categoryGrid`, `features`, `featuredCollection`, `googleReviews`, `cta`.
+Solo `home` — tipi ammessi: `hero`, `statement`, `categoryGrid`, `features`, `featuredCollection`, `googleReviews`, `aboutTeaser`, `cta`.
 
-Defaults ordine (v0.27.0): hero → statement → categoryGrid → featuredCollection → features → googleReviews → cta.
+Defaults ordine (v0.29.0): hero → statement → categoryGrid → featuredCollection → features → googleReviews → aboutTeaser → cta.
+
+## `aboutTeaser` (v0.29.0)
+
+- `title` (max 80, i18n), `body` (max 600, i18n), `button` (i18n label; `to` default `/about`)
+- `backgroundMediaId?`, `backgroundImageAlt?` (i18n alt)
+- `carouselItems[1–3]`: `mediaId?` (shared), `imageAlt?` (i18n)
+- `autoplayMs?` (0–12000, shared; default 5000)
+- Media upload: cartella `home/`
 
 ## `googleReviews` (v0.27.0)
 

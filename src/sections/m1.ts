@@ -57,3 +57,25 @@ export const categoryGridContentSchema = z.object({
 
 export type CategoryGridItem = z.infer<typeof categoryGridItemSchema>
 export type CategoryGridContent = z.infer<typeof categoryGridContentSchema>
+
+export const aboutTeaserCarouselItemSchema = z.object({
+  mediaId: optionalMediaIdSchema.describe('Immagine'),
+  imageAlt: z.string().max(160).optional().describe('Testo alternativo'),
+})
+
+export const aboutTeaserContentSchema = z.object({
+  title: z.string().max(80).describe('Titolo'),
+  body: z.string().max(600).describe('Testo'),
+  button: ctaLinkSchema.describe('Pulsante'),
+  backgroundMediaId: optionalMediaIdSchema.describe('Immagine sfondo'),
+  backgroundImageAlt: z.string().max(160).optional().describe('Alt sfondo'),
+  carouselItems: z
+    .array(aboutTeaserCarouselItemSchema)
+    .min(1)
+    .max(3)
+    .describe('Slide carousel'),
+  autoplayMs: z.number().int().min(0).max(12000).optional().describe('Autoplay (ms, 0 = off)'),
+})
+
+export type AboutTeaserCarouselItem = z.infer<typeof aboutTeaserCarouselItemSchema>
+export type AboutTeaserContent = z.infer<typeof aboutTeaserContentSchema>

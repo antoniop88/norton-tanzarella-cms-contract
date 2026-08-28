@@ -4119,6 +4119,19 @@ var categoryGridContentSchema = external_exports.object({
   title: external_exports.string().max(80).optional().describe("Titolo sezione"),
   items: external_exports.array(categoryGridItemSchema).length(4).describe("Categorie")
 });
+var aboutTeaserCarouselItemSchema = external_exports.object({
+  mediaId: optionalMediaIdSchema.describe("Immagine"),
+  imageAlt: external_exports.string().max(160).optional().describe("Testo alternativo")
+});
+var aboutTeaserContentSchema = external_exports.object({
+  title: external_exports.string().max(80).describe("Titolo"),
+  body: external_exports.string().max(600).describe("Testo"),
+  button: ctaLinkSchema.describe("Pulsante"),
+  backgroundMediaId: optionalMediaIdSchema.describe("Immagine sfondo"),
+  backgroundImageAlt: external_exports.string().max(160).optional().describe("Alt sfondo"),
+  carouselItems: external_exports.array(aboutTeaserCarouselItemSchema).min(1).max(3).describe("Slide carousel"),
+  autoplayMs: external_exports.number().int().min(0).max(12e3).optional().describe("Autoplay (ms, 0 = off)")
+});
 
 // src/sections/m2.ts
 var pageHeaderContentSchema = external_exports.object({
@@ -4249,7 +4262,8 @@ var sectionContentByType = {
   faq: faqContentSchema,
   testimonials: testimonialsContentSchema,
   youtubeGallery: youtubeGalleryContentSchema,
-  googleReviews: googleReviewsContentSchema
+  googleReviews: googleReviewsContentSchema,
+  aboutTeaser: aboutTeaserContentSchema
 };
 var SECTION_TYPE_LABELS_IT = {
   hero: "Hero",
@@ -4268,7 +4282,8 @@ var SECTION_TYPE_LABELS_IT = {
   faq: "FAQ",
   testimonials: "Testimonianze",
   youtubeGallery: "Gallery YouTube",
-  googleReviews: "Google Reviews"
+  googleReviews: "Google Reviews",
+  aboutTeaser: "About teaser"
 };
 function parseSectionContent(type, content) {
   const schema = sectionContentByType[type];
@@ -5229,6 +5244,16 @@ var HOME_CATEGORY_GRID_ITEMS_EN = [
     ctaLabel: "View properties"
   }
 ];
+var HOME_ABOUT_TEASER_CAROUSEL_IT = [
+  { imageAlt: "Ostuni al tramonto" },
+  { imageAlt: "Masseria in Valle d'Itria" },
+  { imageAlt: "Interior di prestigio" }
+];
+var HOME_ABOUT_TEASER_CAROUSEL_EN = [
+  { imageAlt: "Ostuni at sunset" },
+  { imageAlt: "Masseria in the Valle d'Itria" },
+  { imageAlt: "Prestige interior" }
+];
 var HOME_DEFAULTS_IT = {
   seo: {
     title: "Norton Tanzarella",
@@ -5321,10 +5346,24 @@ var HOME_DEFAULTS_IT = {
       }
     },
     {
+      id: "00000000-0000-4000-8000-000000000008",
+      type: "aboutTeaser",
+      enabled: true,
+      order: 6,
+      content: {
+        title: "Chi siamo",
+        body: "Da Norton Tanzarella accompagniamo chi sceglie di investire e vivere in Valle d'Itria \u2014 tra Ostuni, masserie e borghi bianchi. La soddisfazione di chi acquista \xE8 la nostra priorit\xE0: consulenza personalizzata dalla prima visita alla firma, per trovare la casa giusta tra rustici, trulli e dimore di carattere.",
+        button: { label: "Scopri chi siamo", to: "/about" },
+        backgroundImageAlt: "Paesaggio della Valle d'Itria",
+        carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_IT],
+        autoplayMs: 5e3
+      }
+    },
+    {
       id: "00000000-0000-4000-8000-000000000004",
       type: "cta",
       enabled: true,
-      order: 6,
+      order: 7,
       content: {
         title: "Hai bisogno di una valutazione?",
         description: "Contattaci per un appuntamento senza impegno a Ostuni.",
@@ -5425,10 +5464,24 @@ var HOME_DEFAULTS_EN = {
       }
     },
     {
+      id: "00000000-0000-4000-8000-000000000008",
+      type: "aboutTeaser",
+      enabled: true,
+      order: 6,
+      content: {
+        title: "About us",
+        body: "At Norton Tanzarella we guide international buyers investing and living in the Valle d'Itria \u2014 Ostuni, masserie and whitewashed hill towns. Client satisfaction comes first: tailored advice from first viewing to completion, to match each buyer with the right home among rustici, trulli and character properties.",
+        button: { label: "Read more", to: "/about" },
+        backgroundImageAlt: "Valle d'Itria landscape",
+        carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_EN],
+        autoplayMs: 5e3
+      }
+    },
+    {
       id: "00000000-0000-4000-8000-000000000004",
       type: "cta",
       enabled: true,
-      order: 6,
+      order: 7,
       content: {
         title: "Need a valuation?",
         description: "Contact us for a no-obligation meeting in Ostuni.",
@@ -5717,6 +5770,7 @@ var PAGE_REGISTRY = {
       "features",
       "featuredCollection",
       "googleReviews",
+      "aboutTeaser",
       "cta"
     ],
     reorderable: [
@@ -5725,6 +5779,7 @@ var PAGE_REGISTRY = {
       "features",
       "featuredCollection",
       "googleReviews",
+      "aboutTeaser",
       "cta"
     ],
     defaults: (locale) => locale === "en" ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT,
@@ -6410,6 +6465,8 @@ export {
   SOCIAL_PLATFORM_IDS,
   SOCIAL_PLATFORM_LABELS_IT,
   WEEKDAY_ORDER,
+  aboutTeaserCarouselItemSchema,
+  aboutTeaserContentSchema,
   brandFooterVisibilitySchema,
   brandSchema,
   brandingColorsSchema,

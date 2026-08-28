@@ -1,4 +1,5 @@
 import {
+  aboutTeaserContentSchema,
   categoryGridContentSchema,
   ctaContentSchema,
   featuredCollectionContentSchema,
@@ -40,6 +41,7 @@ export const sectionContentByType = {
   testimonials: testimonialsContentSchema,
   youtubeGallery: youtubeGalleryContentSchema,
   googleReviews: googleReviewsContentSchema,
+  aboutTeaser: aboutTeaserContentSchema,
 } as const
 
 export type SectionType = keyof typeof sectionContentByType
@@ -62,6 +64,7 @@ export const SECTION_TYPE_LABELS_IT: Record<SectionType, string> = {
   testimonials: 'Testimonianze',
   youtubeGallery: 'Gallery YouTube',
   googleReviews: 'Google Reviews',
+  aboutTeaser: 'About teaser',
 }
 
 export function parseSectionContent(type: string, content: unknown) {
