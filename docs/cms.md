@@ -17,7 +17,7 @@
 
 Solo `home` — tipi ammessi: `hero`, `statement`, `categoryGrid`, `features`, `featuredCollection`, `googleReviews`, `aboutTeaser`, `cta`.
 
-Defaults ordine (v0.29.0): hero → statement → categoryGrid → featuredCollection → features → googleReviews → aboutTeaser → cta.
+Defaults ordine (v0.29.1): hero → statement → categoryGrid → featuredCollection → features → aboutTeaser → googleReviews → cta.
 
 ## `aboutTeaser` (v0.29.0)
 

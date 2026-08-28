@@ -180,22 +180,10 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       },
     },
     {
-      id: '00000000-0000-4000-8000-000000000007',
-      type: 'googleReviews',
-      enabled: true,
-      order: 5,
-      content: {
-        title: 'GOOGLE REVIEWS',
-        maxItems: 5,
-        hideWhenEmpty: true,
-        showSummary: true,
-      },
-    },
-    {
       id: '00000000-0000-4000-8000-000000000008',
       type: 'aboutTeaser',
       enabled: true,
-      order: 6,
+      order: 5,
       content: {
         title: 'Chi siamo',
         body:
@@ -204,6 +192,18 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
         backgroundImageAlt: 'Paesaggio della Valle d\'Itria',
         carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_IT],
         autoplayMs: 5000,
+      },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000007',
+      type: 'googleReviews',
+      enabled: true,
+      order: 6,
+      content: {
+        title: 'GOOGLE REVIEWS',
+        maxItems: 5,
+        hideWhenEmpty: true,
+        showSummary: true,
       },
     },
     {
@@ -306,22 +306,10 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
       },
     },
     {
-      id: '00000000-0000-4000-8000-000000000007',
-      type: 'googleReviews',
-      enabled: true,
-      order: 5,
-      content: {
-        title: 'GOOGLE REVIEWS',
-        maxItems: 5,
-        hideWhenEmpty: true,
-        showSummary: true,
-      },
-    },
-    {
       id: '00000000-0000-4000-8000-000000000008',
       type: 'aboutTeaser',
       enabled: true,
-      order: 6,
+      order: 5,
       content: {
         title: 'About us',
         body:
@@ -330,6 +318,18 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
         backgroundImageAlt: 'Valle d\'Itria landscape',
         carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_EN],
         autoplayMs: 5000,
+      },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000007',
+      type: 'googleReviews',
+      enabled: true,
+      order: 6,
+      content: {
+        title: 'GOOGLE REVIEWS',
+        maxItems: 5,
+        hideWhenEmpty: true,
+        showSummary: true,
       },
     },
     {
@@ -655,8 +655,8 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
       'categoryGrid',
       'features',
       'featuredCollection',
-      'googleReviews',
       'aboutTeaser',
+      'googleReviews',
       'cta',
     ],
     defaults: (locale) => (locale === 'en' ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT),

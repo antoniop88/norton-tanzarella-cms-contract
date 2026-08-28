@@ -5334,22 +5334,10 @@ var HOME_DEFAULTS_IT = {
       }
     },
     {
-      id: "00000000-0000-4000-8000-000000000007",
-      type: "googleReviews",
-      enabled: true,
-      order: 5,
-      content: {
-        title: "GOOGLE REVIEWS",
-        maxItems: 5,
-        hideWhenEmpty: true,
-        showSummary: true
-      }
-    },
-    {
       id: "00000000-0000-4000-8000-000000000008",
       type: "aboutTeaser",
       enabled: true,
-      order: 6,
+      order: 5,
       content: {
         title: "Chi siamo",
         body: "Da Norton Tanzarella accompagniamo chi sceglie di investire e vivere in Valle d'Itria \u2014 tra Ostuni, masserie e borghi bianchi. La soddisfazione di chi acquista \xE8 la nostra priorit\xE0: consulenza personalizzata dalla prima visita alla firma, per trovare la casa giusta tra rustici, trulli e dimore di carattere.",
@@ -5357,6 +5345,18 @@ var HOME_DEFAULTS_IT = {
         backgroundImageAlt: "Paesaggio della Valle d'Itria",
         carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_IT],
         autoplayMs: 5e3
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000007",
+      type: "googleReviews",
+      enabled: true,
+      order: 6,
+      content: {
+        title: "GOOGLE REVIEWS",
+        maxItems: 5,
+        hideWhenEmpty: true,
+        showSummary: true
       }
     },
     {
@@ -5452,22 +5452,10 @@ var HOME_DEFAULTS_EN = {
       }
     },
     {
-      id: "00000000-0000-4000-8000-000000000007",
-      type: "googleReviews",
-      enabled: true,
-      order: 5,
-      content: {
-        title: "GOOGLE REVIEWS",
-        maxItems: 5,
-        hideWhenEmpty: true,
-        showSummary: true
-      }
-    },
-    {
       id: "00000000-0000-4000-8000-000000000008",
       type: "aboutTeaser",
       enabled: true,
-      order: 6,
+      order: 5,
       content: {
         title: "About us",
         body: "At Norton Tanzarella we guide international buyers investing and living in the Valle d'Itria \u2014 Ostuni, masserie and whitewashed hill towns. Client satisfaction comes first: tailored advice from first viewing to completion, to match each buyer with the right home among rustici, trulli and character properties.",
@@ -5475,6 +5463,18 @@ var HOME_DEFAULTS_EN = {
         backgroundImageAlt: "Valle d'Itria landscape",
         carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_EN],
         autoplayMs: 5e3
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000007",
+      type: "googleReviews",
+      enabled: true,
+      order: 6,
+      content: {
+        title: "GOOGLE REVIEWS",
+        maxItems: 5,
+        hideWhenEmpty: true,
+        showSummary: true
       }
     },
     {
@@ -5778,8 +5778,8 @@ var PAGE_REGISTRY = {
       "categoryGrid",
       "features",
       "featuredCollection",
-      "googleReviews",
       "aboutTeaser",
+      "googleReviews",
       "cta"
     ],
     defaults: (locale) => locale === "en" ? HOME_DEFAULTS_EN : HOME_DEFAULTS_IT,
