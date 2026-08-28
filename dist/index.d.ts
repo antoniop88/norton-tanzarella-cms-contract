@@ -1566,6 +1566,18 @@ declare const brandingLogosSchema: z.ZodObject<{
     } | undefined;
 }>;
 type BrandingLogos = z.infer<typeof brandingLogosSchema>;
+declare const propertyWatermarkSchema: z.ZodObject<{
+    enabled: z.ZodDefault<z.ZodBoolean>;
+    mediaId: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    enabled: boolean;
+    mediaId?: string | undefined;
+}, {
+    mediaId?: string | undefined;
+    enabled?: boolean | undefined;
+}>;
+type PropertyWatermark = z.infer<typeof propertyWatermarkSchema>;
+declare const DEFAULT_PROPERTY_WATERMARK: PropertyWatermark;
 declare const DEFAULT_BRANDING_COLORS: BrandingColors;
 declare const DEFAULT_BRANDING_TYPOGRAPHY: BrandingTypography;
 declare const DEFAULT_BRANDING_SCALARS: {
@@ -1586,6 +1598,10 @@ declare const DEFAULT_BRANDING_SCALARS: {
         fontHeading: "Cormorant Garamond" | "Playfair Display" | "Libre Baskerville" | "Source Serif 4";
     };
     logos: BrandingLogos;
+    propertyWatermark: {
+        enabled: boolean;
+        mediaId?: string | undefined;
+    };
 };
 /**
  * Full branding scalars stored on cms_settings.scalars.
@@ -1931,6 +1947,16 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
             } | undefined;
         } | undefined;
     }>>;
+    propertyWatermark: z.ZodDefault<z.ZodObject<{
+        enabled: z.ZodDefault<z.ZodBoolean>;
+        mediaId: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        enabled: boolean;
+        mediaId?: string | undefined;
+    }, {
+        mediaId?: string | undefined;
+        enabled?: boolean | undefined;
+    }>>;
 }, "strip", z.ZodTypeAny, {
     themeColor: string;
     backgroundColor: string;
@@ -2004,6 +2030,10 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
             } | undefined;
         } | undefined;
     };
+    propertyWatermark: {
+        enabled: boolean;
+        mediaId?: string | undefined;
+    };
 }, {
     themeColor: string;
     backgroundColor: string;
@@ -2076,6 +2106,10 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
             } | undefined;
         } | undefined;
+    } | undefined;
+    propertyWatermark?: {
+        mediaId?: string | undefined;
+        enabled?: boolean | undefined;
     } | undefined;
 }>, {
     themeColor: string;
@@ -2150,6 +2184,10 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
             } | undefined;
         } | undefined;
     };
+    propertyWatermark: {
+        enabled: boolean;
+        mediaId?: string | undefined;
+    };
 }, {
     themeColor: string;
     backgroundColor: string;
@@ -2223,6 +2261,10 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
             } | undefined;
         } | undefined;
     } | undefined;
+    propertyWatermark?: {
+        mediaId?: string | undefined;
+        enabled?: boolean | undefined;
+    } | undefined;
 }>;
 type SettingsScalars = z.infer<typeof settingsScalarsSchema>;
 /** Deep-merge unknown/partial DB JSON into a valid SettingsScalars. */
@@ -2233,6 +2275,10 @@ declare function scalarsToCssVars(scalars: SettingsScalars): Record<string, stri
 declare function cssVarsToStyleText(vars: Record<string, string>): string;
 /** Collect all media UUIDs referenced by logo slots. */
 declare function collectLogoMediaIds(logos: BrandingLogos | undefined): string[];
+/** Collect media UUID referenced by the property watermark setting. */
+declare function collectPropertyWatermarkMediaIds(scalars: Pick<SettingsScalars, 'propertyWatermark'> | undefined): string[];
+/** Collect all branding scalar media UUIDs (logos + property watermark). */
+declare function collectBrandingMediaIds(scalars: SettingsScalars | undefined): string[];
 
 declare const organizationSchema: z.ZodEffects<z.ZodObject<{
     legalName: z.ZodString;
@@ -4184,4 +4230,4 @@ type FieldMeta = {
 };
 declare function zodToFieldMeta(schema: ZodTypeAny, key?: string): FieldMeta[];
 
-export { type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type GoogleReviewsContent, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type StatementContent, type TimeSlot, WEEKDAY_ORDER, type YoutubeGalleryContent, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, googleReviewsContentSchema, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statementContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, youtubeGalleryContentSchema, zodToFieldMeta };
+export { type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_PROPERTY_WATERMARK, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type GoogleReviewsContent, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, type PropertyWatermark, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type StatementContent, type TimeSlot, WEEKDAY_ORDER, type YoutubeGalleryContent, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectBrandingMediaIds, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, collectPropertyWatermarkMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, googleReviewsContentSchema, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, propertyWatermarkSchema, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statementContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, youtubeGalleryContentSchema, zodToFieldMeta };

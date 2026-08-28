@@ -182,6 +182,10 @@ export {
   fontSansCssValue,
   cssVarsToStyleText,
   collectLogoMediaIds,
+  collectPropertyWatermarkMediaIds,
+  collectBrandingMediaIds,
+  propertyWatermarkSchema,
+  DEFAULT_PROPERTY_WATERMARK,
 } from './branding.js'
 export type {
   FontSans,
@@ -191,6 +195,7 @@ export type {
   BrandingColors,
   BrandingTypography,
   BrandingLogos,
+  PropertyWatermark,
   SettingsScalars,
 } from './branding.js'
 

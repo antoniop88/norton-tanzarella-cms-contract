@@ -83,6 +83,17 @@ export const brandingLogosSchema = z.object({
 
 export type BrandingLogos = z.infer<typeof brandingLogosSchema>
 
+export const propertyWatermarkSchema = z.object({
+  enabled: z.boolean().default(false),
+  mediaId: mediaIdSchema.optional(),
+})
+
+export type PropertyWatermark = z.infer<typeof propertyWatermarkSchema>
+
+export const DEFAULT_PROPERTY_WATERMARK: PropertyWatermark = {
+  enabled: false,
+}
+
 export const DEFAULT_BRANDING_COLORS: BrandingColors = {
   primary: '#0A2374',
   secondary: '#B2914F',
@@ -105,6 +116,7 @@ export const DEFAULT_BRANDING_SCALARS = {
   colors: { ...DEFAULT_BRANDING_COLORS },
   typography: { ...DEFAULT_BRANDING_TYPOGRAPHY },
   logos: {} as BrandingLogos,
+  propertyWatermark: { ...DEFAULT_PROPERTY_WATERMARK },
 }
 
 /**
@@ -119,8 +131,16 @@ export const settingsScalarsSchema = z
     colors: brandingColorsSchema,
     typography: brandingTypographySchema,
     logos: brandingLogosSchema.default({}),
+    propertyWatermark: propertyWatermarkSchema.default({ enabled: false }),
   })
   .superRefine((data, ctx) => {
+    if (data.propertyWatermark.enabled && !data.propertyWatermark.mediaId) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['propertyWatermark', 'mediaId'],
+        message: 'mediaId is required when property watermark is enabled',
+      })
+    }
     if (data.themeColor !== data.colors.primary) {
       ctx.addIssue({
         code: 'custom',
@@ -159,6 +179,10 @@ export function normalizeSettingsScalars(raw: unknown): SettingsScalars {
     input.logos && typeof input.logos === 'object'
       ? (input.logos as BrandingLogos)
       : {}
+  const propertyWatermarkIn =
+    input.propertyWatermark && typeof input.propertyWatermark === 'object'
+      ? (input.propertyWatermark as Partial<PropertyWatermark>)
+      : {}
 
   const primary =
     (typeof colorsIn.primary === 'string' && colorsIn.primary) ||
@@ -181,12 +205,21 @@ export function normalizeSettingsScalars(raw: unknown): SettingsScalars {
     ...typographyIn,
   }
 
+  const propertyWatermark: PropertyWatermark = {
+    ...base.propertyWatermark,
+    ...propertyWatermarkIn,
+  }
+  if (!propertyWatermark.enabled) {
+    delete propertyWatermark.mediaId
+  }
+
   const candidate = {
     themeColor: primary,
     backgroundColor: background,
     colors,
     typography,
     logos: { ...logosIn },
+    propertyWatermark,
   }
 
   const parsed = settingsScalarsSchema.safeParse(candidate)
@@ -245,4 +278,18 @@ export function collectLogoMediaIds(logos: BrandingLogos | undefined): string[] 
     if (config.mediaIdDark) ids.add(config.mediaIdDark)
   }
   return [...ids]
+}
+
+/** Collect media UUID referenced by the property watermark setting. */
+export function collectPropertyWatermarkMediaIds(
+  scalars: Pick<SettingsScalars, 'propertyWatermark'> | undefined,
+): string[] {
+  const mediaId = scalars?.propertyWatermark?.mediaId
+  return mediaId ? [mediaId] : []
+}
+
+/** Collect all branding scalar media UUIDs (logos + property watermark). */
+export function collectBrandingMediaIds(scalars: SettingsScalars | undefined): string[] {
+  if (!scalars) return []
+  return [...new Set([...collectLogoMediaIds(scalars.logos), ...collectPropertyWatermarkMediaIds(scalars)])]
 }

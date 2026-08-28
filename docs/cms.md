@@ -1,4 +1,4 @@
-# CMS — Contratto v0.27.0
+# CMS — Contratto v0.28.0
 
 ## Export
 
@@ -102,6 +102,13 @@ Defaults: hero → slideshow → split×3 → team → stats → cta → faq (IT
 - Sezioni `hero` / `split` / `team` / `cta`: campo `mediaId` (uuid)
 - `split` / `team` / `cta`: `mediaId` opzionale
 - `collectPageMediaIds(document)` — UUID referenziati nelle sezioni
+
+## Branding scalars — `propertyWatermark` (v0.28.0)
+
+- `propertyWatermark.enabled` (boolean, default `false`)
+- `propertyWatermark.mediaId?` (uuid → `media_assets` in `brand/`) — obbligatorio se `enabled=true`
+- `collectBrandingMediaIds(scalars)` — loghi + filigrana
+- Backend applica filigrana al caricamento immagini `context=immobili` (non retroattivo)
 
 ## Hero video (v0.16.0)
 

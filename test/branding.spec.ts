@@ -5,6 +5,8 @@ import {
   normalizeSettingsScalars,
   scalarsToCssVars,
   settingsScalarsSchema,
+  collectBrandingMediaIds,
+  collectPropertyWatermarkMediaIds,
 } from '../src/index.js'
 
 describe('branding scalars', () => {
@@ -33,5 +35,42 @@ describe('branding scalars', () => {
     expect(vars['--font-display']).toContain('Cormorant Garamond')
     const css = cssVarsToStyleText(vars)
     expect(css.startsWith(':root{')).toBe(true)
+  })
+
+  it('defaults property watermark to disabled', () => {
+    const scalars = normalizeSettingsScalars(undefined)
+    expect(scalars.propertyWatermark.enabled).toBe(false)
+    expect(scalars.propertyWatermark.mediaId).toBeUndefined()
+  })
+
+  it('normalizes property watermark from partial input', () => {
+    const mediaId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+    const scalars = normalizeSettingsScalars({
+      propertyWatermark: { enabled: true, mediaId },
+    })
+    expect(scalars.propertyWatermark.enabled).toBe(true)
+    expect(scalars.propertyWatermark.mediaId).toBe(mediaId)
+  })
+
+  it('rejects enabled watermark without mediaId', () => {
+    const parsed = settingsScalarsSchema.safeParse({
+      ...DEFAULT_BRANDING_SCALARS,
+      propertyWatermark: { enabled: true },
+    })
+    expect(parsed.success).toBe(false)
+  })
+
+  it('collects branding media ids including watermark', () => {
+    const mediaId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+    const scalars = normalizeSettingsScalars({
+      propertyWatermark: { enabled: true, mediaId },
+      logos: {
+        siteHeader: { mediaId: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb' },
+      },
+    })
+    expect(collectPropertyWatermarkMediaIds(scalars)).toEqual([mediaId])
+    expect(collectBrandingMediaIds(scalars).sort()).toEqual(
+      [mediaId, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'].sort(),
+    )
   })
 })

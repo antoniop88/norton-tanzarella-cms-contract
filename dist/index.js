@@ -4522,6 +4522,13 @@ var brandingLogosSchema = external_exports.object({
   backofficeSidebar: logoSlotSchema.optional(),
   backofficeSidebarCollapsed: logoSlotSchema.optional()
 });
+var propertyWatermarkSchema = external_exports.object({
+  enabled: external_exports.boolean().default(false),
+  mediaId: mediaIdSchema.optional()
+});
+var DEFAULT_PROPERTY_WATERMARK = {
+  enabled: false
+};
 var DEFAULT_BRANDING_COLORS = {
   primary: "#0A2374",
   secondary: "#B2914F",
@@ -4541,15 +4548,24 @@ var DEFAULT_BRANDING_SCALARS = {
   backgroundColor: DEFAULT_BRANDING_COLORS.background,
   colors: { ...DEFAULT_BRANDING_COLORS },
   typography: { ...DEFAULT_BRANDING_TYPOGRAPHY },
-  logos: {}
+  logos: {},
+  propertyWatermark: { ...DEFAULT_PROPERTY_WATERMARK }
 };
 var settingsScalarsSchema = external_exports.object({
   themeColor: hexColorSchema,
   backgroundColor: hexColorSchema,
   colors: brandingColorsSchema,
   typography: brandingTypographySchema,
-  logos: brandingLogosSchema.default({})
+  logos: brandingLogosSchema.default({}),
+  propertyWatermark: propertyWatermarkSchema.default({ enabled: false })
 }).superRefine((data, ctx) => {
+  if (data.propertyWatermark.enabled && !data.propertyWatermark.mediaId) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["propertyWatermark", "mediaId"],
+      message: "mediaId is required when property watermark is enabled"
+    });
+  }
   if (data.themeColor !== data.colors.primary) {
     ctx.addIssue({
       code: "custom",
@@ -4574,6 +4590,7 @@ function normalizeSettingsScalars(raw) {
   const colorsIn = input.colors && typeof input.colors === "object" ? input.colors : {};
   const typographyIn = input.typography && typeof input.typography === "object" ? input.typography : {};
   const logosIn = input.logos && typeof input.logos === "object" ? input.logos : {};
+  const propertyWatermarkIn = input.propertyWatermark && typeof input.propertyWatermark === "object" ? input.propertyWatermark : {};
   const primary = typeof colorsIn.primary === "string" && colorsIn.primary || typeof input.themeColor === "string" && input.themeColor || base.colors.primary;
   const background = typeof colorsIn.background === "string" && colorsIn.background || typeof input.backgroundColor === "string" && input.backgroundColor || base.colors.background;
   const colors = {
@@ -4586,12 +4603,20 @@ function normalizeSettingsScalars(raw) {
     ...base.typography,
     ...typographyIn
   };
+  const propertyWatermark = {
+    ...base.propertyWatermark,
+    ...propertyWatermarkIn
+  };
+  if (!propertyWatermark.enabled) {
+    delete propertyWatermark.mediaId;
+  }
   const candidate = {
     themeColor: primary,
     backgroundColor: background,
     colors,
     typography,
-    logos: { ...logosIn }
+    logos: { ...logosIn },
+    propertyWatermark
   };
   const parsed = settingsScalarsSchema.safeParse(candidate);
   if (parsed.success) return parsed.data;
@@ -4638,6 +4663,14 @@ function collectLogoMediaIds(logos) {
     if (config.mediaIdDark) ids.add(config.mediaIdDark);
   }
   return [...ids];
+}
+function collectPropertyWatermarkMediaIds(scalars) {
+  const mediaId = scalars?.propertyWatermark?.mediaId;
+  return mediaId ? [mediaId] : [];
+}
+function collectBrandingMediaIds(scalars) {
+  if (!scalars) return [];
+  return [.../* @__PURE__ */ new Set([...collectLogoMediaIds(scalars.logos), ...collectPropertyWatermarkMediaIds(scalars)])];
 }
 
 // src/settings/contact.ts
@@ -6355,6 +6388,7 @@ export {
   DEFAULT_CONTACT_SETTINGS_IT,
   DEFAULT_LAYOUT_SETTINGS_IT,
   DEFAULT_OPENING_HOURS_IT,
+  DEFAULT_PROPERTY_WATERMARK,
   DEFAULT_SITE_MENU_SETTINGS_EN,
   DEFAULT_SITE_MENU_SETTINGS_IT,
   DEFAULT_SITE_SETTINGS_IT,
@@ -6387,9 +6421,11 @@ export {
   cmsPageDocumentSchema,
   cmsSectionSchema,
   cmsSeoSchema,
+  collectBrandingMediaIds,
   collectLogoMediaIds,
   collectMenuMediaIds,
   collectPageMediaIds,
+  collectPropertyWatermarkMediaIds,
   contactFormSchema,
   contactSettingsSchema,
   cssVarsToStyleText,
@@ -6436,6 +6472,7 @@ export {
   organizationSchema,
   pageHeaderContentSchema,
   parseSectionContent,
+  propertyWatermarkSchema,
   richTextContentSchema,
   scalarsToCssVars,
   sectionContentByType,
