@@ -209,7 +209,9 @@ declare const categoryGridItemSchema: z.ZodObject<{
     ctaLabel?: string | undefined;
 }>;
 declare const categoryGridContentSchema: z.ZodObject<{
+    eyebrow: z.ZodOptional<z.ZodString>;
     title: z.ZodOptional<z.ZodString>;
+    tagline: z.ZodOptional<z.ZodString>;
     items: z.ZodArray<z.ZodObject<{
         label: z.ZodString;
         mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
@@ -238,6 +240,8 @@ declare const categoryGridContentSchema: z.ZodObject<{
         ctaLabel?: string | undefined;
     }[];
     title?: string | undefined;
+    eyebrow?: string | undefined;
+    tagline?: string | undefined;
 }, {
     items: {
         label: string;
@@ -247,6 +251,8 @@ declare const categoryGridContentSchema: z.ZodObject<{
         ctaLabel?: string | undefined;
     }[];
     title?: string | undefined;
+    eyebrow?: string | undefined;
+    tagline?: string | undefined;
 }>;
 type CategoryGridItem = z.infer<typeof categoryGridItemSchema>;
 type CategoryGridContent = z.infer<typeof categoryGridContentSchema>;
@@ -802,7 +808,9 @@ declare const sectionContentByType: {
         tagline?: string | undefined;
     }>;
     readonly categoryGrid: zod.ZodObject<{
+        eyebrow: zod.ZodOptional<zod.ZodString>;
         title: zod.ZodOptional<zod.ZodString>;
+        tagline: zod.ZodOptional<zod.ZodString>;
         items: zod.ZodArray<zod.ZodObject<{
             label: zod.ZodString;
             mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
@@ -831,6 +839,8 @@ declare const sectionContentByType: {
             ctaLabel?: string | undefined;
         }[];
         title?: string | undefined;
+        eyebrow?: string | undefined;
+        tagline?: string | undefined;
     }, {
         items: {
             label: string;
@@ -840,6 +850,8 @@ declare const sectionContentByType: {
             ctaLabel?: string | undefined;
         }[];
         title?: string | undefined;
+        eyebrow?: string | undefined;
+        tagline?: string | undefined;
     }>;
     readonly pageHeader: zod.ZodObject<{
         title: zod.ZodString;
@@ -1182,6 +1194,8 @@ declare function parseSectionContent(type: string, content: unknown): {
             ctaLabel?: string | undefined;
         }[];
         title?: string | undefined;
+        eyebrow?: string | undefined;
+        tagline?: string | undefined;
     } | {
         title: string;
         lead?: string | undefined;

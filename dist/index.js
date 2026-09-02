@@ -4116,7 +4116,9 @@ var categoryGridItemSchema = external_exports.object({
   ctaLabel: external_exports.string().max(60).optional().describe("Etichetta link (lettori schermo)")
 });
 var categoryGridContentSchema = external_exports.object({
-  title: external_exports.string().max(80).optional().describe("Titolo sezione"),
+  eyebrow: external_exports.string().max(60).optional().describe("Sopratitolo (maiuscolo)"),
+  title: external_exports.string().max(80).optional().describe("Titolo principale"),
+  tagline: external_exports.string().max(160).optional().describe("Sottotitolo (corsivo)"),
   items: external_exports.array(categoryGridItemSchema).length(4).describe("Categorie")
 });
 var aboutTeaserCarouselItemSchema = external_exports.object({
@@ -5192,6 +5194,16 @@ var HOME_STATEMENT_EN = {
   body: "Investing in Italy \u2014 and in the Valle d'Itria \u2014 means choosing a heritage of light, stone and landscape: homes that hold history and build lasting value.",
   tagline: "ITALY. VALLE D'ITRIA. ENDURING VALUE."
 };
+var HOME_CATEGORY_GRID_HEADER_IT = {
+  eyebrow: "SELEZIONI CURATE",
+  title: "Selezione di pregio",
+  tagline: "Scopri immobili dal carattere, dalla storia e dal valore duraturo."
+};
+var HOME_CATEGORY_GRID_HEADER_EN = {
+  eyebrow: "CURATED HIGHLIGHTS",
+  title: "Signature Selection",
+  tagline: "Discover properties with character, history and lasting value."
+};
 var HOME_CATEGORY_GRID_ITEMS_IT = [
   {
     label: "Masserie",
@@ -5284,6 +5296,7 @@ var HOME_DEFAULTS_IT = {
       enabled: true,
       order: 2,
       content: {
+        ...HOME_CATEGORY_GRID_HEADER_IT,
         items: [...HOME_CATEGORY_GRID_ITEMS_IT]
       }
     },
@@ -5402,6 +5415,7 @@ var HOME_DEFAULTS_EN = {
       enabled: true,
       order: 2,
       content: {
+        ...HOME_CATEGORY_GRID_HEADER_EN,
         items: [...HOME_CATEGORY_GRID_ITEMS_EN]
       }
     },

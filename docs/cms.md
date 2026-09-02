@@ -50,11 +50,13 @@ Defaults ordine (v0.29.1): hero → statement → categoryGrid → featuredColle
 - `tagline?` (max 120) — riga uppercase spaced
 - Sostituisce le immagini "pietra" del vecchio `categoryShowcase` sulla homepage
 
-## `categoryGrid` (v0.20.0)
+## `categoryGrid` (v0.20.0, header v0.29.2)
 
-- `title?` (max 80) — eyebrow opzionale sopra la griglia
+- `eyebrow?` (max 60, i18n) — sopratitolo uppercase spaced
+- `title?` (max 80, i18n) — titolo principale serif
+- `tagline?` (max 160, i18n) — sottotitolo corsivo sotto il titolo
 - `items[4]` (lunghezza fissa): `label` (max 60, i18n), `mediaId?` (shared), `imageAlt?` (max 160, i18n), `categorySlug` (max 80, shared), `ctaLabel?` (max 60, i18n)
-- Ripristina la navigazione per categoria rimossa per errore con `categoryShowcase`; estetica sobria (griglia rettangolare, no maschere a pietra)
+- Ripristina la navigazione per categoria rimossa per errore con `categoryShowcase`; estetica sobria (intestazione editoriale + griglia rettangolare, no maschere a pietra)
 
 ## Branding / tipografia (v0.19.0)
 

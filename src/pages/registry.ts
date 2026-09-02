@@ -30,6 +30,18 @@ const HOME_STATEMENT_EN = {
   tagline: 'ITALY. VALLE D\'ITRIA. ENDURING VALUE.',
 } as const
 
+const HOME_CATEGORY_GRID_HEADER_IT = {
+  eyebrow: 'SELEZIONI CURATE',
+  title: 'Selezione di pregio',
+  tagline: 'Scopri immobili dal carattere, dalla storia e dal valore duraturo.',
+} as const
+
+const HOME_CATEGORY_GRID_HEADER_EN = {
+  eyebrow: 'CURATED HIGHLIGHTS',
+  title: 'Signature Selection',
+  tagline: 'Discover properties with character, history and lasting value.',
+} as const
+
 const HOME_CATEGORY_GRID_ITEMS_IT = [
   {
     label: 'Masserie',
@@ -126,6 +138,7 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       enabled: true,
       order: 2,
       content: {
+        ...HOME_CATEGORY_GRID_HEADER_IT,
         items: [...HOME_CATEGORY_GRID_ITEMS_IT],
       },
     },
@@ -252,6 +265,7 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
       enabled: true,
       order: 2,
       content: {
+        ...HOME_CATEGORY_GRID_HEADER_EN,
         items: [...HOME_CATEGORY_GRID_ITEMS_EN],
       },
     },
