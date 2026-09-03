@@ -799,6 +799,7 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
     milestone: 'M2',
   },
   'property-finder': {
+    // pageHeader: hero full-bleed (title, lead, mediaId?) — come contatti
     allowedTypes: ['pageHeader', 'richText'],
     reorderable: [],
     defaults: (locale) =>

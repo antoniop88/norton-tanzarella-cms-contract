@@ -4139,7 +4139,7 @@ var aboutTeaserContentSchema = external_exports.object({
 var pageHeaderContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
   lead: external_exports.string().max(200).optional().describe("Introduzione"),
-  mediaId: optionalMediaIdSchema.describe("Immagine sfondo hero (listing Immobili, Contatti, \u2026)"),
+  mediaId: optionalMediaIdSchema.describe("Immagine sfondo hero (listing Immobili, Contatti, Trova immobile, \u2026)"),
   imageAlt: external_exports.string().max(160).optional().describe("Alt immagine")
 });
 var richTextContentSchema = external_exports.object({

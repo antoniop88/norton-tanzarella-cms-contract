@@ -1,4 +1,4 @@
-# CMS — Contratto v0.30.1
+# CMS — Contratto v0.30.2
 
 ## Export
 
@@ -13,13 +13,14 @@
 - `i18n` — stringhe editabili per lingua (default)
 - `shared` — image, video, icon, boolean, number, enum, `to`, `href`, `categorySlug`, `iubendaPolicyId`, oggetti/array strutturali
 
-## `pageHeader` (v0.30.0 / v0.30.1)
+## `pageHeader` (v0.30.0 / v0.30.1 / v0.30.2)
 
 - `title` (max 80, i18n), `lead?` (max 200, i18n)
-- `mediaId?` (shared) — immagine sfondo; hero full-bleed su **Immobili** e **Contatti**; altre pagine ignorano
+- `mediaId?` (shared) — immagine sfondo; hero full-bleed su **Immobili**, **Contatti** e **Trova immobile**; altre pagine ignorano
 - `imageAlt?` (max 160, i18n)
 - Defaults `immobili-index`: IT «Trova il posto che chiamerai casa.» / EN «Find your place to call home.» (`mediaId` vuoto finché caricato dal BO)
 - Defaults `contatti` (v0.30.1): IT «Contattaci» + lead valutazioni/visite; EN «Contact us» + lead equivalente; `richText` off di default; upload hero in `cms/contatti/`
+- `property-finder` (v0.30.2): stesso hero Contatti; copy titolo/lead già in defaults v0.25; upload in `cms/property-finder/`
 
 ## Pagine M1
 
@@ -87,9 +88,9 @@ Defaults: hero → slideshow → split×3 → team → stats → cta → faq (IT
 - `pageHeader` + `youtubeGallery` (`playlistId`, `pageSize`, `columns`, `subscribeChannelUrl`, `subscribeLabel`)
 - Defaults: playlist Norton Tanzarella `UU2weLZdp6gU82cmEb2URPvA`, 15/pagina, 3 colonne
 
-## `property-finder` (v0.25.0)
+## `property-finder` (v0.25.0, hero v0.30.2)
 
-`pageHeader` + `richText` (servizio ricerca immobili). Defaults IT|EN con copy completo (non stub).
+`pageHeader` + `richText` (servizio ricerca immobili). Defaults IT|EN con copy completo (non stub). Hero full-bleed come Contatti (`mediaId?`).
 
 - `richText.body` max 10000, `format: 'markdown'` (TipTap BO → Markdown string → `marked` sul web)
 - Stub restanti: `sell-with-us` (`pageHeader`, placeholder in costruzione); policy con body «in costruzione»
