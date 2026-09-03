@@ -4,6 +4,8 @@ import { optionalCtaLinkSchema, optionalMediaIdSchema } from './common.js'
 export const pageHeaderContentSchema = z.object({
   title: z.string().max(80).describe('Titolo'),
   lead: z.string().max(200).optional().describe('Introduzione'),
+  mediaId: optionalMediaIdSchema.describe('Immagine sfondo hero (listing Immobili, Contatti, …)'),
+  imageAlt: z.string().max(160).optional().describe('Alt immagine'),
 })
 
 export const richTextContentSchema = z.object({

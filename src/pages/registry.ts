@@ -699,8 +699,8 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 enabled: true,
                 order: 0,
                 content: {
-                  title: 'Properties',
-                  lead: "Find a masseria, rustico or home in Ostuni and the Valle d'Itria.",
+                  title: 'Find your place to call home.',
+                  lead: 'Explore our collection of character properties across Ostuni and the Itria Valley.',
                 },
               },
               {
@@ -728,8 +728,8 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 enabled: true,
                 order: 0,
                 content: {
-                  title: 'Immobili',
-                  lead: "Trova masseria, rustico o casa a Ostuni e in Valle d'Itria.",
+                  title: 'Trova il posto che chiamerai casa.',
+                  lead: "Esplora masserie, trulli e dimore di carattere tra Ostuni e la Valle d'Itria.",
                 },
               },
               {
@@ -760,14 +760,17 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 type: 'pageHeader',
                 enabled: true,
                 order: 0,
-                content: { title: 'Contact us' },
+                content: {
+                  title: 'Contact us',
+                  lead: 'Write to us for valuations, viewing appointments or general information.',
+                },
               },
               {
                 id: '00000000-0000-4000-8000-000000000021',
                 type: 'richText',
-                enabled: true,
+                enabled: false,
                 order: 1,
-                content: { body: 'Write to us for valuations, viewings or general information.' },
+                content: { body: '' },
               },
             ],
           }
@@ -779,16 +782,17 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
                 type: 'pageHeader',
                 enabled: true,
                 order: 0,
-                content: { title: 'Contattaci' },
+                content: {
+                  title: 'Contattaci',
+                  lead: 'Scrivici per valutazioni, appuntamenti di visita o informazioni generali.',
+                },
               },
               {
                 id: '00000000-0000-4000-8000-000000000021',
                 type: 'richText',
-                enabled: true,
+                enabled: false,
                 order: 1,
-                content: {
-                  body: 'Scrivici per valutazioni, appuntamenti di visita o informazioni generali.',
-                },
+                content: { body: '' },
               },
             ],
           },

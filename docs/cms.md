@@ -1,4 +1,4 @@
-# CMS — Contratto v0.29.0
+# CMS — Contratto v0.30.1
 
 ## Export
 
@@ -12,6 +12,14 @@
 
 - `i18n` — stringhe editabili per lingua (default)
 - `shared` — image, video, icon, boolean, number, enum, `to`, `href`, `categorySlug`, `iubendaPolicyId`, oggetti/array strutturali
+
+## `pageHeader` (v0.30.0 / v0.30.1)
+
+- `title` (max 80, i18n), `lead?` (max 200, i18n)
+- `mediaId?` (shared) — immagine sfondo; hero full-bleed su **Immobili** e **Contatti**; altre pagine ignorano
+- `imageAlt?` (max 160, i18n)
+- Defaults `immobili-index`: IT «Trova il posto che chiamerai casa.» / EN «Find your place to call home.» (`mediaId` vuoto finché caricato dal BO)
+- Defaults `contatti` (v0.30.1): IT «Contattaci» + lead valutazioni/visite; EN «Contact us» + lead equivalente; `richText` off di default; upload hero in `cms/contatti/`
 
 ## Pagine M1
 

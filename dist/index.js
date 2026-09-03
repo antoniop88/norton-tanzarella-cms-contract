@@ -4138,7 +4138,9 @@ var aboutTeaserContentSchema = external_exports.object({
 // src/sections/m2.ts
 var pageHeaderContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
-  lead: external_exports.string().max(200).optional().describe("Introduzione")
+  lead: external_exports.string().max(200).optional().describe("Introduzione"),
+  mediaId: optionalMediaIdSchema.describe("Immagine sfondo hero (listing Immobili, Contatti, \u2026)"),
+  imageAlt: external_exports.string().max(160).optional().describe("Alt immagine")
 });
 var richTextContentSchema = external_exports.object({
   body: external_exports.string().max(1e4).describe("Contenuto")
@@ -5820,8 +5822,8 @@ var PAGE_REGISTRY = {
           enabled: true,
           order: 0,
           content: {
-            title: "Properties",
-            lead: "Find a masseria, rustico or home in Ostuni and the Valle d'Itria."
+            title: "Find your place to call home.",
+            lead: "Explore our collection of character properties across Ostuni and the Itria Valley."
           }
         },
         {
@@ -5848,8 +5850,8 @@ var PAGE_REGISTRY = {
           enabled: true,
           order: 0,
           content: {
-            title: "Immobili",
-            lead: "Trova masseria, rustico o casa a Ostuni e in Valle d'Itria."
+            title: "Trova il posto che chiamerai casa.",
+            lead: "Esplora masserie, trulli e dimore di carattere tra Ostuni e la Valle d'Itria."
           }
         },
         {
@@ -5878,14 +5880,17 @@ var PAGE_REGISTRY = {
           type: "pageHeader",
           enabled: true,
           order: 0,
-          content: { title: "Contact us" }
+          content: {
+            title: "Contact us",
+            lead: "Write to us for valuations, viewing appointments or general information."
+          }
         },
         {
           id: "00000000-0000-4000-8000-000000000021",
           type: "richText",
-          enabled: true,
+          enabled: false,
           order: 1,
-          content: { body: "Write to us for valuations, viewings or general information." }
+          content: { body: "" }
         }
       ]
     } : {
@@ -5896,16 +5901,17 @@ var PAGE_REGISTRY = {
           type: "pageHeader",
           enabled: true,
           order: 0,
-          content: { title: "Contattaci" }
+          content: {
+            title: "Contattaci",
+            lead: "Scrivici per valutazioni, appuntamenti di visita o informazioni generali."
+          }
         },
         {
           id: "00000000-0000-4000-8000-000000000021",
           type: "richText",
-          enabled: true,
+          enabled: false,
           order: 1,
-          content: {
-            body: "Scrivici per valutazioni, appuntamenti di visita o informazioni generali."
-          }
+          content: { body: "" }
         }
       ]
     },

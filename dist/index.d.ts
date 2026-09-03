@@ -327,12 +327,18 @@ type AboutTeaserContent = z.infer<typeof aboutTeaserContentSchema>;
 declare const pageHeaderContentSchema: z.ZodObject<{
     title: z.ZodString;
     lead: z.ZodOptional<z.ZodString>;
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+    imageAlt: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     title: string;
     lead?: string | undefined;
+    mediaId?: string | undefined;
+    imageAlt?: string | undefined;
 }, {
     title: string;
     lead?: string | undefined;
+    mediaId?: unknown;
+    imageAlt?: string | undefined;
 }>;
 declare const richTextContentSchema: z.ZodObject<{
     body: z.ZodString;
@@ -856,12 +862,18 @@ declare const sectionContentByType: {
     readonly pageHeader: zod.ZodObject<{
         title: zod.ZodString;
         lead: zod.ZodOptional<zod.ZodString>;
+        mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
+        imageAlt: zod.ZodOptional<zod.ZodString>;
     }, "strip", zod.ZodTypeAny, {
         title: string;
         lead?: string | undefined;
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
     }, {
         title: string;
         lead?: string | undefined;
+        mediaId?: unknown;
+        imageAlt?: string | undefined;
     }>;
     readonly richText: zod.ZodObject<{
         body: zod.ZodString;
@@ -1199,6 +1211,8 @@ declare function parseSectionContent(type: string, content: unknown): {
     } | {
         title: string;
         lead?: string | undefined;
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
     } | {
         body: string;
     } | {
