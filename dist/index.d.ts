@@ -327,15 +327,18 @@ type AboutTeaserContent = z.infer<typeof aboutTeaserContentSchema>;
 declare const pageHeaderContentSchema: z.ZodObject<{
     title: z.ZodString;
     lead: z.ZodOptional<z.ZodString>;
+    eyebrow: z.ZodOptional<z.ZodString>;
     mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
     imageAlt: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     title: string;
+    eyebrow?: string | undefined;
     lead?: string | undefined;
     mediaId?: string | undefined;
     imageAlt?: string | undefined;
 }, {
     title: string;
+    eyebrow?: string | undefined;
     lead?: string | undefined;
     mediaId?: unknown;
     imageAlt?: string | undefined;
@@ -642,6 +645,110 @@ declare const googleReviewsContentSchema: z.ZodObject<{
     showSummary?: boolean | undefined;
 }>;
 type GoogleReviewsContent = z.infer<typeof googleReviewsContentSchema>;
+/** Typographic process (Trova immobile) — not sticky numbered splits. */
+declare const itineraryItemSchema: z.ZodObject<{
+    title: z.ZodString;
+    body: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    title: string;
+    body: string;
+}, {
+    title: string;
+    body: string;
+}>;
+declare const itineraryContentSchema: z.ZodObject<{
+    eyebrow: z.ZodOptional<z.ZodString>;
+    title: z.ZodOptional<z.ZodString>;
+    items: z.ZodArray<z.ZodObject<{
+        title: z.ZodString;
+        body: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        title: string;
+        body: string;
+    }, {
+        title: string;
+        body: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    items: {
+        title: string;
+        body: string;
+    }[];
+    title?: string | undefined;
+    eyebrow?: string | undefined;
+}, {
+    items: {
+        title: string;
+        body: string;
+    }[];
+    title?: string | undefined;
+    eyebrow?: string | undefined;
+}>;
+type ItineraryItem = z.infer<typeof itineraryItemSchema>;
+type ItineraryContent = z.infer<typeof itineraryContentSchema>;
+/** Editorial atlas of territories (Trova immobile). */
+declare const destinationItemSchema: z.ZodObject<{
+    name: z.ZodString;
+    caption: z.ZodOptional<z.ZodString>;
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+    imageAlt: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    mediaId?: string | undefined;
+    imageAlt?: string | undefined;
+    caption?: string | undefined;
+}, {
+    name: string;
+    mediaId?: unknown;
+    imageAlt?: string | undefined;
+    caption?: string | undefined;
+}>;
+declare const destinationsContentSchema: z.ZodObject<{
+    eyebrow: z.ZodOptional<z.ZodString>;
+    title: z.ZodOptional<z.ZodString>;
+    lead: z.ZodOptional<z.ZodString>;
+    outro: z.ZodOptional<z.ZodString>;
+    items: z.ZodArray<z.ZodObject<{
+        name: z.ZodString;
+        caption: z.ZodOptional<z.ZodString>;
+        mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+        imageAlt: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        name: string;
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
+        caption?: string | undefined;
+    }, {
+        name: string;
+        mediaId?: unknown;
+        imageAlt?: string | undefined;
+        caption?: string | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    items: {
+        name: string;
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
+        caption?: string | undefined;
+    }[];
+    title?: string | undefined;
+    eyebrow?: string | undefined;
+    lead?: string | undefined;
+    outro?: string | undefined;
+}, {
+    items: {
+        name: string;
+        mediaId?: unknown;
+        imageAlt?: string | undefined;
+        caption?: string | undefined;
+    }[];
+    title?: string | undefined;
+    eyebrow?: string | undefined;
+    lead?: string | undefined;
+    outro?: string | undefined;
+}>;
+type DestinationItem = z.infer<typeof destinationItemSchema>;
+type DestinationsContent = z.infer<typeof destinationsContentSchema>;
 
 declare const cmsSeoSchema: z.ZodObject<{
     title: z.ZodOptional<z.ZodString>;
@@ -737,6 +844,17 @@ declare function collectPageMediaIds(document: CmsPageDocument | unknown): strin
  * Run **before** filtering by `allowedTypes`, or split content is dropped.
  */
 declare function migrateSplitsToStickySplits(sections: CmsSection[], defaults: CmsPageDocument): CmsSection[];
+
+/** Titles from property-finder defaults before v0.30.6 (brochure hero). */
+declare const LEGACY_PROPERTY_FINDER_TITLES: Set<string>;
+/**
+ * Backfill `pageHeader.eyebrow` and replace brochure title/lead when still on
+ * pre-v0.30.6 defaults. Preserves `mediaId` / `imageAlt` already uploaded.
+ * Run on `property-finder` **before** filtering by `allowedTypes` (legacy
+ * `richText` is dropped by that filter; new sections come from registry insert).
+ */
+declare function migratePropertyFinderBriefing(sections: CmsSection[], defaults: CmsPageDocument): CmsSection[];
+declare function migratePropertyFinderPage(document: CmsPageDocument, defaults: CmsPageDocument): CmsPageDocument;
 
 declare const sectionContentByType: {
     readonly hero: zod.ZodObject<{
@@ -930,15 +1048,18 @@ declare const sectionContentByType: {
     readonly pageHeader: zod.ZodObject<{
         title: zod.ZodString;
         lead: zod.ZodOptional<zod.ZodString>;
+        eyebrow: zod.ZodOptional<zod.ZodString>;
         mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
         imageAlt: zod.ZodOptional<zod.ZodString>;
     }, "strip", zod.ZodTypeAny, {
         title: string;
+        eyebrow?: string | undefined;
         lead?: string | undefined;
         mediaId?: string | undefined;
         imageAlt?: string | undefined;
     }, {
         title: string;
+        eyebrow?: string | undefined;
         lead?: string | undefined;
         mediaId?: unknown;
         imageAlt?: string | undefined;
@@ -1261,6 +1382,78 @@ declare const sectionContentByType: {
         backgroundImageAlt?: string | undefined;
         autoplayMs?: number | undefined;
     }>;
+    readonly itinerary: zod.ZodObject<{
+        eyebrow: zod.ZodOptional<zod.ZodString>;
+        title: zod.ZodOptional<zod.ZodString>;
+        items: zod.ZodArray<zod.ZodObject<{
+            title: zod.ZodString;
+            body: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            title: string;
+            body: string;
+        }, {
+            title: string;
+            body: string;
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        items: {
+            title: string;
+            body: string;
+        }[];
+        title?: string | undefined;
+        eyebrow?: string | undefined;
+    }, {
+        items: {
+            title: string;
+            body: string;
+        }[];
+        title?: string | undefined;
+        eyebrow?: string | undefined;
+    }>;
+    readonly destinations: zod.ZodObject<{
+        eyebrow: zod.ZodOptional<zod.ZodString>;
+        title: zod.ZodOptional<zod.ZodString>;
+        lead: zod.ZodOptional<zod.ZodString>;
+        outro: zod.ZodOptional<zod.ZodString>;
+        items: zod.ZodArray<zod.ZodObject<{
+            name: zod.ZodString;
+            caption: zod.ZodOptional<zod.ZodString>;
+            mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
+            imageAlt: zod.ZodOptional<zod.ZodString>;
+        }, "strip", zod.ZodTypeAny, {
+            name: string;
+            mediaId?: string | undefined;
+            imageAlt?: string | undefined;
+            caption?: string | undefined;
+        }, {
+            name: string;
+            mediaId?: unknown;
+            imageAlt?: string | undefined;
+            caption?: string | undefined;
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        items: {
+            name: string;
+            mediaId?: string | undefined;
+            imageAlt?: string | undefined;
+            caption?: string | undefined;
+        }[];
+        title?: string | undefined;
+        eyebrow?: string | undefined;
+        lead?: string | undefined;
+        outro?: string | undefined;
+    }, {
+        items: {
+            name: string;
+            mediaId?: unknown;
+            imageAlt?: string | undefined;
+            caption?: string | undefined;
+        }[];
+        title?: string | undefined;
+        eyebrow?: string | undefined;
+        lead?: string | undefined;
+        outro?: string | undefined;
+    }>;
 };
 type SectionType = keyof typeof sectionContentByType;
 declare const SECTION_TYPE_LABELS_IT: Record<SectionType, string>;
@@ -1318,6 +1511,7 @@ declare function parseSectionContent(type: string, content: unknown): {
         tagline?: string | undefined;
     } | {
         title: string;
+        eyebrow?: string | undefined;
         lead?: string | undefined;
         mediaId?: string | undefined;
         imageAlt?: string | undefined;
@@ -1378,6 +1572,24 @@ declare function parseSectionContent(type: string, content: unknown): {
         maxItems: number;
         showSummary: boolean;
         title?: string | undefined;
+    } | {
+        items: {
+            title: string;
+            body: string;
+        }[];
+        title?: string | undefined;
+        eyebrow?: string | undefined;
+    } | {
+        items: {
+            name: string;
+            mediaId?: string | undefined;
+            imageAlt?: string | undefined;
+            caption?: string | undefined;
+        }[];
+        title?: string | undefined;
+        eyebrow?: string | undefined;
+        lead?: string | undefined;
+        outro?: string | undefined;
     };
     error?: undefined;
 };
@@ -4496,4 +4708,4 @@ type FieldMeta = {
 };
 declare function zodToFieldMeta(schema: ZodTypeAny, key?: string): FieldMeta[];
 
-export { type AboutTeaserCarouselItem, type AboutTeaserContent, type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_PROPERTY_WATERMARK, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type GoogleReviewsContent, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, type PropertyWatermark, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type StatementContent, type StickySplitItem, type StickySplitsContent, type TimeSlot, WEEKDAY_ORDER, type YoutubeGalleryContent, aboutTeaserCarouselItemSchema, aboutTeaserContentSchema, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectBrandingMediaIds, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, collectPropertyWatermarkMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, googleReviewsContentSchema, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, migrateSplitsToStickySplits, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, propertyWatermarkSchema, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statementContentSchema, statsContentSchema, stickySplitItemSchema, stickySplitsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, youtubeGalleryContentSchema, zodToFieldMeta };
+export { type AboutTeaserCarouselItem, type AboutTeaserContent, type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_PROPERTY_WATERMARK, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, type DestinationItem, type DestinationsContent, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type GoogleReviewsContent, type ImageSlideshowContent, type ImageSlideshowItem, type ItineraryContent, type ItineraryItem, LEGACY_NAV_PATH_MAP, LEGACY_PROPERTY_FINDER_TITLES, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, type PropertyWatermark, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type StatementContent, type StickySplitItem, type StickySplitsContent, type TimeSlot, WEEKDAY_ORDER, type YoutubeGalleryContent, aboutTeaserCarouselItemSchema, aboutTeaserContentSchema, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectBrandingMediaIds, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, collectPropertyWatermarkMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, destinationItemSchema, destinationsContentSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, googleReviewsContentSchema, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, itineraryContentSchema, itineraryItemSchema, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, migratePropertyFinderBriefing, migratePropertyFinderPage, migrateSplitsToStickySplits, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, propertyWatermarkSchema, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statementContentSchema, statsContentSchema, stickySplitItemSchema, stickySplitsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, youtubeGalleryContentSchema, zodToFieldMeta };

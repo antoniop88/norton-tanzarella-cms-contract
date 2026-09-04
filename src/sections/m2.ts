@@ -4,8 +4,9 @@ import { optionalCtaLinkSchema, optionalMediaIdSchema } from './common.js'
 export const pageHeaderContentSchema = z.object({
   title: z.string().max(80).describe('Titolo'),
   lead: z.string().max(200).optional().describe('Introduzione'),
+  eyebrow: z.string().max(40).optional().describe('Sopratitolo'),
   mediaId: optionalMediaIdSchema.describe(
-    'Immagine sfondo hero (listing Immobili, Contatti, Trova immobile, …)',
+    'Immagine (hero full-bleed Immobili/Contatti; ritratto Trova immobile)',
   ),
   imageAlt: z.string().max(160).optional().describe('Alt immagine'),
 })
@@ -135,3 +136,37 @@ export const googleReviewsContentSchema = z.object({
 })
 
 export type GoogleReviewsContent = z.infer<typeof googleReviewsContentSchema>
+
+/** Typographic process (Trova immobile) — not sticky numbered splits. */
+export const itineraryItemSchema = z.object({
+  title: z.string().max(40).describe('Titolo fase'),
+  body: z.string().max(280).describe('Testo'),
+})
+
+export const itineraryContentSchema = z.object({
+  eyebrow: z.string().max(40).optional().describe('Sopratitolo'),
+  title: z.string().max(80).optional().describe('Titolo sezione'),
+  items: z.array(itineraryItemSchema).min(3).max(6).describe('Fasi'),
+})
+
+export type ItineraryItem = z.infer<typeof itineraryItemSchema>
+export type ItineraryContent = z.infer<typeof itineraryContentSchema>
+
+/** Editorial atlas of territories (Trova immobile). */
+export const destinationItemSchema = z.object({
+  name: z.string().max(80).describe('Nome territorio'),
+  caption: z.string().max(200).optional().describe('Didascalia'),
+  mediaId: optionalMediaIdSchema.describe('Immagine'),
+  imageAlt: z.string().max(160).optional().describe('Alt immagine'),
+})
+
+export const destinationsContentSchema = z.object({
+  eyebrow: z.string().max(40).optional().describe('Sopratitolo'),
+  title: z.string().max(80).optional().describe('Titolo sezione'),
+  lead: z.string().max(200).optional().describe('Introduzione'),
+  outro: z.string().max(120).optional().describe('Chiusura'),
+  items: z.array(destinationItemSchema).min(2).max(6).describe('Territori'),
+})
+
+export type DestinationItem = z.infer<typeof destinationItemSchema>
+export type DestinationsContent = z.infer<typeof destinationsContentSchema>

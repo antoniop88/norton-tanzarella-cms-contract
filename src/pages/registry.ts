@@ -923,6 +923,215 @@ Tell us about your property. We will review its features and the market context 
   ],
 }
 
+const PROPERTY_FINDER_DEFAULTS_IT: CmsPageDocument = {
+  seo: {
+    title: 'Trova immobile',
+    description:
+      'Ricerca immobili su incarico in Italia: profilo su misura, visite accompagnate, rete in Toscana, Costiera e laghi.',
+  },
+  sections: [
+    {
+      id: '00000000-0000-4000-8000-000000000060',
+      type: 'pageHeader',
+      enabled: true,
+      order: 0,
+      content: {
+        eyebrow: 'Ricerca su incarico',
+        title: 'Cerchiamo per voi. Anche ciò che non è in vetrina.',
+        lead: 'Dalla prima consulenza alla firma: un mandato su misura, visite accompagnate, rete in Italia.',
+      },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000061',
+      type: 'itinerary',
+      enabled: true,
+      order: 1,
+      content: {
+        eyebrow: 'Il percorso',
+        items: [
+          {
+            title: 'Consulenza',
+            body: 'Ascoltiamo esigenze, tempi e il modo in cui volete vivere la casa.',
+          },
+          {
+            title: 'Profilo',
+            body: 'Costruiamo un mandato preciso: zona, tipologia, budget, carattere.',
+          },
+          {
+            title: 'Ricerca',
+            body: 'Selezioniamo oltre la vetrina, filtrando con la rete di agenti e partner.',
+          },
+          {
+            title: 'Visite',
+            body: 'Organizziamo l’itinerario, traduciamo e consigliamo al vostro fianco.',
+          },
+          {
+            title: 'Acquisto',
+            body: 'Negoziazione, aspetti legali e fiscali, fino alla firma.',
+          },
+        ],
+      },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000062',
+      type: 'statement',
+      enabled: true,
+      order: 2,
+      content: {
+        title: 'Un’esperienza serena, fino alla firma.',
+        body: 'Il nostro obiettivo è togliervi la complessità di un acquisto in Italia, così potete concentrarvi sull’emozione di trovare la casa giusta.',
+        tagline: 'MANDATO PRIVATO',
+      },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000063',
+      type: 'destinations',
+      enabled: true,
+      order: 3,
+      content: {
+        eyebrow: 'Ampia copertura',
+        title: 'In Italia, e oltre la Valle d’Itria',
+        lead: 'Una rete di agenti e partner nelle destinazioni più ricercate, non solo in Puglia.',
+        outro: 'Valle d’Itria, e oltre.',
+        items: [
+          {
+            name: 'Valle d’Itria',
+            caption: 'Ostuni, Cisternino, Martina Franca: trulli, masserie e borghi bianchi.',
+          },
+          {
+            name: 'Toscana',
+            caption: 'Casali, colline e dimore di campagna tra Firenze, Siena e la Maremma.',
+          },
+          {
+            name: 'Costiera Amalfitana',
+            caption: 'Case a strapiombo e borghi sul mare, da Positano a Ravello.',
+          },
+          {
+            name: 'I laghi',
+            caption: 'Ville e ritiri sul Lago di Como, Garda e Maggiore.',
+          },
+        ],
+      },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000064',
+      type: 'cta',
+      enabled: true,
+      order: 4,
+      content: {
+        title: 'Raccontaci cosa cerchi',
+        description:
+          'Un profilo, un itinerario di visite, un accompagnamento fino alla firma.',
+        button: { label: 'Inizia la ricerca', to: '/contact' },
+      },
+    },
+  ],
+}
+
+const PROPERTY_FINDER_DEFAULTS_EN: CmsPageDocument = {
+  seo: {
+    title: 'Property Finder',
+    description:
+      'Private property search in Italy: a tailored brief, accompanied viewings, a network from Tuscany to the Amalfi Coast and the lakes.',
+  },
+  sections: [
+    {
+      id: '00000000-0000-4000-8000-000000000060',
+      type: 'pageHeader',
+      enabled: true,
+      order: 0,
+      content: {
+        eyebrow: 'Private search',
+        title: 'We search for you. Beyond the shop window.',
+        lead: 'From the first conversation to completion: a tailored brief, accompanied viewings, a network across Italy.',
+      },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000061',
+      type: 'itinerary',
+      enabled: true,
+      order: 1,
+      content: {
+        eyebrow: 'The journey',
+        items: [
+          {
+            title: 'Consultation',
+            body: 'We listen to what you need, your timing, and how you want to live in the home.',
+          },
+          {
+            title: 'Brief',
+            body: 'We shape a precise mandate: area, type, budget, character.',
+          },
+          {
+            title: 'Search',
+            body: 'We look beyond the shop window, filtering through our network of agents and partners.',
+          },
+          {
+            title: 'Viewings',
+            body: 'We build the itinerary, translate, and advise at your side.',
+          },
+          {
+            title: 'Purchase',
+            body: 'Negotiation, legal and tax matters, through to completion.',
+          },
+        ],
+      },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000062',
+      type: 'statement',
+      enabled: true,
+      order: 2,
+      content: {
+        title: 'A calm path, through to completion.',
+        body: 'Our aim is to take the complexity of buying in Italy off your shoulders, so you can enjoy the excitement of finding the right home.',
+        tagline: 'PRIVATE MANDATE',
+      },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000063',
+      type: 'destinations',
+      enabled: true,
+      order: 3,
+      content: {
+        eyebrow: 'Large coverage',
+        title: 'Across Italy, beyond the Valle d’Itria',
+        lead: 'A network of agents and partners in the most sought-after destinations, not only in Puglia.',
+        outro: 'Valle d’Itria, and beyond.',
+        items: [
+          {
+            name: 'Valle d’Itria',
+            caption: 'Ostuni, Cisternino, Martina Franca: trulli, masserie and white hill towns.',
+          },
+          {
+            name: 'Tuscany',
+            caption: 'Farmhouses, hills and country houses between Florence, Siena and the Maremma.',
+          },
+          {
+            name: 'Amalfi Coast',
+            caption: 'Houses on the cliff and villages by the sea, from Positano to Ravello.',
+          },
+          {
+            name: 'The lakes',
+            caption: 'Villas and retreats on Lake Como, Garda and Maggiore.',
+          },
+        ],
+      },
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000064',
+      type: 'cta',
+      enabled: true,
+      order: 4,
+      content: {
+        title: 'Tell us what you are looking for',
+        description: 'A brief, a viewing itinerary, guidance through to the signature.',
+        button: { label: 'Begin the search', to: '/contact' },
+      },
+    },
+  ],
+}
+
 
 export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
   home: {
@@ -1071,107 +1280,11 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
     milestone: 'M2',
   },
   'property-finder': {
-    // pageHeader: hero full-bleed (title, lead, mediaId?) — come contatti
-    allowedTypes: ['pageHeader', 'richText'],
+    // briefing hero (pageHeader + eyebrow + ritratto) + itinerary + statement + destinations + cta
+    allowedTypes: ['pageHeader', 'itinerary', 'statement', 'destinations', 'cta'],
     reorderable: [],
     defaults: (locale) =>
-      locale === 'en'
-        ? {
-            seo: {
-              title: 'Property Finder',
-              description:
-                'Full property finder service in Italy: tailored search, viewings, negotiation, legal and tax support.',
-            },
-            sections: [
-              {
-                id: '00000000-0000-4000-8000-000000000060',
-                type: 'pageHeader',
-                enabled: true,
-                order: 0,
-                content: {
-                  title: 'Our Comprehensive Property Finder Service',
-                  lead: 'From the first consultation to the final purchase, we guide you every step of the way.',
-                },
-              },
-              {
-                id: '00000000-0000-4000-8000-000000000061',
-                type: 'richText',
-                enabled: true,
-                order: 1,
-                content: {
-                  body: `At our estate agency, we understand that **purchasing a property in a foreign country** can be a daunting and complex process, which is why we are committed to taking care of everything for our clients. From the *initial consultation* to the *final purchase*, we will be there every step of the way to guide you through the process and ensure that everything runs smoothly. Our team of experts will help you to **identify the right properties**, arrange viewings, **negotiate the best possible price** and manage all aspects of the purchase process, including legal and financial matters. We work with a network of trusted legal and financial advisors to ensure that all aspects of the purchase process are fully taken care of, including *title searches*, *property registration*, *tax matters* and more.
-
-> Our goal is to provide our clients with a **stress-free and seamless experience**, allowing them to relax and enjoy the excitement of owning a property in Italy.
-
----
-
-### A tailored search
-
-To begin the process, we will craft a **customized profile** based on your specific requirements. With this information in hand, we will conduct an extensive search of all available properties in your desired areas, carefully filtering out those that do not meet your criteria and presenting only the finest options for your consideration.
-
-### Viewings, handled for you
-
-Once we have identified a selection of potential properties, we will work with various agencies to create a **comprehensive itinerary for viewing**. You can rest assured that we will handle all communication and coordination with these agencies, sparing you any unnecessary hassle.
-
-During the viewing process, we will be at your side every step of the way, providing invaluable **translation services** and *expert advice* on each property that you see.
-
----
-
-## Large Coverage
-
-At our estate agency, we take pride in our **large coverage**, which extends to some of the most desirable locations throughout **Italy**. Our extensive network of local agents and partners allows us to offer our clients a wide selection of properties in popular destinations such as **Tuscany**, the **Amalfi Coast**, the **Italian Lakes**, and more. We are dedicated to providing our clients with an exceptional level of service, no matter where they are looking to buy a property in Italy. Whether you are seeking a *rustic countryside retreat* or a *chic urban apartment*, we have the expertise and resources to help you find the perfect property in the location that best suits your needs and lifestyle.`,
-                },
-              },
-            ],
-          }
-        : {
-            seo: {
-              title: 'Trova immobile',
-              description:
-                'Servizio completo di ricerca immobili in Italia: profilo su misura, visite, negoziazione e gestione legale e fiscale.',
-            },
-            sections: [
-              {
-                id: '00000000-0000-4000-8000-000000000060',
-                type: 'pageHeader',
-                enabled: true,
-                order: 0,
-                content: {
-                  title: 'Il nostro servizio completo di ricerca immobili',
-                  lead: 'Dalla prima consulenza all’acquisto, ti accompagniamo in ogni fase.',
-                },
-              },
-              {
-                id: '00000000-0000-4000-8000-000000000061',
-                type: 'richText',
-                enabled: true,
-                order: 1,
-                content: {
-                  body: `Nella nostra agenzia immobiliare sappiamo quanto possa risultare impegnativo e complesso **acquistare un immobile all’estero**: per questo ci impegnamo a occuparci di tutto per i nostri clienti. Dalla *prima consulenza* fino all’*acquisto finale*, saremo al vostro fianco in ogni fase per guidarvi nel percorso e garantire che tutto proceda senza intoppi. Il nostro team di esperti vi aiuterà a **individuare le proprietà giuste**, organizzare le visite, **negoziare il miglior prezzo possibile** e gestire tutti gli aspetti dell’acquisto, comprese le questioni legali e finanziarie. Collaboriamo con una rete di consulenti legali e finanziari di fiducia per assicurarci che ogni aspetto del processo sia pienamente curato, dalle *ricerche ipotecarie* alla *registrazione dell’immobile*, dalle *questioni fiscali* e oltre.
-
-> Il nostro obiettivo è offrire un’**esperienza serena e senza stress**, così potrete godervi l’emozione di possedere un immobile in Italia.
-
----
-
-### Una ricerca su misura
-
-Per iniziare, costruiremo un **profilo personalizzato** basato sulle vostre esigenze specifiche. Con queste informazioni condurremo una ricerca approfondita di tutte le proprietà disponibili nelle zone di vostro interesse, filtrando con cura quelle che non corrispondono ai criteri e presentandovi solo le opzioni migliori da valutare.
-
-### Visite, gestite per voi
-
-Una volta individuata una selezione di immobili potenziali, collaboreremo con varie agenzie per creare un **itinerario completo di visite**. Potrete contare sul fatto che gestiamo noi tutta la comunicazione e il coordinamento con queste agenzie, evitandovi ogni inutile complicazione.
-
-Durante le visite saremo al vostro fianco in ogni momento, offrendo **servizi di traduzione** e *consigli esperti* su ciascuna proprietà che vedrete.
-
----
-
-## Ampia copertura
-
-Nella nostra agenzia siamo orgogliosi della nostra **ampia copertura**, che si estende ad alcune delle località più desiderabili di tutta **Italia**. La nostra vasta rete di agenti e partner locali ci consente di offrire una vasta selezione di immobili in destinazioni come la **Toscana**, la **Costiera Amalfitana**, i **laghi italiani** e oltre. Siamo dedicati a fornire un livello di servizio eccezionale, ovunque stiate cercando di acquistare in Italia. Che cerchiate un *rifugio rustico in campagna* o un *appartamento urbano raffinato*, abbiamo l’esperienza e le risorse per aiutarvi a trovare la proprietà perfetta nella località più adatta alle vostre esigenze e al vostro stile di vita.`,
-                },
-              },
-            ],
-          },
+      locale === 'en' ? PROPERTY_FINDER_DEFAULTS_EN : PROPERTY_FINDER_DEFAULTS_IT,
     milestone: 'M2',
   },
   'virtual-tours': {

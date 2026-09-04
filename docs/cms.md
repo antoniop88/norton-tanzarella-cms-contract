@@ -1,4 +1,4 @@
-# CMS — Contratto v0.30.5
+# CMS — Contratto v0.30.6
 
 ## Export
 
@@ -13,14 +13,14 @@
 - `i18n` — stringhe editabili per lingua (default)
 - `shared` — image, video, icon, boolean, number, enum, `to`, `href`, `categorySlug`, `iubendaPolicyId`, oggetti/array strutturali
 
-## `pageHeader` (v0.30.0 / v0.30.1 / v0.30.2)
+## `pageHeader` (v0.30.0 / v0.30.1 / v0.30.2 / v0.30.6)
 
-- `title` (max 80, i18n), `lead?` (max 200, i18n)
-- `mediaId?` (shared) — immagine sfondo; hero full-bleed su **Immobili**, **Contatti** e **Trova immobile**; altre pagine ignorano
+- `title` (max 80, i18n), `lead?` (max 200, i18n), `eyebrow?` (max 40, i18n, v0.30.6)
+- `mediaId?` (shared) — immagine; hero full-bleed su **Immobili** e **Contatti**; ritratto 4:5 su **Trova immobile**; altre pagine ignorano
 - `imageAlt?` (max 160, i18n)
 - Defaults `immobili-index`: IT «Trova il posto che chiamerai casa.» / EN «Find your place to call home.» (`mediaId` vuoto finché caricato dal BO)
 - Defaults `contatti` (v0.30.1): IT «Contattaci» + lead valutazioni/visite; EN «Contact us» + lead equivalente; `richText` off di default; upload hero in `cms/contatti/`
-- `property-finder` (v0.30.2): stesso hero Contatti; copy titolo/lead già in defaults v0.25; upload in `cms/property-finder/`
+- `property-finder` (v0.30.6): briefing canvas, non più hero Contatti; upload in `cms/property-finder/`
 
 ## Pagine M1
 
@@ -88,11 +88,15 @@ Defaults: hero → slideshow → split×3 → team → stats → cta → faq (IT
 - `pageHeader` + `youtubeGallery` (`playlistId`, `pageSize`, `columns`, `subscribeChannelUrl`, `subscribeLabel`)
 - Defaults: playlist Norton Tanzarella `UU2weLZdp6gU82cmEb2URPvA`, 15/pagina, 3 colonne
 
-## `property-finder` (v0.25.0, hero v0.30.2)
+## `property-finder` (v0.30.6)
 
-`pageHeader` + `richText` (servizio ricerca immobili). Defaults IT|EN con copy completo (non stub). Hero full-bleed come Contatti (`mediaId?`).
+`pageHeader` + `itinerary` + `statement` + `destinations` + `cta`. Ordine locked. Defaults IT|EN (copy mandato). Upload in `cms/property-finder/`.
 
-- `richText.body` max 10000, `format: 'markdown'` (TipTap BO → Markdown string → `marked` sul web)
+- `pageHeader.eyebrow?` (max 40) — sopratitolo small caps; `mediaId?` ritratto 4:5 (non full-bleed)
+- `itinerary`: `eyebrow?`, `title?`, `items[3–6]` (`title` max 40, `body` max 280)
+- `destinations`: `eyebrow?`, `title?`, `lead?`, `outro?`, `items[2–6]` (`name`, `caption?`, `mediaId?`, `imageAlt?`)
+- Web: view dedicata (non sticky, non hero Contatti); CTA apre modale form
+- Lettura: `migratePropertyFinderBriefing` (titolo brochure → nuovi defaults; preserva `mediaId`); `richText` legacy droppato
 
 ## `sell-with-us` (v0.30.4)
 

@@ -20,10 +20,17 @@ import {
   testimonialsContentSchema,
   youtubeGalleryContentSchema,
   googleReviewsContentSchema,
+  itineraryContentSchema,
+  destinationsContentSchema,
 } from './m2.js'
 
 export { collectPageMediaIds } from './collectPageMediaIds.js'
 export { migrateSplitsToStickySplits } from './migrateStickySplits.js'
+export {
+  migratePropertyFinderBriefing,
+  migratePropertyFinderPage,
+  LEGACY_PROPERTY_FINDER_TITLES,
+} from './migratePropertyFinder.js'
 
 export const sectionContentByType = {
   hero: heroContentSchema,
@@ -45,6 +52,8 @@ export const sectionContentByType = {
   youtubeGallery: youtubeGalleryContentSchema,
   googleReviews: googleReviewsContentSchema,
   aboutTeaser: aboutTeaserContentSchema,
+  itinerary: itineraryContentSchema,
+  destinations: destinationsContentSchema,
 } as const
 
 export type SectionType = keyof typeof sectionContentByType
@@ -69,6 +78,8 @@ export const SECTION_TYPE_LABELS_IT: Record<SectionType, string> = {
   youtubeGallery: 'Gallery YouTube',
   googleReviews: 'Google Reviews',
   aboutTeaser: 'About teaser',
+  itinerary: 'Itinerario',
+  destinations: 'Territori',
 }
 
 export function parseSectionContent(type: string, content: unknown) {

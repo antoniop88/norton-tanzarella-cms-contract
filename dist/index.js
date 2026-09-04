@@ -4139,8 +4139,9 @@ var aboutTeaserContentSchema = external_exports.object({
 var pageHeaderContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
   lead: external_exports.string().max(200).optional().describe("Introduzione"),
+  eyebrow: external_exports.string().max(40).optional().describe("Sopratitolo"),
   mediaId: optionalMediaIdSchema.describe(
-    "Immagine sfondo hero (listing Immobili, Contatti, Trova immobile, \u2026)"
+    "Immagine (hero full-bleed Immobili/Contatti; ritratto Trova immobile)"
   ),
   imageAlt: external_exports.string().max(160).optional().describe("Alt immagine")
 });
@@ -4229,6 +4230,28 @@ var googleReviewsContentSchema = external_exports.object({
   hideWhenEmpty: external_exports.boolean().default(true).describe("Nascondi se nessuna recensione"),
   showSummary: external_exports.boolean().default(true).describe("Mostra rating e totale Google")
 });
+var itineraryItemSchema = external_exports.object({
+  title: external_exports.string().max(40).describe("Titolo fase"),
+  body: external_exports.string().max(280).describe("Testo")
+});
+var itineraryContentSchema = external_exports.object({
+  eyebrow: external_exports.string().max(40).optional().describe("Sopratitolo"),
+  title: external_exports.string().max(80).optional().describe("Titolo sezione"),
+  items: external_exports.array(itineraryItemSchema).min(3).max(6).describe("Fasi")
+});
+var destinationItemSchema = external_exports.object({
+  name: external_exports.string().max(80).describe("Nome territorio"),
+  caption: external_exports.string().max(200).optional().describe("Didascalia"),
+  mediaId: optionalMediaIdSchema.describe("Immagine"),
+  imageAlt: external_exports.string().max(160).optional().describe("Alt immagine")
+});
+var destinationsContentSchema = external_exports.object({
+  eyebrow: external_exports.string().max(40).optional().describe("Sopratitolo"),
+  title: external_exports.string().max(80).optional().describe("Titolo sezione"),
+  lead: external_exports.string().max(200).optional().describe("Introduzione"),
+  outro: external_exports.string().max(120).optional().describe("Chiusura"),
+  items: external_exports.array(destinationItemSchema).min(2).max(6).describe("Territori")
+});
 
 // src/sections/collectPageMediaIds.ts
 function isUuid(value) {
@@ -4292,6 +4315,51 @@ function migrateSplitsToStickySplits(sections, defaults) {
   );
 }
 
+// src/sections/migratePropertyFinder.ts
+var LEGACY_PROPERTY_FINDER_TITLES = /* @__PURE__ */ new Set([
+  "Il nostro servizio completo di ricerca immobili",
+  "Our Comprehensive Property Finder Service"
+]);
+var LEGACY_PROPERTY_FINDER_SEO_DESCRIPTIONS = /* @__PURE__ */ new Set([
+  "Servizio completo di ricerca immobili in Italia: profilo su misura, visite, negoziazione e gestione legale e fiscale.",
+  "Full property finder service in Italy: tailored search, viewings, negotiation, legal and tax support."
+]);
+function migratePropertyFinderSeo(seo, defaults) {
+  const next = { ...seo ?? {} };
+  const defaultSeo = defaults.seo ?? {};
+  const description = typeof next.description === "string" ? next.description.trim() : "";
+  if (!description || LEGACY_PROPERTY_FINDER_SEO_DESCRIPTIONS.has(description)) {
+    if (typeof defaultSeo.description === "string") next.description = defaultSeo.description;
+  }
+  if (!next.title && typeof defaultSeo.title === "string") next.title = defaultSeo.title;
+  return next;
+}
+function migratePropertyFinderBriefing(sections, defaults) {
+  const defaultHeader = defaults.sections.find((section) => section.type === "pageHeader");
+  if (!defaultHeader) return sections;
+  const defaultContent = defaultHeader.content;
+  return sections.map((section) => {
+    if (section.type !== "pageHeader") return section;
+    const content = { ...section.content };
+    const title = typeof content.title === "string" ? content.title.trim() : "";
+    if (LEGACY_PROPERTY_FINDER_TITLES.has(title)) {
+      if (typeof defaultContent.title === "string") content.title = defaultContent.title;
+      if (typeof defaultContent.lead === "string") content.lead = defaultContent.lead;
+    }
+    if (!content.eyebrow && typeof defaultContent.eyebrow === "string") {
+      content.eyebrow = defaultContent.eyebrow;
+    }
+    return { ...section, content };
+  });
+}
+function migratePropertyFinderPage(document, defaults) {
+  return {
+    ...document,
+    seo: migratePropertyFinderSeo(document.seo, defaults),
+    sections: migratePropertyFinderBriefing(document.sections, defaults)
+  };
+}
+
 // src/sections/index.ts
 var sectionContentByType = {
   hero: heroContentSchema,
@@ -4312,7 +4380,9 @@ var sectionContentByType = {
   testimonials: testimonialsContentSchema,
   youtubeGallery: youtubeGalleryContentSchema,
   googleReviews: googleReviewsContentSchema,
-  aboutTeaser: aboutTeaserContentSchema
+  aboutTeaser: aboutTeaserContentSchema,
+  itinerary: itineraryContentSchema,
+  destinations: destinationsContentSchema
 };
 var SECTION_TYPE_LABELS_IT = {
   hero: "Hero",
@@ -4333,7 +4403,9 @@ var SECTION_TYPE_LABELS_IT = {
   testimonials: "Testimonianze",
   youtubeGallery: "Gallery YouTube",
   googleReviews: "Google Reviews",
-  aboutTeaser: "About teaser"
+  aboutTeaser: "About teaser",
+  itinerary: "Itinerario",
+  destinations: "Territori"
 };
 function parseSectionContent(type, content) {
   const schema = sectionContentByType[type];
@@ -6085,6 +6157,210 @@ Tell us about your property. We will review its features and the market context 
     }
   ]
 };
+var PROPERTY_FINDER_DEFAULTS_IT = {
+  seo: {
+    title: "Trova immobile",
+    description: "Ricerca immobili su incarico in Italia: profilo su misura, visite accompagnate, rete in Toscana, Costiera e laghi."
+  },
+  sections: [
+    {
+      id: "00000000-0000-4000-8000-000000000060",
+      type: "pageHeader",
+      enabled: true,
+      order: 0,
+      content: {
+        eyebrow: "Ricerca su incarico",
+        title: "Cerchiamo per voi. Anche ci\xF2 che non \xE8 in vetrina.",
+        lead: "Dalla prima consulenza alla firma: un mandato su misura, visite accompagnate, rete in Italia."
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000061",
+      type: "itinerary",
+      enabled: true,
+      order: 1,
+      content: {
+        eyebrow: "Il percorso",
+        items: [
+          {
+            title: "Consulenza",
+            body: "Ascoltiamo esigenze, tempi e il modo in cui volete vivere la casa."
+          },
+          {
+            title: "Profilo",
+            body: "Costruiamo un mandato preciso: zona, tipologia, budget, carattere."
+          },
+          {
+            title: "Ricerca",
+            body: "Selezioniamo oltre la vetrina, filtrando con la rete di agenti e partner."
+          },
+          {
+            title: "Visite",
+            body: "Organizziamo l\u2019itinerario, traduciamo e consigliamo al vostro fianco."
+          },
+          {
+            title: "Acquisto",
+            body: "Negoziazione, aspetti legali e fiscali, fino alla firma."
+          }
+        ]
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000062",
+      type: "statement",
+      enabled: true,
+      order: 2,
+      content: {
+        title: "Un\u2019esperienza serena, fino alla firma.",
+        body: "Il nostro obiettivo \xE8 togliervi la complessit\xE0 di un acquisto in Italia, cos\xEC potete concentrarvi sull\u2019emozione di trovare la casa giusta.",
+        tagline: "MANDATO PRIVATO"
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000063",
+      type: "destinations",
+      enabled: true,
+      order: 3,
+      content: {
+        eyebrow: "Ampia copertura",
+        title: "In Italia, e oltre la Valle d\u2019Itria",
+        lead: "Una rete di agenti e partner nelle destinazioni pi\xF9 ricercate, non solo in Puglia.",
+        outro: "Valle d\u2019Itria, e oltre.",
+        items: [
+          {
+            name: "Valle d\u2019Itria",
+            caption: "Ostuni, Cisternino, Martina Franca: trulli, masserie e borghi bianchi."
+          },
+          {
+            name: "Toscana",
+            caption: "Casali, colline e dimore di campagna tra Firenze, Siena e la Maremma."
+          },
+          {
+            name: "Costiera Amalfitana",
+            caption: "Case a strapiombo e borghi sul mare, da Positano a Ravello."
+          },
+          {
+            name: "I laghi",
+            caption: "Ville e ritiri sul Lago di Como, Garda e Maggiore."
+          }
+        ]
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000064",
+      type: "cta",
+      enabled: true,
+      order: 4,
+      content: {
+        title: "Raccontaci cosa cerchi",
+        description: "Un profilo, un itinerario di visite, un accompagnamento fino alla firma.",
+        button: { label: "Inizia la ricerca", to: "/contact" }
+      }
+    }
+  ]
+};
+var PROPERTY_FINDER_DEFAULTS_EN = {
+  seo: {
+    title: "Property Finder",
+    description: "Private property search in Italy: a tailored brief, accompanied viewings, a network from Tuscany to the Amalfi Coast and the lakes."
+  },
+  sections: [
+    {
+      id: "00000000-0000-4000-8000-000000000060",
+      type: "pageHeader",
+      enabled: true,
+      order: 0,
+      content: {
+        eyebrow: "Private search",
+        title: "We search for you. Beyond the shop window.",
+        lead: "From the first conversation to completion: a tailored brief, accompanied viewings, a network across Italy."
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000061",
+      type: "itinerary",
+      enabled: true,
+      order: 1,
+      content: {
+        eyebrow: "The journey",
+        items: [
+          {
+            title: "Consultation",
+            body: "We listen to what you need, your timing, and how you want to live in the home."
+          },
+          {
+            title: "Brief",
+            body: "We shape a precise mandate: area, type, budget, character."
+          },
+          {
+            title: "Search",
+            body: "We look beyond the shop window, filtering through our network of agents and partners."
+          },
+          {
+            title: "Viewings",
+            body: "We build the itinerary, translate, and advise at your side."
+          },
+          {
+            title: "Purchase",
+            body: "Negotiation, legal and tax matters, through to completion."
+          }
+        ]
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000062",
+      type: "statement",
+      enabled: true,
+      order: 2,
+      content: {
+        title: "A calm path, through to completion.",
+        body: "Our aim is to take the complexity of buying in Italy off your shoulders, so you can enjoy the excitement of finding the right home.",
+        tagline: "PRIVATE MANDATE"
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000063",
+      type: "destinations",
+      enabled: true,
+      order: 3,
+      content: {
+        eyebrow: "Large coverage",
+        title: "Across Italy, beyond the Valle d\u2019Itria",
+        lead: "A network of agents and partners in the most sought-after destinations, not only in Puglia.",
+        outro: "Valle d\u2019Itria, and beyond.",
+        items: [
+          {
+            name: "Valle d\u2019Itria",
+            caption: "Ostuni, Cisternino, Martina Franca: trulli, masserie and white hill towns."
+          },
+          {
+            name: "Tuscany",
+            caption: "Farmhouses, hills and country houses between Florence, Siena and the Maremma."
+          },
+          {
+            name: "Amalfi Coast",
+            caption: "Houses on the cliff and villages by the sea, from Positano to Ravello."
+          },
+          {
+            name: "The lakes",
+            caption: "Villas and retreats on Lake Como, Garda and Maggiore."
+          }
+        ]
+      }
+    },
+    {
+      id: "00000000-0000-4000-8000-000000000064",
+      type: "cta",
+      enabled: true,
+      order: 4,
+      content: {
+        title: "Tell us what you are looking for",
+        description: "A brief, a viewing itinerary, guidance through to the signature.",
+        button: { label: "Begin the search", to: "/contact" }
+      }
+    }
+  ]
+};
 var PAGE_REGISTRY = {
   home: {
     allowedTypes: [
@@ -6226,102 +6502,10 @@ var PAGE_REGISTRY = {
     milestone: "M2"
   },
   "property-finder": {
-    // pageHeader: hero full-bleed (title, lead, mediaId?) — come contatti
-    allowedTypes: ["pageHeader", "richText"],
+    // briefing hero (pageHeader + eyebrow + ritratto) + itinerary + statement + destinations + cta
+    allowedTypes: ["pageHeader", "itinerary", "statement", "destinations", "cta"],
     reorderable: [],
-    defaults: (locale) => locale === "en" ? {
-      seo: {
-        title: "Property Finder",
-        description: "Full property finder service in Italy: tailored search, viewings, negotiation, legal and tax support."
-      },
-      sections: [
-        {
-          id: "00000000-0000-4000-8000-000000000060",
-          type: "pageHeader",
-          enabled: true,
-          order: 0,
-          content: {
-            title: "Our Comprehensive Property Finder Service",
-            lead: "From the first consultation to the final purchase, we guide you every step of the way."
-          }
-        },
-        {
-          id: "00000000-0000-4000-8000-000000000061",
-          type: "richText",
-          enabled: true,
-          order: 1,
-          content: {
-            body: `At our estate agency, we understand that **purchasing a property in a foreign country** can be a daunting and complex process, which is why we are committed to taking care of everything for our clients. From the *initial consultation* to the *final purchase*, we will be there every step of the way to guide you through the process and ensure that everything runs smoothly. Our team of experts will help you to **identify the right properties**, arrange viewings, **negotiate the best possible price** and manage all aspects of the purchase process, including legal and financial matters. We work with a network of trusted legal and financial advisors to ensure that all aspects of the purchase process are fully taken care of, including *title searches*, *property registration*, *tax matters* and more.
-
-> Our goal is to provide our clients with a **stress-free and seamless experience**, allowing them to relax and enjoy the excitement of owning a property in Italy.
-
----
-
-### A tailored search
-
-To begin the process, we will craft a **customized profile** based on your specific requirements. With this information in hand, we will conduct an extensive search of all available properties in your desired areas, carefully filtering out those that do not meet your criteria and presenting only the finest options for your consideration.
-
-### Viewings, handled for you
-
-Once we have identified a selection of potential properties, we will work with various agencies to create a **comprehensive itinerary for viewing**. You can rest assured that we will handle all communication and coordination with these agencies, sparing you any unnecessary hassle.
-
-During the viewing process, we will be at your side every step of the way, providing invaluable **translation services** and *expert advice* on each property that you see.
-
----
-
-## Large Coverage
-
-At our estate agency, we take pride in our **large coverage**, which extends to some of the most desirable locations throughout **Italy**. Our extensive network of local agents and partners allows us to offer our clients a wide selection of properties in popular destinations such as **Tuscany**, the **Amalfi Coast**, the **Italian Lakes**, and more. We are dedicated to providing our clients with an exceptional level of service, no matter where they are looking to buy a property in Italy. Whether you are seeking a *rustic countryside retreat* or a *chic urban apartment*, we have the expertise and resources to help you find the perfect property in the location that best suits your needs and lifestyle.`
-          }
-        }
-      ]
-    } : {
-      seo: {
-        title: "Trova immobile",
-        description: "Servizio completo di ricerca immobili in Italia: profilo su misura, visite, negoziazione e gestione legale e fiscale."
-      },
-      sections: [
-        {
-          id: "00000000-0000-4000-8000-000000000060",
-          type: "pageHeader",
-          enabled: true,
-          order: 0,
-          content: {
-            title: "Il nostro servizio completo di ricerca immobili",
-            lead: "Dalla prima consulenza all\u2019acquisto, ti accompagniamo in ogni fase."
-          }
-        },
-        {
-          id: "00000000-0000-4000-8000-000000000061",
-          type: "richText",
-          enabled: true,
-          order: 1,
-          content: {
-            body: `Nella nostra agenzia immobiliare sappiamo quanto possa risultare impegnativo e complesso **acquistare un immobile all\u2019estero**: per questo ci impegnamo a occuparci di tutto per i nostri clienti. Dalla *prima consulenza* fino all\u2019*acquisto finale*, saremo al vostro fianco in ogni fase per guidarvi nel percorso e garantire che tutto proceda senza intoppi. Il nostro team di esperti vi aiuter\xE0 a **individuare le propriet\xE0 giuste**, organizzare le visite, **negoziare il miglior prezzo possibile** e gestire tutti gli aspetti dell\u2019acquisto, comprese le questioni legali e finanziarie. Collaboriamo con una rete di consulenti legali e finanziari di fiducia per assicurarci che ogni aspetto del processo sia pienamente curato, dalle *ricerche ipotecarie* alla *registrazione dell\u2019immobile*, dalle *questioni fiscali* e oltre.
-
-> Il nostro obiettivo \xE8 offrire un\u2019**esperienza serena e senza stress**, cos\xEC potrete godervi l\u2019emozione di possedere un immobile in Italia.
-
----
-
-### Una ricerca su misura
-
-Per iniziare, costruiremo un **profilo personalizzato** basato sulle vostre esigenze specifiche. Con queste informazioni condurremo una ricerca approfondita di tutte le propriet\xE0 disponibili nelle zone di vostro interesse, filtrando con cura quelle che non corrispondono ai criteri e presentandovi solo le opzioni migliori da valutare.
-
-### Visite, gestite per voi
-
-Una volta individuata una selezione di immobili potenziali, collaboreremo con varie agenzie per creare un **itinerario completo di visite**. Potrete contare sul fatto che gestiamo noi tutta la comunicazione e il coordinamento con queste agenzie, evitandovi ogni inutile complicazione.
-
-Durante le visite saremo al vostro fianco in ogni momento, offrendo **servizi di traduzione** e *consigli esperti* su ciascuna propriet\xE0 che vedrete.
-
----
-
-## Ampia copertura
-
-Nella nostra agenzia siamo orgogliosi della nostra **ampia copertura**, che si estende ad alcune delle localit\xE0 pi\xF9 desiderabili di tutta **Italia**. La nostra vasta rete di agenti e partner locali ci consente di offrire una vasta selezione di immobili in destinazioni come la **Toscana**, la **Costiera Amalfitana**, i **laghi italiani** e oltre. Siamo dedicati a fornire un livello di servizio eccezionale, ovunque stiate cercando di acquistare in Italia. Che cerchiate un *rifugio rustico in campagna* o un *appartamento urbano raffinato*, abbiamo l\u2019esperienza e le risorse per aiutarvi a trovare la propriet\xE0 perfetta nella localit\xE0 pi\xF9 adatta alle vostre esigenze e al vostro stile di vita.`
-          }
-        }
-      ]
-    },
+    defaults: (locale) => locale === "en" ? PROPERTY_FINDER_DEFAULTS_EN : PROPERTY_FINDER_DEFAULTS_IT,
     milestone: "M2"
   },
   "virtual-tours": {
@@ -6749,6 +6933,7 @@ export {
   FONT_WHITELIST,
   FOOTER_NAV_PATHS,
   LEGACY_NAV_PATH_MAP,
+  LEGACY_PROPERTY_FINDER_TITLES,
   LEGAL_LINK_PATHS,
   LEGAL_POLICY_SOURCE_LABELS_IT,
   LOGO_SLOTS,
@@ -6784,6 +6969,8 @@ export {
   ctaContentSchema,
   ctaLinkSchema,
   dayOfWeekSchema,
+  destinationItemSchema,
+  destinationsContentSchema,
   enumLabelIt,
   faqContentSchema,
   featureItemSchema,
@@ -6806,6 +6993,8 @@ export {
   imageSlideshowContentSchema,
   imageSlideshowItemSchema,
   isPageKey,
+  itineraryContentSchema,
+  itineraryItemSchema,
   layoutSettingsSchema,
   legalNavLinkSchema,
   legalPolicyContentSchema,
@@ -6815,6 +7004,8 @@ export {
   mergeOpeningHoursNotes,
   mergeSharedOrganization,
   mergeSiteSettingsDefaults,
+  migratePropertyFinderBriefing,
+  migratePropertyFinderPage,
   migrateSplitsToStickySplits,
   normalizeNavPath,
   normalizeSettingsScalars,
