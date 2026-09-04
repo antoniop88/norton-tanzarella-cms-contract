@@ -122,12 +122,13 @@ Defaults: hero → slideshow → split×3 → team → stats → cta → faq (IT
 - `split` / `team` / `cta`: `mediaId` opzionale
 - `collectPageMediaIds(document)` — UUID referenziati nelle sezioni
 
-## Branding scalars — `propertyWatermark` (v0.28.0)
+## Branding scalars — `propertyWatermark` (v0.28.0, persistenza logo v0.30.3)
 
 - `propertyWatermark.enabled` (boolean, default `false`)
-- `propertyWatermark.mediaId?` (uuid → `media_assets` in `brand/`) — obbligatorio se `enabled=true`
+- `propertyWatermark.mediaId?` (uuid → `media_assets` in `brand/`) — persistito anche se `enabled=false`; obbligatorio se `enabled=true`
 - `collectBrandingMediaIds(scalars)` — loghi + filigrana
 - Backend applica filigrana al caricamento immagini `context=immobili` (non retroattivo)
+- v0.30.3: `normalizeSettingsScalars` non elimina `mediaId` quando lo switch è spento
 
 ## Hero video (v0.16.0)
 

@@ -209,9 +209,7 @@ export function normalizeSettingsScalars(raw: unknown): SettingsScalars {
     ...base.propertyWatermark,
     ...propertyWatermarkIn,
   }
-  if (!propertyWatermark.enabled) {
-    delete propertyWatermark.mediaId
-  }
+  // Keep mediaId when the apply-switch is off: the logo is saved first, enabled later.
 
   const candidate = {
     themeColor: primary,

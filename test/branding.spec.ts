@@ -52,6 +52,15 @@ describe('branding scalars', () => {
     expect(scalars.propertyWatermark.mediaId).toBe(mediaId)
   })
 
+  it('keeps watermark mediaId when the apply switch is off', () => {
+    const mediaId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+    const scalars = normalizeSettingsScalars({
+      propertyWatermark: { enabled: false, mediaId },
+    })
+    expect(scalars.propertyWatermark.enabled).toBe(false)
+    expect(scalars.propertyWatermark.mediaId).toBe(mediaId)
+  })
+
   it('rejects enabled watermark without mediaId', () => {
     const parsed = settingsScalarsSchema.safeParse({
       ...DEFAULT_BRANDING_SCALARS,
