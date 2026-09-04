@@ -51,4 +51,23 @@ describe('mergeSiteSettingsDefaults', () => {
       attribution: '— Test',
     })
   })
+
+  it('appends sell-with-us to headerNav and excludes only headerCta', () => {
+    const merged = mergeSiteSettingsDefaults({
+      headerNav: [
+        { label: 'Home', to: '/' },
+        { label: 'Chi siamo', to: '/about' },
+      ],
+    })
+    expect(merged.headerNav.map((link) => link.to)).toEqual([
+      '/',
+      '/about',
+      '/properties',
+      '/property-finder',
+      '/virtual-tours',
+      '/sell-with-us',
+    ])
+    expect(merged.headerNav.some((link) => link.to === '/contact')).toBe(false)
+    expect(merged.headerSecondaryCta?.to).toBe('/sell-with-us')
+  })
 })

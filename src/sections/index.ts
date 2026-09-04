@@ -14,6 +14,7 @@ import {
   pageHeaderContentSchema,
   richTextContentSchema,
   splitContentSchema,
+  stickySplitsContentSchema,
   statsContentSchema,
   teamContentSchema,
   testimonialsContentSchema,
@@ -22,6 +23,7 @@ import {
 } from './m2.js'
 
 export { collectPageMediaIds } from './collectPageMediaIds.js'
+export { migrateSplitsToStickySplits } from './migrateStickySplits.js'
 
 export const sectionContentByType = {
   hero: heroContentSchema,
@@ -34,6 +36,7 @@ export const sectionContentByType = {
   richText: richTextContentSchema,
   legalPolicy: legalPolicyContentSchema,
   split: splitContentSchema,
+  stickySplits: stickySplitsContentSchema,
   imageSlideshow: imageSlideshowContentSchema,
   team: teamContentSchema,
   stats: statsContentSchema,
@@ -57,6 +60,7 @@ export const SECTION_TYPE_LABELS_IT: Record<SectionType, string> = {
   richText: 'Testo libero',
   legalPolicy: 'Policy legale',
   split: 'Sezione split',
+  stickySplits: 'Blocchi numerati',
   imageSlideshow: 'Slideshow immagini',
   team: 'Team',
   stats: 'Statistiche',

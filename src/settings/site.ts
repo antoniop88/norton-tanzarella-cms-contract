@@ -23,11 +23,10 @@ export const DEFAULT_SITE_SETTINGS_IT: SiteSettings = {
 /** Keep stored labels; append any new default nav paths (e.g. after contract upgrades). */
 function mergeHeaderNav(stored: unknown): MainNavLink[] {
   const defaults = DEFAULT_SITE_SETTINGS_IT.headerNav
+  // Exclude only primary header CTA (Contattaci). Secondary CTA (Vendi con noi)
+  // may also appear in headerNav — footer inject still dedupes on `to`.
   const excludeTo = new Set(
-    [
-      DEFAULT_SITE_SETTINGS_IT.headerCta?.to,
-      DEFAULT_SITE_SETTINGS_IT.headerSecondaryCta?.to,
-    ].filter(Boolean) as string[],
+    [DEFAULT_SITE_SETTINGS_IT.headerCta?.to].filter(Boolean) as string[],
   )
 
   if (!Array.isArray(stored) || stored.length === 0) {

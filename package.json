@@ -1,6 +1,6 @@
 {
   "name": "@norton-tanzarella/cms-contract",
-  "version": "0.30.3",
+  "version": "0.30.5",
   "description": "Zod schemas, page registry and field metadata for Norton Tanzarella CMS",
   "type": "module",
   "private": true,

@@ -1,4 +1,4 @@
-# CMS — Contratto v0.30.2
+# CMS — Contratto v0.30.5
 
 ## Export
 
@@ -93,14 +93,21 @@ Defaults: hero → slideshow → split×3 → team → stats → cta → faq (IT
 `pageHeader` + `richText` (servizio ricerca immobili). Defaults IT|EN con copy completo (non stub). Hero full-bleed come Contatti (`mediaId?`).
 
 - `richText.body` max 10000, `format: 'markdown'` (TipTap BO → Markdown string → `marked` sul web)
-- Stub restanti: `sell-with-us` (`pageHeader`, placeholder in costruzione); policy con body «in costruzione»
+
+## `sell-with-us` (v0.30.4)
+
+`hero` + `richText` (intro) + `split` ×7 + `richText` (chiusura) + `cta`. Ordine locked. Defaults IT|EN (copy servizio vendita). Upload immagini split in `cms/sell-with-us/`.
+
+- `split.lead?` (max 200) — sottotitolo corsivo sotto il titolo (Chi siamo lo lascia vuoto)
+- Web: view dedicata sticky 01–07 (come Chi siamo); CTA Contattaci apre modale form
 
 `immobili-index` (v0.24.0): `pageHeader` + `cta` (reorderable); CTA defaults verso `/sell-with-us` (frase / didascalia / immagine / pulsante).
 
-## Layout header (v0.8.1)
+## Layout header (v0.8.1 / nav v0.30.4)
 
 - `headerCta` — Contattaci
-- `headerSecondaryCta` — Vendi con noi (`/vendi-con-noi`); sul sito pubblico va nel footer (non nell’header)
+- `headerNav` include «Vendi con noi» (`/sell-with-us`)
+- `headerSecondaryCta` — stesso path, usato nel footer (dedupe); `mergeHeaderNav` esclude solo `headerCta`
 
 ## Menu overlay (v0.22.0)
 

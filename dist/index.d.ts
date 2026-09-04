@@ -362,6 +362,7 @@ declare const legalPolicyContentSchema: z.ZodObject<{
 }>;
 declare const splitContentSchema: z.ZodObject<{
     title: z.ZodString;
+    lead: z.ZodOptional<z.ZodString>;
     body: z.ZodString;
     mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
     imageAlt: z.ZodOptional<z.ZodString>;
@@ -383,6 +384,7 @@ declare const splitContentSchema: z.ZodObject<{
     title: string;
     body: string;
     reverse?: boolean | undefined;
+    lead?: string | undefined;
     button?: {
         label: string;
         to: string;
@@ -393,10 +395,70 @@ declare const splitContentSchema: z.ZodObject<{
     title: string;
     body: string;
     reverse?: boolean | undefined;
+    lead?: string | undefined;
     button?: unknown;
     mediaId?: unknown;
     imageAlt?: string | undefined;
 }>;
+/** One numbered sticky block (Chi siamo / Vendi con noi). Numbers come from array index. */
+declare const stickySplitItemSchema: z.ZodObject<{
+    title: z.ZodString;
+    lead: z.ZodOptional<z.ZodString>;
+    body: z.ZodString;
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+    imageAlt: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    title: string;
+    body: string;
+    lead?: string | undefined;
+    mediaId?: string | undefined;
+    imageAlt?: string | undefined;
+}, {
+    title: string;
+    body: string;
+    lead?: string | undefined;
+    mediaId?: unknown;
+    imageAlt?: string | undefined;
+}>;
+declare const stickySplitsContentSchema: z.ZodObject<{
+    items: z.ZodArray<z.ZodObject<{
+        title: z.ZodString;
+        lead: z.ZodOptional<z.ZodString>;
+        body: z.ZodString;
+        mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+        imageAlt: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        title: string;
+        body: string;
+        lead?: string | undefined;
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
+    }, {
+        title: string;
+        body: string;
+        lead?: string | undefined;
+        mediaId?: unknown;
+        imageAlt?: string | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    items: {
+        title: string;
+        body: string;
+        lead?: string | undefined;
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
+    }[];
+}, {
+    items: {
+        title: string;
+        body: string;
+        lead?: string | undefined;
+        mediaId?: unknown;
+        imageAlt?: string | undefined;
+    }[];
+}>;
+type StickySplitItem = z.infer<typeof stickySplitItemSchema>;
+type StickySplitsContent = z.infer<typeof stickySplitsContentSchema>;
 declare const imageSlideshowItemSchema: z.ZodObject<{
     mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
     imageAlt: z.ZodOptional<z.ZodString>;
@@ -670,6 +732,12 @@ type CmsSection = z.infer<typeof cmsSectionSchema>;
 
 declare function collectPageMediaIds(document: CmsPageDocument | unknown): string[];
 
+/**
+ * Collapse legacy top-level `split` sections into one `stickySplits` (Chi siamo / Vendi con noi).
+ * Run **before** filtering by `allowedTypes`, or split content is dropped.
+ */
+declare function migrateSplitsToStickySplits(sections: CmsSection[], defaults: CmsPageDocument): CmsSection[];
+
 declare const sectionContentByType: {
     readonly hero: zod.ZodObject<{
         title: zod.ZodString;
@@ -897,6 +965,7 @@ declare const sectionContentByType: {
     }>;
     readonly split: zod.ZodObject<{
         title: zod.ZodString;
+        lead: zod.ZodOptional<zod.ZodString>;
         body: zod.ZodString;
         mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
         imageAlt: zod.ZodOptional<zod.ZodString>;
@@ -918,6 +987,7 @@ declare const sectionContentByType: {
         title: string;
         body: string;
         reverse?: boolean | undefined;
+        lead?: string | undefined;
         button?: {
             label: string;
             to: string;
@@ -928,9 +998,47 @@ declare const sectionContentByType: {
         title: string;
         body: string;
         reverse?: boolean | undefined;
+        lead?: string | undefined;
         button?: unknown;
         mediaId?: unknown;
         imageAlt?: string | undefined;
+    }>;
+    readonly stickySplits: zod.ZodObject<{
+        items: zod.ZodArray<zod.ZodObject<{
+            title: zod.ZodString;
+            lead: zod.ZodOptional<zod.ZodString>;
+            body: zod.ZodString;
+            mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
+            imageAlt: zod.ZodOptional<zod.ZodString>;
+        }, "strip", zod.ZodTypeAny, {
+            title: string;
+            body: string;
+            lead?: string | undefined;
+            mediaId?: string | undefined;
+            imageAlt?: string | undefined;
+        }, {
+            title: string;
+            body: string;
+            lead?: string | undefined;
+            mediaId?: unknown;
+            imageAlt?: string | undefined;
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        items: {
+            title: string;
+            body: string;
+            lead?: string | undefined;
+            mediaId?: string | undefined;
+            imageAlt?: string | undefined;
+        }[];
+    }, {
+        items: {
+            title: string;
+            body: string;
+            lead?: string | undefined;
+            mediaId?: unknown;
+            imageAlt?: string | undefined;
+        }[];
     }>;
     readonly imageSlideshow: zod.ZodObject<{
         items: zod.ZodArray<zod.ZodObject<{
@@ -1219,6 +1327,14 @@ declare function parseSectionContent(type: string, content: unknown): {
         source: "manual" | "iubenda";
         body?: string | undefined;
         iubendaPolicyId?: string | undefined;
+    } | {
+        items: {
+            title: string;
+            body: string;
+            lead?: string | undefined;
+            mediaId?: string | undefined;
+            imageAlt?: string | undefined;
+        }[];
     } | {
         items: {
             mediaId?: string | undefined;
@@ -4380,4 +4496,4 @@ type FieldMeta = {
 };
 declare function zodToFieldMeta(schema: ZodTypeAny, key?: string): FieldMeta[];
 
-export { type AboutTeaserCarouselItem, type AboutTeaserContent, type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_PROPERTY_WATERMARK, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type GoogleReviewsContent, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, type PropertyWatermark, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type StatementContent, type TimeSlot, WEEKDAY_ORDER, type YoutubeGalleryContent, aboutTeaserCarouselItemSchema, aboutTeaserContentSchema, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectBrandingMediaIds, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, collectPropertyWatermarkMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, googleReviewsContentSchema, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, propertyWatermarkSchema, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statementContentSchema, statsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, youtubeGalleryContentSchema, zodToFieldMeta };
+export { type AboutTeaserCarouselItem, type AboutTeaserContent, type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_PROPERTY_WATERMARK, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type GoogleReviewsContent, type ImageSlideshowContent, type ImageSlideshowItem, LEGACY_NAV_PATH_MAP, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, type PropertyWatermark, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type StatementContent, type StickySplitItem, type StickySplitsContent, type TimeSlot, WEEKDAY_ORDER, type YoutubeGalleryContent, aboutTeaserCarouselItemSchema, aboutTeaserContentSchema, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectBrandingMediaIds, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, collectPropertyWatermarkMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, googleReviewsContentSchema, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, migrateSplitsToStickySplits, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, propertyWatermarkSchema, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statementContentSchema, statsContentSchema, stickySplitItemSchema, stickySplitsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, youtubeGalleryContentSchema, zodToFieldMeta };

@@ -192,6 +192,7 @@ export const DEFAULT_LAYOUT_SETTINGS_IT: LayoutSettings = {
     { label: 'Immobili', to: '/properties' },
     { label: 'Trova immobile', to: '/property-finder' },
     { label: 'Tour virtuali', to: '/virtual-tours' },
+    { label: 'Vendi con noi', to: '/sell-with-us' },
   ],
   headerCta: { label: 'Contattaci', to: '/contact' },
   headerSecondaryCta: { label: 'Vendi con noi', to: '/sell-with-us' },
@@ -205,6 +206,7 @@ export const DEFAULT_LAYOUT_SETTINGS_IT: LayoutSettings = {
           { label: 'Immobili', to: '/properties' },
           { label: 'Trova immobile', to: '/property-finder' },
           { label: 'Tour virtuali', to: '/virtual-tours' },
+          { label: 'Vendi con noi', to: '/sell-with-us' },
         ],
       },
       {

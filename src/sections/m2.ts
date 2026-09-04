@@ -22,12 +22,29 @@ export const legalPolicyContentSchema = z.object({
 
 export const splitContentSchema = z.object({
   title: z.string().max(80).describe('Titolo'),
+  lead: z.string().max(200).optional().describe('Sottotitolo'),
   body: z.string().max(2000).describe('Testo'),
   mediaId: optionalMediaIdSchema.describe('Immagine'),
   imageAlt: z.string().max(120).optional().describe('Testo alternativo'),
   reverse: z.boolean().optional().describe('Layout invertito'),
   button: optionalCtaLinkSchema.describe('CTA'),
 })
+
+/** One numbered sticky block (Chi siamo / Vendi con noi). Numbers come from array index. */
+export const stickySplitItemSchema = z.object({
+  title: z.string().max(80).describe('Titolo'),
+  lead: z.string().max(200).optional().describe('Sottotitolo'),
+  body: z.string().max(2000).describe('Testo'),
+  mediaId: optionalMediaIdSchema.describe('Immagine'),
+  imageAlt: z.string().max(120).optional().describe('Testo alternativo'),
+})
+
+export const stickySplitsContentSchema = z.object({
+  items: z.array(stickySplitItemSchema).min(1).max(12).describe('Blocchi'),
+})
+
+export type StickySplitItem = z.infer<typeof stickySplitItemSchema>
+export type StickySplitsContent = z.infer<typeof stickySplitsContentSchema>
 
 export const imageSlideshowItemSchema = z.object({
   mediaId: optionalMediaIdSchema.describe('Immagine'),
