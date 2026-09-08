@@ -4815,9 +4815,16 @@ function migratePropertyFinderPage(document, defaults) {
 // src/sections/migrateSellWithUs.ts
 var LEGACY_SELL_SEO_DESCRIPTIONS = /* @__PURE__ */ new Set([
   "Vendi il tuo immobile con Norton Tanzarella: valutazione, marketing internazionale e accompagnamento fino alla conclusione.",
-  "Sell your property with Norton Tanzarella: valuation, international marketing and guidance through to completion."
+  "Sell your property with Norton Tanzarella: valuation, international marketing and guidance through to completion.",
+  "Vuoi vendere casa pi\xF9 velocemente e al miglior prezzo? Scopri il metodo Norton Tanzarella: video, social e valutazione professionale.",
+  "Want to sell your home faster and at the best price? Discover the Norton Tanzarella method: video, social media and a professional valuation."
+]);
+var PERFORMANCE_SELL_HERO_TITLES = /* @__PURE__ */ new Set([
+  "Vuoi vendere casa pi\xF9 velocemente",
+  "Want to sell your home faster"
 ]);
 var LEGACY_SELL_SECTION_TYPES = /* @__PURE__ */ new Set(["hero", "richText", "stickySplits", "split", "cta"]);
+var PRESERVE_KEYS = /* @__PURE__ */ new Set(["mediaId", "imageAlt", "youtubeUrl"]);
 function migrateSellWithUsSeo(seo, defaults) {
   const next = { ...seo ?? {} };
   const defaultSeo = defaults.seo ?? {};
@@ -4838,13 +4845,42 @@ function isLegacySellWithUsDocument(document) {
   if (hasNew) return false;
   return document.sections.some((section) => LEGACY_SELL_SECTION_TYPES.has(section.type));
 }
+function findSellHeroTitle(sections) {
+  const hero = sections.find((section) => section.type === "sellHero");
+  if (!hero) return "";
+  const content = hero.content;
+  return typeof content.title === "string" ? content.title.trim() : "";
+}
+function migrateSellWithUsPerformanceCopy(sections, defaults) {
+  if (!PERFORMANCE_SELL_HERO_TITLES.has(findSellHeroTitle(sections))) {
+    return sections;
+  }
+  const defaultsByType = new Map(
+    defaults.sections.filter(
+      (section) => ["sellHero", "sellMethod", "valuationLead", "socialReach"].includes(section.type)
+    ).map((section) => [section.type, section])
+  );
+  return sections.map((section) => {
+    const fallback = defaultsByType.get(section.type);
+    if (!fallback) return section;
+    const current = { ...section.content };
+    const next = { ...fallback.content };
+    for (const key of PRESERVE_KEYS) {
+      if (current[key] !== void 0 && current[key] !== null && current[key] !== "") {
+        next[key] = current[key];
+      }
+    }
+    return { ...section, content: next };
+  });
+}
 function migrateSellWithUsPage(document, defaults) {
   if (isLegacySellWithUsDocument(document)) {
     return structuredClone(defaults);
   }
   return {
     ...document,
-    seo: migrateSellWithUsSeo(document.seo, defaults)
+    seo: migrateSellWithUsSeo(document.seo, defaults),
+    sections: migrateSellWithUsPerformanceCopy(document.sections, defaults)
   };
 }
 
@@ -6333,7 +6369,7 @@ var CHI_SIAMO_DEFAULTS_EN = {
 var SELL_WITH_US_DEFAULTS_IT = {
   seo: {
     title: "Vendi con noi",
-    description: "Vuoi vendere casa pi\xF9 velocemente e al miglior prezzo? Scopri il metodo Norton Tanzarella: video, social e valutazione professionale."
+    description: "Affida il mandato di vendita a Norton Tanzarella: valutazione riservata, posizionamento e pubblico scelto per immobili di pregio."
   },
   sections: [
     {
@@ -6342,10 +6378,10 @@ var SELL_WITH_US_DEFAULTS_IT = {
       enabled: true,
       order: 0,
       content: {
-        title: "Vuoi vendere casa pi\xF9 velocemente",
-        titleHighlight: "e al miglior prezzo?",
-        subtitle: "Scopri come i nostri video sui Social Media attirano acquirenti da tutto il mondo",
-        primaryCta: { label: "Richiedi una valutazione" }
+        title: "La tua propriet\xE0 merita un pubblico scelto.",
+        titleHighlight: "Un mandato, non un annuncio.",
+        subtitle: "Valutazione riservata per ville, masserie e residenze di carattere in Valle d'Itria e oltre.",
+        primaryCta: { label: "Richiedi una valutazione riservata" }
       }
     },
     {
@@ -6354,14 +6390,14 @@ var SELL_WITH_US_DEFAULTS_IT = {
       enabled: true,
       order: 1,
       content: {
-        title: "Selezioniamo solo immobili idonei",
-        intro: "Negli ultimi anni abbiamo aiutato proprietari come te a vendere casa grazie a un metodo semplice ma potente:",
+        title: "Un mandato, non un annuncio",
+        intro: "Accompagniamo proprietari esigenti nella vendita di immobili di pregio: valutazione realistica, presentazione curata, rete di acquirenti qualificati in Italia e all'estero.",
         bullets: [
-          "Video professionali delle propriet\xE0",
-          "Promozione mirata sui social media",
-          "Visibilit\xE0 internazionale"
+          "Valutazione e posizionamento di mercato",
+          "Racconto visivo e distribuzione selettiva",
+          "Qualificazione delle visite e negoziazione discreta"
         ],
-        closing: "Oggi il modo di vendere casa \xE8 cambiato. Non basta pi\xF9 pubblicare un annuncio",
+        closing: "Il valore si protegge scegliendo a chi mostrare la propriet\xE0 \u2014 e come.",
         youtubeUrl: "https://www.youtube.com/watch?v=AhOlgYILYCY"
       }
     },
@@ -6371,7 +6407,7 @@ var SELL_WITH_US_DEFAULTS_IT = {
       enabled: true,
       order: 2,
       content: {
-        title: "Scopri quanto vale davvero la tua casa",
+        title: "Parliamone in riservatezza",
         labels: {
           name: "Nome",
           phone: "Telefono",
@@ -6379,12 +6415,12 @@ var SELL_WITH_US_DEFAULTS_IT = {
           location: "Localit\xE0 della propriet\xE0"
         },
         placeholders: {
-          name: "ad esempio Mario Rossi",
-          phone: "ad esempio +39 111 111 1112",
+          name: "Nome e cognome",
+          phone: "+39 \u2026",
           email: "E-mail",
-          location: "Inserisci l'ubicazione della struttura"
+          location: "Localit\xE0 dell'immobile"
         },
-        submitLabel: "Inviare"
+        submitLabel: "Richiedi la valutazione"
       }
     },
     {
@@ -6393,14 +6429,14 @@ var SELL_WITH_US_DEFAULTS_IT = {
       enabled: true,
       order: 3,
       content: {
-        title: "Ogni settimana raggiungiamo migliaia di potenziali acquirenti attraverso pi\xF9 piattaforme",
+        title: "Una presenza che raggiunge chi cerca qualit\xE0, non solo volume",
         items: [
-          { value: 22, decimals: 0, unit: "K", suffix: "+", label: "Follower di Instagram" },
-          { value: 22, decimals: 0, unit: "K", suffix: "+", label: "Iscritti a YouTube" },
-          { value: 1.8, decimals: 1, unit: "mila", suffix: "+", label: "Pubblico di Facebook" },
-          { value: 62, decimals: 0, unit: "K", suffix: "+", label: "Follower di TikTok" }
+          { value: 22, decimals: 0, unit: "K", suffix: "+", label: "Community Instagram" },
+          { value: 22, decimals: 0, unit: "K", suffix: "+", label: "Iscritti YouTube" },
+          { value: 1.8, decimals: 1, unit: "mila", suffix: "+", label: "Pubblico Facebook" },
+          { value: 62, decimals: 0, unit: "K", suffix: "+", label: "Community TikTok" }
         ],
-        quote: "Vendere casa non \xE8 pubblicare un annuncio. \xC8 raccontare una storia"
+        quote: "Il mercato \xE8 rumoroso. Il valore no."
       }
     }
   ]
@@ -6408,7 +6444,7 @@ var SELL_WITH_US_DEFAULTS_IT = {
 var SELL_WITH_US_DEFAULTS_EN = {
   seo: {
     title: "Sell with us",
-    description: "Want to sell your home faster and at the best price? Discover the Norton Tanzarella method: video, social media and a professional valuation."
+    description: "Entrust your sales mandate to Norton Tanzarella: confidential valuation, positioning and a chosen audience for prestige properties."
   },
   sections: [
     {
@@ -6417,10 +6453,10 @@ var SELL_WITH_US_DEFAULTS_EN = {
       enabled: true,
       order: 0,
       content: {
-        title: "Want to sell your home faster",
-        titleHighlight: "and at the best price?",
-        subtitle: "Discover how our Social Media videos attract buyers from around the world",
-        primaryCta: { label: "Request a valuation" }
+        title: "Your property deserves a chosen audience.",
+        titleHighlight: "A mandate, not a listing.",
+        subtitle: "Confidential valuation for villas, masserie and character homes in the Valle d'Itria and beyond.",
+        primaryCta: { label: "Request a confidential valuation" }
       }
     },
     {
@@ -6429,14 +6465,14 @@ var SELL_WITH_US_DEFAULTS_EN = {
       enabled: true,
       order: 1,
       content: {
-        title: "We only select suitable properties",
-        intro: "In recent years we have helped owners like you sell their homes with a simple yet powerful method:",
+        title: "A mandate, not a listing",
+        intro: "We guide discerning owners selling prestige property: realistic valuation, curated presentation, a network of qualified buyers in Italy and abroad.",
         bullets: [
-          "Professional property videos",
-          "Targeted social media promotion",
-          "International visibility"
+          "Valuation and market positioning",
+          "Visual storytelling and selective distribution",
+          "Qualified viewings and discreet negotiation"
         ],
-        closing: "Today the way we sell homes has changed. Listing an ad is no longer enough",
+        closing: "Value is protected by choosing who sees the property \u2014 and how.",
         youtubeUrl: "https://www.youtube.com/watch?v=AhOlgYILYCY"
       }
     },
@@ -6446,7 +6482,7 @@ var SELL_WITH_US_DEFAULTS_EN = {
       enabled: true,
       order: 2,
       content: {
-        title: "Find out what your home is really worth",
+        title: "Let\u2019s talk in confidence",
         labels: {
           name: "Name",
           phone: "Phone",
@@ -6454,12 +6490,12 @@ var SELL_WITH_US_DEFAULTS_EN = {
           location: "Property location"
         },
         placeholders: {
-          name: "e.g. John Smith",
-          phone: "e.g. +39 111 111 1112",
+          name: "Full name",
+          phone: "+39 \u2026",
           email: "E-mail",
-          location: "Enter the property location"
+          location: "Property location"
         },
-        submitLabel: "Send"
+        submitLabel: "Request a valuation"
       }
     },
     {
@@ -6468,14 +6504,14 @@ var SELL_WITH_US_DEFAULTS_EN = {
       enabled: true,
       order: 3,
       content: {
-        title: "Every week we reach thousands of potential buyers across multiple platforms",
+        title: "A presence that reaches those who seek quality, not just volume",
         items: [
-          { value: 22, decimals: 0, unit: "K", suffix: "+", label: "Instagram followers" },
+          { value: 22, decimals: 0, unit: "K", suffix: "+", label: "Instagram community" },
           { value: 22, decimals: 0, unit: "K", suffix: "+", label: "YouTube subscribers" },
           { value: 1.8, decimals: 1, unit: "K", suffix: "+", label: "Facebook audience" },
-          { value: 62, decimals: 0, unit: "K", suffix: "+", label: "TikTok followers" }
+          { value: 62, decimals: 0, unit: "K", suffix: "+", label: "TikTok community" }
         ],
-        quote: "Selling a house is not about posting an ad. It is about telling a story"
+        quote: "The market is noisy. Value is not."
       }
     }
   ]
@@ -7283,6 +7319,7 @@ export {
   MAIN_NAV_PATHS,
   PAGE_KEYS,
   PAGE_REGISTRY,
+  PERFORMANCE_SELL_HERO_TITLES,
   QUESTIONNAIRE_COLUMNS_LABELS_IT,
   QUESTIONNAIRE_FIELD_TYPE_LABELS_IT,
   SECTION_TYPE_LABELS_IT,
@@ -7355,6 +7392,7 @@ export {
   migratePropertyFinderBriefing,
   migratePropertyFinderPage,
   migrateSellWithUsPage,
+  migrateSellWithUsPerformanceCopy,
   migrateSplitsToStickySplits,
   migrateStatementQuestionnaire,
   normalizeNavPath,

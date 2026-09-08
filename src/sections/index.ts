@@ -39,7 +39,9 @@ export {
 } from './migratePropertyFinder.js'
 export {
   migrateSellWithUsPage,
+  migrateSellWithUsPerformanceCopy,
   isLegacySellWithUsDocument,
+  PERFORMANCE_SELL_HERO_TITLES,
 } from './migrateSellWithUs.js'
 
 export const sectionContentByType = {

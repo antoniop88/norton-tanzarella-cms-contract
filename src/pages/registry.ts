@@ -593,7 +593,7 @@ const SELL_WITH_US_DEFAULTS_IT: CmsPageDocument = {
   seo: {
     title: 'Vendi con noi',
     description:
-      'Vuoi vendere casa più velocemente e al miglior prezzo? Scopri il metodo Norton Tanzarella: video, social e valutazione professionale.',
+      'Affida il mandato di vendita a Norton Tanzarella: valutazione riservata, posizionamento e pubblico scelto per immobili di pregio.',
   },
   sections: [
     {
@@ -602,11 +602,11 @@ const SELL_WITH_US_DEFAULTS_IT: CmsPageDocument = {
       enabled: true,
       order: 0,
       content: {
-        title: 'Vuoi vendere casa più velocemente',
-        titleHighlight: 'e al miglior prezzo?',
+        title: 'La tua proprietà merita un pubblico scelto.',
+        titleHighlight: 'Un mandato, non un annuncio.',
         subtitle:
-          'Scopri come i nostri video sui Social Media attirano acquirenti da tutto il mondo',
-        primaryCta: { label: 'Richiedi una valutazione' },
+          "Valutazione riservata per ville, masserie e residenze di carattere in Valle d'Itria e oltre.",
+        primaryCta: { label: 'Richiedi una valutazione riservata' },
       },
     },
     {
@@ -615,16 +615,16 @@ const SELL_WITH_US_DEFAULTS_IT: CmsPageDocument = {
       enabled: true,
       order: 1,
       content: {
-        title: 'Selezioniamo solo immobili idonei',
+        title: 'Un mandato, non un annuncio',
         intro:
-          'Negli ultimi anni abbiamo aiutato proprietari come te a vendere casa grazie a un metodo semplice ma potente:',
+          "Accompagniamo proprietari esigenti nella vendita di immobili di pregio: valutazione realistica, presentazione curata, rete di acquirenti qualificati in Italia e all'estero.",
         bullets: [
-          'Video professionali delle proprietà',
-          'Promozione mirata sui social media',
-          'Visibilità internazionale',
+          'Valutazione e posizionamento di mercato',
+          'Racconto visivo e distribuzione selettiva',
+          'Qualificazione delle visite e negoziazione discreta',
         ],
         closing:
-          'Oggi il modo di vendere casa è cambiato. Non basta più pubblicare un annuncio',
+          'Il valore si protegge scegliendo a chi mostrare la proprietà — e come.',
         youtubeUrl: 'https://www.youtube.com/watch?v=AhOlgYILYCY',
       },
     },
@@ -634,7 +634,7 @@ const SELL_WITH_US_DEFAULTS_IT: CmsPageDocument = {
       enabled: true,
       order: 2,
       content: {
-        title: 'Scopri quanto vale davvero la tua casa',
+        title: 'Parliamone in riservatezza',
         labels: {
           name: 'Nome',
           phone: 'Telefono',
@@ -642,12 +642,12 @@ const SELL_WITH_US_DEFAULTS_IT: CmsPageDocument = {
           location: 'Località della proprietà',
         },
         placeholders: {
-          name: 'ad esempio Mario Rossi',
-          phone: 'ad esempio +39 111 111 1112',
+          name: 'Nome e cognome',
+          phone: '+39 …',
           email: 'E-mail',
-          location: "Inserisci l'ubicazione della struttura",
+          location: "Località dell'immobile",
         },
-        submitLabel: 'Inviare',
+        submitLabel: 'Richiedi la valutazione',
       },
     },
     {
@@ -656,15 +656,14 @@ const SELL_WITH_US_DEFAULTS_IT: CmsPageDocument = {
       enabled: true,
       order: 3,
       content: {
-        title:
-          'Ogni settimana raggiungiamo migliaia di potenziali acquirenti attraverso più piattaforme',
+        title: 'Una presenza che raggiunge chi cerca qualità, non solo volume',
         items: [
-          { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'Follower di Instagram' },
-          { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'Iscritti a YouTube' },
-          { value: 1.8, decimals: 1, unit: 'mila', suffix: '+', label: 'Pubblico di Facebook' },
-          { value: 62, decimals: 0, unit: 'K', suffix: '+', label: 'Follower di TikTok' },
+          { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'Community Instagram' },
+          { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'Iscritti YouTube' },
+          { value: 1.8, decimals: 1, unit: 'mila', suffix: '+', label: 'Pubblico Facebook' },
+          { value: 62, decimals: 0, unit: 'K', suffix: '+', label: 'Community TikTok' },
         ],
-        quote: 'Vendere casa non è pubblicare un annuncio. È raccontare una storia',
+        quote: 'Il mercato è rumoroso. Il valore no.',
       },
     },
   ],
@@ -674,7 +673,7 @@ const SELL_WITH_US_DEFAULTS_EN: CmsPageDocument = {
   seo: {
     title: 'Sell with us',
     description:
-      'Want to sell your home faster and at the best price? Discover the Norton Tanzarella method: video, social media and a professional valuation.',
+      'Entrust your sales mandate to Norton Tanzarella: confidential valuation, positioning and a chosen audience for prestige properties.',
   },
   sections: [
     {
@@ -683,11 +682,11 @@ const SELL_WITH_US_DEFAULTS_EN: CmsPageDocument = {
       enabled: true,
       order: 0,
       content: {
-        title: 'Want to sell your home faster',
-        titleHighlight: 'and at the best price?',
+        title: 'Your property deserves a chosen audience.',
+        titleHighlight: 'A mandate, not a listing.',
         subtitle:
-          'Discover how our Social Media videos attract buyers from around the world',
-        primaryCta: { label: 'Request a valuation' },
+          "Confidential valuation for villas, masserie and character homes in the Valle d'Itria and beyond.",
+        primaryCta: { label: 'Request a confidential valuation' },
       },
     },
     {
@@ -696,15 +695,16 @@ const SELL_WITH_US_DEFAULTS_EN: CmsPageDocument = {
       enabled: true,
       order: 1,
       content: {
-        title: 'We only select suitable properties',
+        title: 'A mandate, not a listing',
         intro:
-          'In recent years we have helped owners like you sell their homes with a simple yet powerful method:',
+          'We guide discerning owners selling prestige property: realistic valuation, curated presentation, a network of qualified buyers in Italy and abroad.',
         bullets: [
-          'Professional property videos',
-          'Targeted social media promotion',
-          'International visibility',
+          'Valuation and market positioning',
+          'Visual storytelling and selective distribution',
+          'Qualified viewings and discreet negotiation',
         ],
-        closing: 'Today the way we sell homes has changed. Listing an ad is no longer enough',
+        closing:
+          'Value is protected by choosing who sees the property — and how.',
         youtubeUrl: 'https://www.youtube.com/watch?v=AhOlgYILYCY',
       },
     },
@@ -714,7 +714,7 @@ const SELL_WITH_US_DEFAULTS_EN: CmsPageDocument = {
       enabled: true,
       order: 2,
       content: {
-        title: 'Find out what your home is really worth',
+        title: 'Let’s talk in confidence',
         labels: {
           name: 'Name',
           phone: 'Phone',
@@ -722,12 +722,12 @@ const SELL_WITH_US_DEFAULTS_EN: CmsPageDocument = {
           location: 'Property location',
         },
         placeholders: {
-          name: 'e.g. John Smith',
-          phone: 'e.g. +39 111 111 1112',
+          name: 'Full name',
+          phone: '+39 …',
           email: 'E-mail',
-          location: 'Enter the property location',
+          location: 'Property location',
         },
-        submitLabel: 'Send',
+        submitLabel: 'Request a valuation',
       },
     },
     {
@@ -736,15 +736,14 @@ const SELL_WITH_US_DEFAULTS_EN: CmsPageDocument = {
       enabled: true,
       order: 3,
       content: {
-        title:
-          'Every week we reach thousands of potential buyers across multiple platforms',
+        title: 'A presence that reaches those who seek quality, not just volume',
         items: [
-          { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'Instagram followers' },
+          { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'Instagram community' },
           { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'YouTube subscribers' },
           { value: 1.8, decimals: 1, unit: 'K', suffix: '+', label: 'Facebook audience' },
-          { value: 62, decimals: 0, unit: 'K', suffix: '+', label: 'TikTok followers' },
+          { value: 62, decimals: 0, unit: 'K', suffix: '+', label: 'TikTok community' },
         ],
-        quote: 'Selling a house is not about posting an ad. It is about telling a story',
+        quote: 'The market is noisy. Value is not.',
       },
     },
   ],

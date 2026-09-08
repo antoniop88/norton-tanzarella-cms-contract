@@ -1,4 +1,4 @@
-# CMS — Contratto v0.33.0
+# CMS — Contratto v0.33.1
 
 ## Export
 
@@ -108,15 +108,15 @@ Defaults: hero → slideshow → stickySplits → team → cta → faq (IT|EN).
 - Web: view dedicata (non sticky, non hero Contatti); CTA apre modale form
 - Lettura: `migratePropertyFinderBriefing` (titolo brochure → nuovi defaults; preserva `mediaId`); `richText` legacy droppato
 
-## `sell-with-us` (v0.33.0)
+## `sell-with-us` (v0.33.1)
 
-`sellHero` + `sellMethod` + `valuationLead` + `socialReach`. Ordine locked. Defaults IT|EN (landing vendita). Upload in `cms/sell-with-us/`.
+`sellHero` + `sellMethod` + `valuationLead` + `socialReach`. Ordine locked. Defaults IT|EN (landing mandato / luxury, traffico ads). Upload in `cms/sell-with-us/`.
 
 - `sellHero`: `title`, `titleHighlight?`, `subtitle?`, `mediaId?`, `imageAlt?`, `primaryCta.label`
 - `sellMethod`: `title`, `intro?`, `bullets[1–6]`, `closing?`, `youtubeUrl` (shared)
 - `valuationLead`: `title`, `mediaId?`, labels/placeholders Nome/Telefono/Email/Località, `submitLabel`
 - `socialReach`: `title`, `items[2–6]` (`value`, `decimals?`, `unit?`, `suffix?`, `label`), `quote`
-- Lettura: `migrateSellWithUsPage` (stickySplits/hero/richText/cta legacy → defaults v0.33)
+- Lettura: `migrateSellWithUsPage` — stickySplits/hero/richText/cta legacy → defaults; copy performance v0.33 (`Vuoi vendere casa più velocemente` / EN) → defaults luxury preservando `mediaId` / `imageAlt` / `youtubeUrl`
 
 `immobili-index` (v0.24.0): `pageHeader` + `cta` (reorderable); CTA defaults verso `/sell-with-us` (frase / didascalia / immagine / pulsante).
 
