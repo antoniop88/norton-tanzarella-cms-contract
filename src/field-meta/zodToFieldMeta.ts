@@ -91,6 +91,9 @@ const SHARED_STRING_KEYS = new Set([
   'mapUrl',
   'url',
   'platform',
+  'value',
+  'key',
+  'id',
 ])
 
 /** Long-form `body` fields (richText / legalPolicy) edited as Markdown like property descriptions. */

@@ -1,4 +1,4 @@
-# CMS — Contratto v0.30.6
+# CMS — Contratto v0.33.0
 
 ## Export
 
@@ -7,11 +7,14 @@
 - `sectionContentByType`, `parseSectionContent`
 - `zodToFieldMeta` (kind `image` | `video` | `icon`, `localeScope: shared | i18n`, string `format: markdown`)
 - `siteMenuSettingsSchema`, `collectMenuMediaIds`, `DEFAULT_SITE_MENU_SETTINGS_IT|EN`
+- `questionnaireSchema`, `mergeQuestionnaireDefaults`, `DEFAULT_QUESTIONNAIRE_IT|EN`
+- `extractLegacyStatementQuestionnaire`, `stripStatementQuestionnaire`
+- `migrateSellWithUsPage`, `isLegacySellWithUsDocument`
 
 ## FieldMeta.localeScope (v0.9.0)
 
 - `i18n` — stringhe editabili per lingua (default)
-- `shared` — image, video, icon, boolean, number, enum, `to`, `href`, `categorySlug`, `iubendaPolicyId`, oggetti/array strutturali
+- `shared` — image, video, icon, boolean, number, enum, `to`, `href`, `categorySlug`, `iubendaPolicyId`, `value`, `key`, `id`, oggetti/array strutturali
 
 ## `pageHeader` (v0.30.0 / v0.30.1 / v0.30.2 / v0.30.6)
 
@@ -28,12 +31,11 @@ Solo `home` — tipi ammessi: `hero`, `statement`, `categoryGrid`, `features`, `
 
 Defaults ordine (v0.29.1): hero → statement → categoryGrid → featuredCollection → features → aboutTeaser → googleReviews → cta.
 
-## `aboutTeaser` (v0.29.0)
+## `aboutTeaser` (v0.29.0 → v0.30.7)
 
 - `title` (max 80, i18n), `body` (max 600, i18n), `button` (i18n label; `to` default `/about`)
 - `backgroundMediaId?`, `backgroundImageAlt?` (i18n alt)
-- `carouselItems[1–3]`: `mediaId?` (shared), `imageAlt?` (i18n)
-- `autoplayMs?` (0–12000, shared; default 5000)
+- **v0.30.7:** rimossi `carouselItems` e `autoplayMs` (solo sfondo full-bleed + testo)
 - Media upload: cartella `home/`
 
 ## `googleReviews` (v0.27.0)
@@ -52,12 +54,19 @@ Defaults ordine (v0.29.1): hero → statement → categoryGrid → featuredColle
 - `items[]` (1–12): `title`, `description`, `iconKey?` (shared, Iconify `mdi:` / `tabler:`)
 - Web: layout bento Expertise quando ci sono esattamente 4 item (01 scuro wide)
 
-## `statement` (v0.19.0)
+## `statement` (v0.19.0 / v0.32.0)
 
 - `title` (max 80) — titolo serif
 - `body` (max 600) — paragrafo
 - `tagline?` (max 120) — riga uppercase spaced
 - Sostituisce le immagini "pietra" del vecchio `categoryShowcase` sulla homepage
+- **v0.32.0:** questionario non più nested — vedi `cms_settings.questionnaire`; lettura strip `statement.questionnaire` legacy; lift in settings se assente
+
+## `questionnaire` settings (v0.32.0)
+
+- In `cms_settings` accanto a `contactForm`: `enabled`, `buttonLabel`, `modalTitle?`, `submitLabel`, `successMessage`, `steps[1–12]`
+- Seed IT|EN via `buildHomeQuestionnaireDefaults` / `mergeQuestionnaireDefaults`
+- Riuso web: home statement CTA, Trova immobile, listing immobili, scheda (intent messaggio)
 
 ## `categoryGrid` (v0.20.0, header v0.29.2)
 
@@ -73,15 +82,16 @@ Defaults ordine (v0.29.1): hero → statement → categoryGrid → featuredColle
 - `fontHeading`: Cormorant Garamond (default), Playfair Display, Libre Baskerville, Source Serif 4
 - CSS vars `--font-sans` / `--font-display` da `scalarsToCssVars`
 
-## Pagine M2 — Chi siamo (v0.14.0)
+## Pagine M2 — Chi siamo (v0.14.0 / v0.30.5 / v0.30.7)
 
-`chi-siamo`: `hero`, `imageSlideshow`, `split`, `team`, `stats`, `cta`, `faq`.
+`chi-siamo`: `hero`, `imageSlideshow`, `stickySplits`, `team`, `cta`, `faq`.
 
-Defaults: hero → slideshow → split×3 → team → stats → cta → faq (IT|EN).
+Defaults: hero → slideshow → stickySplits → team → cta → faq (IT|EN).
 
 - `imageSlideshow`: 2–8 slide (`mediaId?`, `imageAlt?`, `caption?`), `autoplayMs?` — full-viewport
-- `split`: `mediaId?`, `button?` (CTA); `hero.subtitle` max 600
-- Immagini shared (`mediaId`) su slideshow / split / team; upload folder `cms/chi-siamo/`
+- `stickySplits`: `items[1–12]` (ex N× `split`); `hero.subtitle` max 600
+- **v0.30.7:** rimossa sezione `stats` (refuso); `hero.videoMediaId` resta nello schema ma è **solo homepage** (BO lo nasconde su Chi siamo)
+- Immagini shared (`mediaId`) su slideshow / stickySplits / team; upload folder `cms/chi-siamo/`
 
 ## `virtual-tours` (v0.26.0)
 
@@ -98,12 +108,15 @@ Defaults: hero → slideshow → split×3 → team → stats → cta → faq (IT
 - Web: view dedicata (non sticky, non hero Contatti); CTA apre modale form
 - Lettura: `migratePropertyFinderBriefing` (titolo brochure → nuovi defaults; preserva `mediaId`); `richText` legacy droppato
 
-## `sell-with-us` (v0.30.4)
+## `sell-with-us` (v0.33.0)
 
-`hero` + `richText` (intro) + `split` ×7 + `richText` (chiusura) + `cta`. Ordine locked. Defaults IT|EN (copy servizio vendita). Upload immagini split in `cms/sell-with-us/`.
+`sellHero` + `sellMethod` + `valuationLead` + `socialReach`. Ordine locked. Defaults IT|EN (landing vendita). Upload in `cms/sell-with-us/`.
 
-- `split.lead?` (max 200) — sottotitolo corsivo sotto il titolo (Chi siamo lo lascia vuoto)
-- Web: view dedicata sticky 01–07 (come Chi siamo); CTA Contattaci apre modale form
+- `sellHero`: `title`, `titleHighlight?`, `subtitle?`, `mediaId?`, `imageAlt?`, `primaryCta.label`
+- `sellMethod`: `title`, `intro?`, `bullets[1–6]`, `closing?`, `youtubeUrl` (shared)
+- `valuationLead`: `title`, `mediaId?`, labels/placeholders Nome/Telefono/Email/Località, `submitLabel`
+- `socialReach`: `title`, `items[2–6]` (`value`, `decimals?`, `unit?`, `suffix?`, `label`), `quote`
+- Lettura: `migrateSellWithUsPage` (stickySplits/hero/richText/cta legacy → defaults v0.33)
 
 `immobili-index` (v0.24.0): `pageHeader` + `cta` (reorderable); CTA defaults verso `/sell-with-us` (frase / didascalia / immagine / pulsante).
 

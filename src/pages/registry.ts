@@ -96,18 +96,6 @@ const HOME_CATEGORY_GRID_ITEMS_EN = [
   },
 ] as const
 
-const HOME_ABOUT_TEASER_CAROUSEL_IT = [
-  { imageAlt: 'Ostuni al tramonto' },
-  { imageAlt: 'Masseria in Valle d\'Itria' },
-  { imageAlt: 'Interior di prestigio' },
-] as const
-
-const HOME_ABOUT_TEASER_CAROUSEL_EN = [
-  { imageAlt: 'Ostuni at sunset' },
-  { imageAlt: 'Masseria in the Valle d\'Itria' },
-  { imageAlt: 'Prestige interior' },
-] as const
-
 const HOME_DEFAULTS_IT: CmsPageDocument = {
   seo: {
     title: 'Norton Tanzarella',
@@ -203,8 +191,6 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
           'Da Norton Tanzarella accompagniamo chi sceglie di investire e vivere in Valle d\'Itria — tra Ostuni, masserie e borghi bianchi. La soddisfazione di chi acquista è la nostra priorità: consulenza personalizzata dalla prima visita alla firma, per trovare la casa giusta tra rustici, trulli e dimore di carattere.',
         button: { label: 'Scopri chi siamo', to: '/about' },
         backgroundImageAlt: 'Paesaggio della Valle d\'Itria',
-        carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_IT],
-        autoplayMs: 5000,
       },
     },
     {
@@ -330,8 +316,6 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
           'At Norton Tanzarella we guide international buyers investing and living in the Valle d\'Itria — Ostuni, masserie and whitewashed hill towns. Client satisfaction comes first: tailored advice from first viewing to completion, to match each buyer with the right home among rustici, trulli and character properties.',
         button: { label: 'Read more', to: '/about' },
         backgroundImageAlt: 'Valle d\'Itria landscape',
-        carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_EN],
-        autoplayMs: 5000,
       },
     },
     {
@@ -434,24 +418,10 @@ const CHI_SIAMO_DEFAULTS_IT: CmsPageDocument = {
       },
     },
     {
-      id: '00000000-0000-4000-8000-000000000012',
-      type: 'stats',
-      enabled: false,
-      order: 4,
-      content: {
-        items: [
-          { value: 20, suffix: '+', label: 'Anni di esperienza' },
-          { value: 500, suffix: '+', label: 'Clienti accompagnati' },
-          { value: 150, suffix: '+', label: 'Immobili gestiti' },
-          { value: 1, label: 'Rete di fiducia' },
-        ],
-      },
-    },
-    {
       id: '00000000-0000-4000-8000-000000000014',
       type: 'cta',
       enabled: true,
-      order: 5,
+      order: 4,
       content: {
         title: 'Parliamone',
         description:
@@ -463,7 +433,7 @@ const CHI_SIAMO_DEFAULTS_IT: CmsPageDocument = {
       id: '00000000-0000-4000-8000-000000000015',
       type: 'faq',
       enabled: true,
-      order: 6,
+      order: 5,
       content: {
         title: 'Domande frequenti',
         items: [
@@ -569,24 +539,10 @@ const CHI_SIAMO_DEFAULTS_EN: CmsPageDocument = {
       },
     },
     {
-      id: '00000000-0000-4000-8000-000000000012',
-      type: 'stats',
-      enabled: false,
-      order: 4,
-      content: {
-        items: [
-          { value: 20, suffix: '+', label: 'Years of experience' },
-          { value: 500, suffix: '+', label: 'Clients guided' },
-          { value: 150, suffix: '+', label: 'Properties managed' },
-          { value: 1, label: 'Trusted network' },
-        ],
-      },
-    },
-    {
       id: '00000000-0000-4000-8000-000000000014',
       type: 'cta',
       enabled: true,
-      order: 5,
+      order: 4,
       content: {
         title: 'Let\'s talk',
         description:
@@ -598,7 +554,7 @@ const CHI_SIAMO_DEFAULTS_EN: CmsPageDocument = {
       id: '00000000-0000-4000-8000-000000000015',
       type: 'faq',
       enabled: true,
-      order: 6,
+      order: 5,
       content: {
         title: 'Frequently asked questions',
         items: [
@@ -637,142 +593,78 @@ const SELL_WITH_US_DEFAULTS_IT: CmsPageDocument = {
   seo: {
     title: 'Vendi con noi',
     description:
-      'Vendi il tuo immobile con Norton Tanzarella: valutazione, marketing internazionale e accompagnamento fino alla conclusione.',
+      'Vuoi vendere casa più velocemente e al miglior prezzo? Scopri il metodo Norton Tanzarella: video, social e valutazione professionale.',
   },
   sections: [
     {
       id: '00000000-0000-4000-8000-000000000080',
-      type: 'hero',
+      type: 'sellHero',
       enabled: true,
       order: 0,
       content: {
-        title: 'Vendi con noi',
-        subtitle: 'Vendere un immobile richiede più di una semplice pubblicazione',
+        title: 'Vuoi vendere casa più velocemente',
+        titleHighlight: 'e al miglior prezzo?',
+        subtitle:
+          'Scopri come i nostri video sui Social Media attirano acquirenti da tutto il mondo',
+        primaryCta: { label: 'Richiedi una valutazione' },
       },
     },
     {
       id: '00000000-0000-4000-8000-000000000081',
-      type: 'richText',
+      type: 'sellMethod',
       enabled: true,
       order: 1,
       content: {
-        body: `Vendere una proprietà significa valorizzarne il potenziale, individuare i giusti acquirenti e gestire ogni fase del percorso con competenza, attenzione e discrezione.
-
-Norton Tanzarella Real Estate affianca proprietari italiani e internazionali nella vendita di immobili in Italia, offrendo un servizio personalizzato che unisce conoscenza del mercato, strategia commerciale e una rete di relazioni qualificata.
-
-Dalla prima valutazione alla conclusione della vendita, ci occupiamo di costruire il percorso più efficace per presentare la proprietà al mercato, raggiungere il pubblico giusto e accompagnare tutte le parti fino al completamento dell'operazione.
-
-La nostra sede è a Ostuni, ma il nostro approccio e la nostra rete sono orientati a un mercato più ampio, con particolare attenzione alle proprietà di carattere, alle residenze di pregio e agli immobili che possono incontrare l'interesse di acquirenti italiani e internazionali.`,
+        title: 'Selezioniamo solo immobili idonei',
+        intro:
+          'Negli ultimi anni abbiamo aiutato proprietari come te a vendere casa grazie a un metodo semplice ma potente:',
+        bullets: [
+          'Video professionali delle proprietà',
+          'Promozione mirata sui social media',
+          'Visibilità internazionale',
+        ],
+        closing:
+          'Oggi il modo di vendere casa è cambiato. Non basta più pubblicare un annuncio',
+        youtubeUrl: 'https://www.youtube.com/watch?v=AhOlgYILYCY',
       },
     },
     {
       id: '00000000-0000-4000-8000-000000000082',
-      type: 'stickySplits',
+      type: 'valuationLead',
       enabled: true,
       order: 2,
       content: {
-        items: [
-          {
-            title: 'Valutazione e strategia di vendita',
-            lead: 'Ogni proprietà ha una storia. La vendita parte dal comprenderne il valore.',
-            body: `Una corretta valutazione immobiliare non riguarda soltanto la superficie, la posizione o le caratteristiche dell'immobile. Significa analizzare il mercato, il contesto, la domanda attuale e il potenziale della proprietà per definire un posizionamento realistico e competitivo.
-
-Studiamo ogni immobile in modo approfondito per individuare il corretto prezzo di mercato e costruire una strategia di vendita coerente con le sue caratteristiche.
-
-L'obiettivo non è semplicemente mettere una proprietà sul mercato, ma presentare nel modo giusto, al pubblico giusto e nel momento giusto.`,
-          },
-          {
-            title: 'Presentazione e valorizzazione della proprietà',
-            lead: 'La prima impressione può determinare il valore percepito di una casa.',
-            body: `Una proprietà di qualità merita una comunicazione all'altezza.
-
-Per ogni incarico curiamo la presentazione dell'immobile attraverso fotografie, contenuti editoriali, descrizioni professionali e materiali pensati per raccontarne non soltanto gli spazi, ma anche l'atmosfera, il carattere e il modo di vivere che può offrire.
-
-Quando necessario, supportiamo il proprietario nell'individuazione degli interventi che possono migliorare la percezione della proprietà sul mercato, dalla preparazione degli ambienti alla valorizzazione degli elementi architettonici e paesaggistici.
-
-La casa non viene semplicemente pubblicata: viene posizionata e raccontata.`,
-          },
-          {
-            title: 'Marketing immobiliare e visibilità internazionale',
-            lead: 'Raggiungere più persone non significa necessariamente raggiungere gli acquirenti giusti.',
-            body: `La strategia di marketing viene costruita in funzione della proprietà e del suo potenziale acquirente.
-
-Norton Tanzarella utilizza i propri canali digitali, il network professionale e una comunicazione orientata anche al pubblico internazionale per dare alle proprietà una presenza qualificata sul mercato.
-
-La distribuzione dell'immobile viene accompagnata da una presentazione coerente su tutti i principali punti di contatto, con contenuti in più lingue quando necessario e una particolare attenzione alla domanda proveniente dall'estero.
-
-Questo permette di ampliare il bacino di potenziali acquirenti senza perdere di vista ciò che conta davvero: la qualità delle opportunità di vendita.`,
-          },
-          {
-            title: 'Ricerca e selezione degli acquirenti',
-            lead: 'Non tutti i potenziali acquirenti sono realmente acquirenti.',
-            body: `Una vendita efficace passa anche dalla capacità di distinguere l'interesse reale dalla semplice curiosità.
-
-Gestiamo le richieste, organizziamo le visite e accompagniamo i potenziali acquirenti nella conoscenza della proprietà, cercando di comprendere esigenze, obiettivi e reale interesse all'acquisto.
-
-Quando possibile, lavoriamo attraverso una rete di contatti e professionisti qualificati, creando connessioni con acquirenti che possono essere realmente in linea con il tipo di immobile proposto.
-
-Il nostro obiettivo è tutelare il tempo del proprietario e concentrare il processo sulle opportunità concrete.`,
-          },
-          {
-            title: 'Negoziazione e gestione della vendita',
-            lead: 'Una buona trattativa non riguarda solo il prezzo.',
-            body: `Quando arriva un'offerta, entrano in gioco molte variabili: condizioni economiche, tempistiche, modalità di pagamento, necessità dell'acquirente e aspetti tecnici o documentali.
-
-Norton Tanzarella affianca il proprietario durante la fase di negoziazione, fornendo un supporto professionale nella valutazione delle proposte e nella gestione delle diverse fasi che portano alla conclusione dell'operazione.
-
-Coordiniamo il dialogo tra le parti e, attraverso una rete di professionisti qualificati, contribuiamo a rendere il percorso più ordinato, trasparente e sicuro.`,
-          },
-          {
-            title: 'Un network di professionisti per una vendita senza complicazioni',
-            lead: 'La vendita di un immobile coinvolge molte competenze. Per questo non lavoriamo da soli.',
-            body: `A seconda delle esigenze della proprietà, possiamo mettere in relazione il cliente con professionisti specializzati negli aspetti tecnici, urbanistici, catastali, legali, fiscali e finanziari dell'operazione.
-
-Il nostro ruolo è anche quello di coordinare le diverse competenze coinvolte, facendo in modo che ogni fase venga affrontata con la giusta attenzione.
-
-Per il proprietario significa avere un unico punto di riferimento durante il percorso, senza dover gestire autonomamente ogni singolo aspetto della vendita.`,
-          },
-          {
-            title: "Dalla vendita alla nuova destinazione dell'immobile",
-            lead: 'Per noi, una proprietà non termina il suo percorso con la firma.',
-            body: `Ogni vendita può rappresentare l'inizio di una nuova opportunità.
-
-Per questo il nostro rapporto con i proprietari non si limita alla commercializzazione dell'immobile. Grazie alla nostra conoscenza del mercato e alla rete di relazioni costruita negli anni, possiamo supportare anche chi desidera reinvestire, acquistare una nuova proprietà in Italia o individuare soluzioni più adatte alle proprie esigenze.
-
-Il nostro lavoro nasce dalla vendita, ma il rapporto può continuare oltre.`,
-          },
-        ],
+        title: 'Scopri quanto vale davvero la tua casa',
+        labels: {
+          name: 'Nome',
+          phone: 'Telefono',
+          email: 'E-mail',
+          location: 'Località della proprietà',
+        },
+        placeholders: {
+          name: 'ad esempio Mario Rossi',
+          phone: 'ad esempio +39 111 111 1112',
+          email: 'E-mail',
+          location: "Inserisci l'ubicazione della struttura",
+        },
+        submitLabel: 'Inviare',
       },
     },
     {
-      id: '00000000-0000-4000-8000-000000000089',
-      type: 'richText',
+      id: '00000000-0000-4000-8000-000000000083',
+      type: 'socialReach',
       enabled: true,
       order: 3,
       content: {
-        body: `## Perché vendere con Norton Tanzarella
-
-Vendere una proprietà attraverso Norton Tanzarella significa affidarsi a un interlocutore che combina **conoscenza del mercato immobiliare italiano, attenzione personale e una visione internazionale**.
-
-Ogni incarico viene seguito con un approccio su misura, perché non esistono due proprietà uguali e non esistono due percorsi di vendita identici.
-
-Mettiamo insieme strategia, comunicazione, relazioni e competenze professionali per costruire un processo orientato a un obiettivo concreto: **vendere bene, con il giusto posizionamento e con la massima attenzione agli interessi del proprietario**.
-
-Hai deciso di vendere una casa, una villa, una masseria o un'altra proprietà in Italia?
-
-Raccontaci qualcosa del tuo immobile. Analizzeremo le sue caratteristiche e il contesto di mercato per capire come poterlo valorizzare e quale strategia di vendita possa essere più adatta.`,
-      },
-    },
-    {
-      id: '00000000-0000-4000-8000-000000000090',
-      type: 'cta',
-      enabled: true,
-      order: 4,
-      content: {
-        title: 'Parliamo della tua proprietà',
-        description:
-          'La vendita di una proprietà importante merita più di una semplice vetrina. Merita una strategia.',
-        button: { label: 'Contattaci', to: '/contact' },
+        title:
+          'Ogni settimana raggiungiamo migliaia di potenziali acquirenti attraverso più piattaforme',
+        items: [
+          { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'Follower di Instagram' },
+          { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'Iscritti a YouTube' },
+          { value: 1.8, decimals: 1, unit: 'mila', suffix: '+', label: 'Pubblico di Facebook' },
+          { value: 62, decimals: 0, unit: 'K', suffix: '+', label: 'Follower di TikTok' },
+        ],
+        quote: 'Vendere casa non è pubblicare un annuncio. È raccontare una storia',
       },
     },
   ],
@@ -782,142 +674,77 @@ const SELL_WITH_US_DEFAULTS_EN: CmsPageDocument = {
   seo: {
     title: 'Sell with us',
     description:
-      'Sell your property with Norton Tanzarella: valuation, international marketing and guidance through to completion.',
+      'Want to sell your home faster and at the best price? Discover the Norton Tanzarella method: video, social media and a professional valuation.',
   },
   sections: [
     {
       id: '00000000-0000-4000-8000-000000000080',
-      type: 'hero',
+      type: 'sellHero',
       enabled: true,
       order: 0,
       content: {
-        title: 'Sell with us',
-        subtitle: 'Selling a property requires more than a simple listing',
+        title: 'Want to sell your home faster',
+        titleHighlight: 'and at the best price?',
+        subtitle:
+          'Discover how our Social Media videos attract buyers from around the world',
+        primaryCta: { label: 'Request a valuation' },
       },
     },
     {
       id: '00000000-0000-4000-8000-000000000081',
-      type: 'richText',
+      type: 'sellMethod',
       enabled: true,
       order: 1,
       content: {
-        body: `Selling a property means unlocking its potential, finding the right buyers and guiding every stage of the journey with expertise, care and discretion.
-
-Norton Tanzarella Real Estate supports Italian and international owners selling property in Italy, offering a tailored service that combines market knowledge, commercial strategy and a qualified network of relationships.
-
-From the first valuation to completion, we build the most effective path to present the property to the market, reach the right audience and accompany all parties through to the end of the transaction.
-
-Our office is in Ostuni, yet our approach and network look to a wider market — with particular focus on character homes, prestige residences and properties that can attract Italian and international buyers.`,
+        title: 'We only select suitable properties',
+        intro:
+          'In recent years we have helped owners like you sell their homes with a simple yet powerful method:',
+        bullets: [
+          'Professional property videos',
+          'Targeted social media promotion',
+          'International visibility',
+        ],
+        closing: 'Today the way we sell homes has changed. Listing an ad is no longer enough',
+        youtubeUrl: 'https://www.youtube.com/watch?v=AhOlgYILYCY',
       },
     },
     {
       id: '00000000-0000-4000-8000-000000000082',
-      type: 'stickySplits',
+      type: 'valuationLead',
       enabled: true,
       order: 2,
       content: {
-        items: [
-          {
-            title: 'Valuation and sales strategy',
-            lead: 'Every property has a story. A sale begins by understanding its value.',
-            body: `A sound property valuation is not only about size, location or features. It means analysing the market, the context, current demand and the property's potential to define a realistic and competitive positioning.
-
-We study every property in depth to identify the right market price and build a sales strategy aligned with its character.
-
-The goal is not simply to put a property on the market, but to present it the right way, to the right audience, at the right time.`,
-          },
-          {
-            title: 'Presentation and property staging',
-            lead: 'First impressions can shape the perceived value of a home.',
-            body: `A quality property deserves communication of equal quality.
-
-For every instruction we craft the presentation through photography, editorial content, professional descriptions and materials designed to convey not only the spaces, but also the atmosphere, character and way of living it can offer.
-
-When needed, we help owners identify improvements that can lift how the property is perceived — from preparing interiors to highlighting architectural and landscape features.
-
-The home is not merely listed: it is positioned and told.`,
-          },
-          {
-            title: 'Property marketing and international reach',
-            lead: 'Reaching more people does not always mean reaching the right buyers.',
-            body: `The marketing strategy is built around the property and its likely buyer.
-
-Norton Tanzarella uses its digital channels, professional network and communication aimed also at an international audience to give properties a qualified presence on the market.
-
-Distribution is paired with a coherent presentation across the main touchpoints, with multilingual content when needed and particular attention to demand from abroad.
-
-This widens the pool of potential buyers without losing sight of what matters most: the quality of sales opportunities.`,
-          },
-          {
-            title: 'Buyer research and selection',
-            lead: 'Not every prospective buyer is a real buyer.',
-            body: `An effective sale also depends on telling genuine interest from simple curiosity.
-
-We manage enquiries, arrange viewings and accompany prospective buyers as they get to know the property, seeking to understand needs, goals and true intent to purchase.
-
-Where possible we work through a network of contacts and qualified professionals, connecting with buyers who may genuinely match the type of property offered.
-
-Our aim is to protect the owner's time and focus the process on concrete opportunities.`,
-          },
-          {
-            title: 'Negotiation and sale management',
-            lead: 'A good negotiation is not only about price.',
-            body: `When an offer arrives, many variables come into play: financial terms, timing, payment methods, the buyer's needs and technical or documentary aspects.
-
-Norton Tanzarella supports the owner through negotiation, providing professional guidance in assessing proposals and managing the stages that lead to completion.
-
-We coordinate dialogue between the parties and, through a network of qualified professionals, help make the path more orderly, transparent and secure.`,
-          },
-          {
-            title: 'A network of professionals for a smoother sale',
-            lead: 'Selling a property involves many disciplines. That is why we do not work alone.',
-            body: `Depending on the property's needs, we can introduce the client to specialists in technical, planning, cadastral, legal, tax and financial aspects of the transaction.
-
-Our role is also to coordinate the skills involved, so each stage is handled with the right attention.
-
-For the owner, that means a single point of contact throughout the journey — without having to manage every detail of the sale alone.`,
-          },
-          {
-            title: "From sale to the property's next chapter",
-            lead: "For us, a property's journey does not end at the signature.",
-            body: `Every sale can be the start of a new opportunity.
-
-That is why our relationship with owners is not limited to marketing the property. Thanks to our market knowledge and the network of relationships built over the years, we can also support those who wish to reinvest, buy another home in Italy or find solutions better suited to their needs.
-
-Our work begins with the sale — but the relationship can continue beyond it.`,
-          },
-        ],
+        title: 'Find out what your home is really worth',
+        labels: {
+          name: 'Name',
+          phone: 'Phone',
+          email: 'E-mail',
+          location: 'Property location',
+        },
+        placeholders: {
+          name: 'e.g. John Smith',
+          phone: 'e.g. +39 111 111 1112',
+          email: 'E-mail',
+          location: 'Enter the property location',
+        },
+        submitLabel: 'Send',
       },
     },
     {
-      id: '00000000-0000-4000-8000-000000000089',
-      type: 'richText',
+      id: '00000000-0000-4000-8000-000000000083',
+      type: 'socialReach',
       enabled: true,
       order: 3,
       content: {
-        body: `## Why sell with Norton Tanzarella
-
-Selling a property through Norton Tanzarella means trusting a partner who combines **knowledge of the Italian property market, personal attention and an international outlook**.
-
-Every instruction is handled with a tailored approach, because no two properties are alike and no two sales paths are identical.
-
-We bring together strategy, communication, relationships and professional expertise to build a process aimed at one concrete goal: **to sell well, with the right positioning and the greatest care for the owner's interests**.
-
-Have you decided to sell a house, a villa, a masseria or another property in Italy?
-
-Tell us about your property. We will review its features and the market context to understand how to enhance it and which sales strategy may suit it best.`,
-      },
-    },
-    {
-      id: '00000000-0000-4000-8000-000000000090',
-      type: 'cta',
-      enabled: true,
-      order: 4,
-      content: {
-        title: "Let's talk about your property",
-        description:
-          'Selling an important property deserves more than a simple shop window. It deserves a strategy.',
-        button: { label: 'Contact us', to: '/contact' },
+        title:
+          'Every week we reach thousands of potential buyers across multiple platforms',
+        items: [
+          { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'Instagram followers' },
+          { value: 22, decimals: 0, unit: 'K', suffix: '+', label: 'YouTube subscribers' },
+          { value: 1.8, decimals: 1, unit: 'K', suffix: '+', label: 'Facebook audience' },
+          { value: 62, decimals: 0, unit: 'K', suffix: '+', label: 'TikTok followers' },
+        ],
+        quote: 'Selling a house is not about posting an ad. It is about telling a story',
       },
     },
   ],
@@ -1158,8 +985,8 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
     milestone: 'M1',
   },
   'chi-siamo': {
-    allowedTypes: ['hero', 'imageSlideshow', 'stickySplits', 'team', 'stats', 'cta', 'faq'],
-    reorderable: ['imageSlideshow', 'stickySplits', 'team', 'stats', 'cta', 'faq'],
+    allowedTypes: ['hero', 'imageSlideshow', 'stickySplits', 'team', 'cta', 'faq'],
+    reorderable: ['imageSlideshow', 'stickySplits', 'team', 'cta', 'faq'],
     defaults: (locale) => (locale === 'en' ? CHI_SIAMO_DEFAULTS_EN : CHI_SIAMO_DEFAULTS_IT),
     milestone: 'M2',
   },
@@ -1359,7 +1186,7 @@ export const PAGE_REGISTRY: Record<PageKey, PageRegistryEntry> = {
     milestone: 'M2',
   },
   'sell-with-us': {
-    allowedTypes: ['hero', 'richText', 'stickySplits', 'cta'],
+    allowedTypes: ['sellHero', 'sellMethod', 'valuationLead', 'socialReach'],
     reorderable: [],
     defaults: (locale) =>
       locale === 'en' ? SELL_WITH_US_DEFAULTS_EN : SELL_WITH_US_DEFAULTS_IT,

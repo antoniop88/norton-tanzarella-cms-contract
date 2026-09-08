@@ -22,15 +22,25 @@ import {
   googleReviewsContentSchema,
   itineraryContentSchema,
   destinationsContentSchema,
+  sellHeroContentSchema,
+  sellMethodContentSchema,
+  valuationLeadContentSchema,
+  socialReachContentSchema,
 } from './m2.js'
 
 export { collectPageMediaIds } from './collectPageMediaIds.js'
 export { migrateSplitsToStickySplits } from './migrateStickySplits.js'
+export { migrateStatementQuestionnaire, stripStatementQuestionnaire, extractLegacyStatementQuestionnaire } from './migrateStatementQuestionnaire.js'
+export { buildHomeQuestionnaireDefaults } from '../settings/questionnaireDefaults.js'
 export {
   migratePropertyFinderBriefing,
   migratePropertyFinderPage,
   LEGACY_PROPERTY_FINDER_TITLES,
 } from './migratePropertyFinder.js'
+export {
+  migrateSellWithUsPage,
+  isLegacySellWithUsDocument,
+} from './migrateSellWithUs.js'
 
 export const sectionContentByType = {
   hero: heroContentSchema,
@@ -54,6 +64,10 @@ export const sectionContentByType = {
   aboutTeaser: aboutTeaserContentSchema,
   itinerary: itineraryContentSchema,
   destinations: destinationsContentSchema,
+  sellHero: sellHeroContentSchema,
+  sellMethod: sellMethodContentSchema,
+  valuationLead: valuationLeadContentSchema,
+  socialReach: socialReachContentSchema,
 } as const
 
 export type SectionType = keyof typeof sectionContentByType
@@ -80,6 +94,10 @@ export const SECTION_TYPE_LABELS_IT: Record<SectionType, string> = {
   aboutTeaser: 'About teaser',
   itinerary: 'Itinerario',
   destinations: 'Territori',
+  sellHero: 'Hero Vendi',
+  sellMethod: 'Metodo + video',
+  valuationLead: 'Form valutazione',
+  socialReach: 'Reach social',
 }
 
 export function parseSectionContent(type: string, content: unknown) {

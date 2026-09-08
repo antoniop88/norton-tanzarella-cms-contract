@@ -5,6 +5,27 @@ import {
   openingHoursSchema,
   validateOpeningHours,
 } from './opening-hours.js'
+import {
+  DEFAULT_QUESTIONNAIRE_IT,
+  questionnaireSchema,
+} from './questionnaire.js'
+
+export {
+  questionnaireFieldOptionSchema,
+  questionnaireFieldSchema,
+  questionnaireStepSchema,
+  questionnaireSchema,
+  mergeQuestionnaireDefaults,
+  buildHomeQuestionnaireDefaults,
+  DEFAULT_QUESTIONNAIRE_IT,
+  DEFAULT_QUESTIONNAIRE_EN,
+} from './questionnaire.js'
+export type {
+  QuestionnaireFieldOption,
+  QuestionnaireField,
+  QuestionnaireStep,
+  QuestionnaireContent,
+} from './questionnaire.js'
 
 export {
   dayOfWeekSchema,
@@ -142,6 +163,7 @@ export const contactFormSchema = z
 export const contactSettingsSchema = z.object({
   organization: organizationSchema,
   contactForm: contactFormSchema,
+  questionnaire: questionnaireSchema,
 })
 
 export type ContactSettings = z.infer<typeof contactSettingsSchema>
@@ -239,4 +261,5 @@ export const DEFAULT_CONTACT_SETTINGS_IT: ContactSettings = {
     },
     submitButtonLabel: 'Invia messaggio',
   },
+  questionnaire: DEFAULT_QUESTIONNAIRE_IT,
 }

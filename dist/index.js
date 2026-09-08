@@ -975,11 +975,11 @@ function timeRegex(args) {
 }
 function datetimeRegex(args) {
   let regex = `${dateRegexSource}T${timeRegexSource(args)}`;
-  const opts = [];
-  opts.push(args.local ? `Z?` : `Z`);
+  const opts2 = [];
+  opts2.push(args.local ? `Z?` : `Z`);
   if (args.offset)
-    opts.push(`([+-]\\d{2}:?\\d{2})`);
-  regex = `${regex}(${opts.join("|")})`;
+    opts2.push(`([+-]\\d{2}:?\\d{2})`);
+  regex = `${regex}(${opts2.join("|")})`;
   return new RegExp(`^${regex}$`);
 }
 function isValidIP(ip, version) {
@@ -4073,6 +4073,382 @@ var featureItemSchema = external_exports.object({
   iconKey: optionalIconKeySchema.describe("Icona")
 }).describe("Elemento");
 
+// src/settings/questionnaireDefaults.ts
+var IDS = {
+  step1: "a1000000-0000-4000-8000-000000000001",
+  step2: "a1000000-0000-4000-8000-000000000002",
+  step3: "a1000000-0000-4000-8000-000000000003",
+  step4: "a1000000-0000-4000-8000-000000000004",
+  step5: "a1000000-0000-4000-8000-000000000005",
+  firstName: "a2000000-0000-4000-8000-000000000001",
+  lastName: "a2000000-0000-4000-8000-000000000002",
+  email: "a2000000-0000-4000-8000-000000000003",
+  phone: "a2000000-0000-4000-8000-000000000004",
+  buyerOrSeller: "a2000000-0000-4000-8000-000000000005",
+  budget: "a2000000-0000-4000-8000-000000000006",
+  bedrooms: "a2000000-0000-4000-8000-000000000007",
+  bathrooms: "a2000000-0000-4000-8000-000000000008",
+  propertyType: "a2000000-0000-4000-8000-000000000009",
+  region: "a2000000-0000-4000-8000-000000000010",
+  size: "a2000000-0000-4000-8000-000000000011",
+  condition: "a2000000-0000-4000-8000-000000000012",
+  purchaseType: "a2000000-0000-4000-8000-000000000013",
+  currency: "a2000000-0000-4000-8000-000000000014",
+  swimmingPool: "a2000000-0000-4000-8000-000000000015",
+  reason: "a2000000-0000-4000-8000-000000000016",
+  tripPlanned: "a2000000-0000-4000-8000-000000000017",
+  tripDate: "a2000000-0000-4000-8000-000000000018",
+  message: "a2000000-0000-4000-8000-000000000019"
+};
+var BUDGET_OPTS = [
+  { value: "0-100000", labelIt: "\u20AC0\u2013\u20AC100.000", labelEn: "\u20AC0-\u20AC100,000" },
+  { value: "100000-200000", labelIt: "\u20AC100.000\u2013\u20AC200.000", labelEn: "\u20AC100,000-\u20AC200,000" },
+  { value: "200000-350000", labelIt: "\u20AC200.000\u2013\u20AC350.000", labelEn: "\u20AC200,000-\u20AC350,000" },
+  { value: "350000-500000", labelIt: "\u20AC350.000\u2013\u20AC500.000", labelEn: "\u20AC350,000-\u20AC500,000" },
+  { value: "500000-plus", labelIt: "\u20AC500.000+", labelEn: "\u20AC500,000+" }
+];
+var BED_BATH = ["1", "2", "3", "4", "5+"];
+var PROPERTY_TYPES = [
+  { value: "country-house", labelIt: "Casa di campagna", labelEn: "Country House" },
+  { value: "town-house", labelIt: "Casa in paese", labelEn: "Town House" },
+  { value: "apartment", labelIt: "Appartamento", labelEn: "Apartment" },
+  { value: "sea-house", labelIt: "Casa al mare", labelEn: "Sea House" },
+  { value: "trullo", labelIt: "Trullo", labelEn: "Trullo" },
+  { value: "masseria", labelIt: "Masseria", labelEn: "Masseria" },
+  { value: "other", labelIt: "Altro", labelEn: "Other" }
+];
+var REGIONS = [
+  "Abruzzo",
+  "Basilicata",
+  "Calabria",
+  "Campania",
+  "Emilia Romagna",
+  "Friuli Venezia Giulia",
+  "Lazio",
+  "Liguria",
+  "Lombardia",
+  "Marche",
+  "Molise",
+  "Piemonte",
+  "Puglia",
+  "Sardegna",
+  "Sicilia",
+  "Toscana",
+  "Trentino Alto Adige",
+  "Umbria",
+  "Val d'Aosta",
+  "Veneto",
+  "Provincia autonoma di Trento",
+  "Provincia autonoma di Bolzano"
+];
+var SIZES = [
+  { value: "0-50", labelIt: "0\u201350 mq", labelEn: "0sqm-50sqm" },
+  { value: "51-100", labelIt: "51\u2013100 mq", labelEn: "51sqm-100sqm" },
+  { value: "101-150", labelIt: "101\u2013150 mq", labelEn: "101sqm-150sqm" },
+  { value: "151-200", labelIt: "151\u2013200 mq", labelEn: "151sqm-200sqm" },
+  { value: "201-250", labelIt: "201\u2013250 mq", labelEn: "201sqm-250sqm" },
+  { value: "251-300", labelIt: "251\u2013300 mq", labelEn: "251sqm-300sqm" },
+  { value: "301-350", labelIt: "301\u2013350 mq", labelEn: "301sqm-350sqm" },
+  { value: "351-plus", labelIt: "351 mq+", labelEn: "351sqm+" }
+];
+function opts(items, locale) {
+  return items.map((item) => ({
+    value: item.value,
+    label: locale === "en" ? item.labelEn : item.labelIt
+  }));
+}
+function yesNo(locale) {
+  return [
+    { value: "yes", label: locale === "en" ? "Yes" : "S\xEC" },
+    { value: "no", label: locale === "en" ? "No" : "No" }
+  ];
+}
+function buildHomeQuestionnaireDefaults(locale) {
+  const en = locale === "en";
+  return {
+    enabled: true,
+    buttonLabel: en ? "Start your search" : "Inizia la ricerca",
+    modalTitle: en ? "Property questionnaire" : "Questionario immobile",
+    submitLabel: en ? "Send" : "Invia",
+    successMessage: en ? "Thank you \u2014 we will get back to you shortly." : "Grazie \u2014 ti risponderemo al pi\xF9 presto.",
+    steps: [
+      {
+        id: IDS.step1,
+        title: en ? "Contact" : "Contatti",
+        fields: [
+          {
+            id: IDS.firstName,
+            key: "firstName",
+            type: "text",
+            columns: "1",
+            required: true,
+            label: en ? "First name" : "Nome",
+            placeholder: en ? "First" : "Nome"
+          },
+          {
+            id: IDS.lastName,
+            key: "lastName",
+            type: "text",
+            columns: "1",
+            required: true,
+            label: en ? "Last name" : "Cognome",
+            placeholder: en ? "Last" : "Cognome"
+          },
+          {
+            id: IDS.email,
+            key: "email",
+            type: "email",
+            columns: "3",
+            required: true,
+            label: "Email",
+            placeholder: "Email"
+          },
+          {
+            id: IDS.phone,
+            key: "phone",
+            type: "tel",
+            columns: "3",
+            required: false,
+            label: en ? "Phone" : "Telefono",
+            placeholder: en ? "Enter phone number" : "Inserisci il numero"
+          }
+        ]
+      },
+      {
+        id: IDS.step2,
+        title: en ? "Preferences" : "Preferenze",
+        fields: [
+          {
+            id: IDS.buyerOrSeller,
+            key: "buyerOrSeller",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Buyer or seller?" : "Acquirente o venditore?",
+            options: [
+              { value: "buyer", label: en ? "Buyer" : "Acquirente" },
+              { value: "seller", label: en ? "Seller" : "Venditore" }
+            ]
+          },
+          {
+            id: IDS.budget,
+            key: "budget",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Budget" : "Budget",
+            options: opts(BUDGET_OPTS, locale)
+          },
+          {
+            id: IDS.bedrooms,
+            key: "bedrooms",
+            type: "select",
+            columns: "1",
+            required: true,
+            label: en ? "Bedrooms" : "Camere da letto",
+            options: BED_BATH.map((value) => ({ value, label: value }))
+          },
+          {
+            id: IDS.bathrooms,
+            key: "bathrooms",
+            type: "select",
+            columns: "1",
+            required: true,
+            label: en ? "Bathrooms" : "Bagni",
+            options: BED_BATH.map((value) => ({ value, label: value }))
+          }
+        ]
+      },
+      {
+        id: IDS.step3,
+        title: en ? "Property" : "Immobile",
+        fields: [
+          {
+            id: IDS.propertyType,
+            key: "propertyType",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Property type" : "Tipologia immobile",
+            options: opts(PROPERTY_TYPES, locale)
+          },
+          {
+            id: IDS.region,
+            key: "region",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Region of interest" : "Regione di interesse",
+            options: REGIONS.map((name) => ({ value: name, label: name }))
+          },
+          {
+            id: IDS.size,
+            key: "size",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Size" : "Dimensione",
+            options: opts(SIZES, locale)
+          },
+          {
+            id: IDS.condition,
+            key: "condition",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Condition" : "Condizione",
+            options: [
+              {
+                value: "fully-finished",
+                label: en ? "Fully finished" : "Completamente finito"
+              },
+              {
+                value: "slight-work",
+                label: en ? "Slight work needed" : "Piccoli lavori"
+              },
+              {
+                value: "to-restore",
+                label: en ? "To be restored" : "Da restaurare"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: IDS.step4,
+        title: en ? "Purchase" : "Acquisto",
+        fields: [
+          {
+            id: IDS.purchaseType,
+            key: "purchaseType",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Type of purchase" : "Tipo di acquisto",
+            options: [
+              { value: "cash-buyer", label: en ? "Cash-buyer" : "Acquisto in contanti" },
+              { value: "mortgage", label: en ? "Mortgage" : "Mutuo" }
+            ]
+          },
+          {
+            id: IDS.currency,
+            key: "currency",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Currency of purchase" : "Valuta di acquisto",
+            options: [
+              { value: "USD", label: "USD" },
+              { value: "GBP", label: "GBP" },
+              { value: "EUR", label: "EUR" },
+              { value: "AUD", label: "AUD" },
+              { value: "other", label: en ? "Other" : "Altro" }
+            ]
+          },
+          {
+            id: IDS.swimmingPool,
+            key: "swimmingPool",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Swimming pool" : "Piscina",
+            options: yesNo(locale)
+          },
+          {
+            id: IDS.reason,
+            key: "reason",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Reason for purchase" : "Motivo dell\u2019acquisto",
+            options: [
+              { value: "personal-use", label: en ? "Personal use" : "Uso personale" },
+              { value: "investment", label: en ? "Investment" : "Investimento" },
+              { value: "both", label: en ? "Both" : "Entrambi" }
+            ]
+          }
+        ]
+      },
+      {
+        id: IDS.step5,
+        title: en ? "Details" : "Dettagli",
+        fields: [
+          {
+            id: IDS.tripPlanned,
+            key: "tripPlanned",
+            type: "select",
+            columns: "3",
+            required: true,
+            label: en ? "Trip planned?" : "Viaggio programmato?",
+            options: yesNo(locale)
+          },
+          {
+            id: IDS.tripDate,
+            key: "tripDate",
+            type: "date",
+            columns: "3",
+            required: false,
+            label: en ? "If yes \u2014 planned date (optional)" : "Se s\xEC \u2014 data prevista (facoltativo)"
+          },
+          {
+            id: IDS.message,
+            key: "message",
+            type: "textarea",
+            columns: "3",
+            required: false,
+            label: en ? "Message" : "Messaggio",
+            placeholder: en ? "Message" : "Messaggio"
+          }
+        ]
+      }
+    ]
+  };
+}
+
+// src/settings/questionnaire.ts
+var questionnaireFieldOptionSchema = external_exports.object({
+  value: external_exports.string().min(1).max(80).describe("Valore"),
+  label: external_exports.string().min(1).max(120).describe("Etichetta")
+});
+var questionnaireFieldSchema = external_exports.object({
+  id: external_exports.string().uuid().describe("ID campo"),
+  key: external_exports.string().min(1).max(60).regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, "Chiave alfanumerica").describe("Chiave"),
+  type: external_exports.enum(["text", "email", "tel", "select", "textarea", "date"]).describe("Tipo"),
+  columns: external_exports.enum(["1", "2", "3"]).describe("Colonne"),
+  required: external_exports.boolean().describe("Obbligatorio"),
+  label: external_exports.string().min(1).max(120).describe("Etichetta"),
+  placeholder: external_exports.string().max(120).optional().describe("Placeholder"),
+  options: external_exports.array(questionnaireFieldOptionSchema).max(40).optional().describe("Opzioni")
+});
+var questionnaireStepSchema = external_exports.object({
+  id: external_exports.string().uuid().describe("ID step"),
+  title: external_exports.string().max(80).optional().describe("Titolo step"),
+  fields: external_exports.array(questionnaireFieldSchema).min(1).max(8).describe("Campi")
+});
+var questionnaireSchema = external_exports.object({
+  enabled: external_exports.boolean().describe("Questionario attivo"),
+  buttonLabel: external_exports.string().min(1).max(60).describe("Etichetta pulsante"),
+  modalTitle: external_exports.string().max(80).optional().describe("Titolo modale"),
+  submitLabel: external_exports.string().min(1).max(40).describe("Etichetta invio"),
+  successMessage: external_exports.string().min(1).max(300).describe("Messaggio successo"),
+  steps: external_exports.array(questionnaireStepSchema).min(1).max(12).describe("Step")
+});
+var DEFAULT_QUESTIONNAIRE_IT = buildHomeQuestionnaireDefaults("it");
+var DEFAULT_QUESTIONNAIRE_EN = buildHomeQuestionnaireDefaults("en");
+function mergeQuestionnaireDefaults(partial, locale = "it") {
+  const defaults = locale === "en" ? DEFAULT_QUESTIONNAIRE_EN : DEFAULT_QUESTIONNAIRE_IT;
+  if (!partial || typeof partial !== "object") {
+    return structuredClone(defaults);
+  }
+  const parsed = questionnaireSchema.safeParse({
+    ...defaults,
+    ...partial,
+    steps: Array.isArray(partial.steps) ? partial.steps : defaults.steps
+  });
+  if (!parsed.success) return structuredClone(defaults);
+  return parsed.data;
+}
+
 // src/sections/m1.ts
 var heroContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
@@ -4121,18 +4497,12 @@ var categoryGridContentSchema = external_exports.object({
   tagline: external_exports.string().max(160).optional().describe("Sottotitolo (corsivo)"),
   items: external_exports.array(categoryGridItemSchema).length(4).describe("Categorie")
 });
-var aboutTeaserCarouselItemSchema = external_exports.object({
-  mediaId: optionalMediaIdSchema.describe("Immagine"),
-  imageAlt: external_exports.string().max(160).optional().describe("Testo alternativo")
-});
 var aboutTeaserContentSchema = external_exports.object({
   title: external_exports.string().max(80).describe("Titolo"),
   body: external_exports.string().max(600).describe("Testo"),
   button: ctaLinkSchema.describe("Pulsante"),
   backgroundMediaId: optionalMediaIdSchema.describe("Immagine sfondo"),
-  backgroundImageAlt: external_exports.string().max(160).optional().describe("Alt sfondo"),
-  carouselItems: external_exports.array(aboutTeaserCarouselItemSchema).min(1).max(3).describe("Slide carousel"),
-  autoplayMs: external_exports.number().int().min(0).max(12e3).optional().describe("Autoplay (ms, 0 = off)")
+  backgroundImageAlt: external_exports.string().max(160).optional().describe("Alt sfondo")
 });
 
 // src/sections/m2.ts
@@ -4252,6 +4622,64 @@ var destinationsContentSchema = external_exports.object({
   outro: external_exports.string().max(120).optional().describe("Chiusura"),
   items: external_exports.array(destinationItemSchema).min(2).max(6).describe("Territori")
 });
+var sellHeroContentSchema = external_exports.object({
+  title: external_exports.string().max(80).describe("Titolo"),
+  titleHighlight: external_exports.string().max(80).optional().describe("Parte titolo in evidenza (oro)"),
+  subtitle: external_exports.string().max(300).optional().describe("Sottotitolo"),
+  mediaId: optionalMediaIdSchema.describe("Immagine sfondo"),
+  imageAlt: external_exports.string().max(160).optional().describe("Alt immagine"),
+  primaryCta: external_exports.object({
+    label: external_exports.string().max(40).describe("Etichetta")
+  }).describe("CTA primaria (scroll al form)")
+});
+var youtubeWatchUrlSchema = external_exports.string().max(500).url().refine(
+  (value) => {
+    try {
+      const host = new URL(value).hostname.replace(/^www\./, "");
+      return host === "youtube.com" || host === "youtu.be" || host === "m.youtube.com";
+    } catch {
+      return false;
+    }
+  },
+  { message: "URL YouTube (youtube.com o youtu.be)" }
+);
+var sellMethodContentSchema = external_exports.object({
+  title: external_exports.string().max(80).describe("Titolo sezione"),
+  intro: external_exports.string().max(500).optional().describe("Introduzione"),
+  bullets: external_exports.array(external_exports.string().max(120).describe("Punto")).min(1).max(6).describe("Elenco punti"),
+  closing: external_exports.string().max(300).optional().describe("Chiusura"),
+  youtubeUrl: youtubeWatchUrlSchema.describe("URL video YouTube")
+});
+var valuationLeadContentSchema = external_exports.object({
+  title: external_exports.string().max(80).describe("Titolo form"),
+  mediaId: optionalMediaIdSchema.describe("Immagine sfondo"),
+  imageAlt: external_exports.string().max(160).optional().describe("Alt immagine"),
+  labels: external_exports.object({
+    name: external_exports.string().max(40).describe("Label nome"),
+    phone: external_exports.string().max(40).describe("Label telefono"),
+    email: external_exports.string().max(40).describe("Label e-mail"),
+    location: external_exports.string().max(60).describe("Label localit\xE0")
+  }).describe("Etichette campi"),
+  placeholders: external_exports.object({
+    name: external_exports.string().max(80).optional().describe("Placeholder nome"),
+    phone: external_exports.string().max(80).optional().describe("Placeholder telefono"),
+    email: external_exports.string().max(80).optional().describe("Placeholder e-mail"),
+    location: external_exports.string().max(120).optional().describe("Placeholder localit\xE0")
+  }).optional().describe("Placeholder campi"),
+  submitLabel: external_exports.string().max(40).describe("Etichetta invio")
+});
+var socialReachItemSchema = external_exports.object({
+  value: external_exports.number().min(0).describe("Valore numerico"),
+  decimals: external_exports.number().int().min(0).max(2).default(0).describe("Decimali da mostrare"),
+  unit: external_exports.string().max(10).optional().describe("Unit\xE0 (K, mila, \u2026)"),
+  suffix: external_exports.string().max(10).optional().describe("Suffisso (+, \u2026)"),
+  label: external_exports.string().max(40).describe("Etichetta")
+});
+var socialReachContentSchema = external_exports.object({
+  title: external_exports.string().max(160).describe("Titolo sezione"),
+  items: external_exports.array(socialReachItemSchema).min(2).max(6).describe("Contatori"),
+  quote: external_exports.string().max(200).describe("Citazione banner")
+});
 
 // src/sections/collectPageMediaIds.ts
 function isUuid(value) {
@@ -4315,6 +4743,30 @@ function migrateSplitsToStickySplits(sections, defaults) {
   );
 }
 
+// src/sections/migrateStatementQuestionnaire.ts
+function extractLegacyStatementQuestionnaire(sections) {
+  for (const section of sections) {
+    if (section.type !== "statement") continue;
+    const content = section.content;
+    if (content.questionnaire && typeof content.questionnaire === "object") {
+      return content.questionnaire;
+    }
+  }
+  return null;
+}
+function stripStatementQuestionnaire(sections) {
+  return sections.map((section) => {
+    if (section.type !== "statement") return section;
+    const content = section.content;
+    if (!("questionnaire" in content)) return section;
+    const { questionnaire: _removed, ...rest } = content;
+    return { ...section, content: rest };
+  });
+}
+function migrateStatementQuestionnaire(sections, _defaults) {
+  return stripStatementQuestionnaire(sections);
+}
+
 // src/sections/migratePropertyFinder.ts
 var LEGACY_PROPERTY_FINDER_TITLES = /* @__PURE__ */ new Set([
   "Il nostro servizio completo di ricerca immobili",
@@ -4360,6 +4812,42 @@ function migratePropertyFinderPage(document, defaults) {
   };
 }
 
+// src/sections/migrateSellWithUs.ts
+var LEGACY_SELL_SEO_DESCRIPTIONS = /* @__PURE__ */ new Set([
+  "Vendi il tuo immobile con Norton Tanzarella: valutazione, marketing internazionale e accompagnamento fino alla conclusione.",
+  "Sell your property with Norton Tanzarella: valuation, international marketing and guidance through to completion."
+]);
+var LEGACY_SELL_SECTION_TYPES = /* @__PURE__ */ new Set(["hero", "richText", "stickySplits", "split", "cta"]);
+function migrateSellWithUsSeo(seo, defaults) {
+  const next = { ...seo ?? {} };
+  const defaultSeo = defaults.seo ?? {};
+  const description = typeof next.description === "string" ? next.description.trim() : "";
+  if (!description || LEGACY_SELL_SEO_DESCRIPTIONS.has(description)) {
+    if (typeof defaultSeo.description === "string") next.description = defaultSeo.description;
+  }
+  const title = typeof next.title === "string" ? next.title.trim() : "";
+  if (!title || title === "Vendi con noi" || title === "Sell with us") {
+    if (typeof defaultSeo.title === "string") next.title = defaultSeo.title;
+  }
+  return next;
+}
+function isLegacySellWithUsDocument(document) {
+  const hasNew = document.sections.some(
+    (section) => section.type === "sellHero" || section.type === "sellMethod" || section.type === "valuationLead" || section.type === "socialReach"
+  );
+  if (hasNew) return false;
+  return document.sections.some((section) => LEGACY_SELL_SECTION_TYPES.has(section.type));
+}
+function migrateSellWithUsPage(document, defaults) {
+  if (isLegacySellWithUsDocument(document)) {
+    return structuredClone(defaults);
+  }
+  return {
+    ...document,
+    seo: migrateSellWithUsSeo(document.seo, defaults)
+  };
+}
+
 // src/sections/index.ts
 var sectionContentByType = {
   hero: heroContentSchema,
@@ -4382,7 +4870,11 @@ var sectionContentByType = {
   googleReviews: googleReviewsContentSchema,
   aboutTeaser: aboutTeaserContentSchema,
   itinerary: itineraryContentSchema,
-  destinations: destinationsContentSchema
+  destinations: destinationsContentSchema,
+  sellHero: sellHeroContentSchema,
+  sellMethod: sellMethodContentSchema,
+  valuationLead: valuationLeadContentSchema,
+  socialReach: socialReachContentSchema
 };
 var SECTION_TYPE_LABELS_IT = {
   hero: "Hero",
@@ -4405,7 +4897,11 @@ var SECTION_TYPE_LABELS_IT = {
   googleReviews: "Google Reviews",
   aboutTeaser: "About teaser",
   itinerary: "Itinerario",
-  destinations: "Territori"
+  destinations: "Territori",
+  sellHero: "Hero Vendi",
+  sellMethod: "Metodo + video",
+  valuationLead: "Form valutazione",
+  socialReach: "Reach social"
 };
 function parseSectionContent(type, content) {
   const schema = sectionContentByType[type];
@@ -4891,7 +5387,8 @@ var contactFormSchema = external_exports.object({
 });
 var contactSettingsSchema = external_exports.object({
   organization: organizationSchema,
-  contactForm: contactFormSchema
+  contactForm: contactFormSchema,
+  questionnaire: questionnaireSchema
 });
 function mergeSharedOrganization(targetOrg, sourceOrg) {
   return {
@@ -4936,7 +5433,8 @@ var DEFAULT_CONTACT_SETTINGS_IT = {
       error: "Invio non riuscito. Riprova pi\xF9 tardi."
     },
     submitButtonLabel: "Invia messaggio"
-  }
+  },
+  questionnaire: DEFAULT_QUESTIONNAIRE_IT
 };
 
 // src/settings/socialPlatforms.ts
@@ -5235,7 +5733,7 @@ function normalizeMenu(value) {
   if (!parsed.success) return { ...defaults };
   return parsed.data;
 }
-function mergeSiteSettingsDefaults(document) {
+function mergeSiteSettingsDefaults(document, locale = "it") {
   const partial = document && typeof document === "object" ? document : {};
   const partialOrg = partial.organization ?? {};
   const partialForm = partial.contactForm ?? {};
@@ -5264,6 +5762,7 @@ function mergeSiteSettingsDefaults(document) {
         ...partialForm.messages ?? void 0
       }
     },
+    questionnaire: mergeQuestionnaireDefaults(partial.questionnaire, locale),
     brand: {
       ...DEFAULT_SITE_SETTINGS_IT.brand,
       ...partial.brand,
@@ -5372,16 +5871,6 @@ var HOME_CATEGORY_GRID_ITEMS_EN = [
     ctaLabel: "View properties"
   }
 ];
-var HOME_ABOUT_TEASER_CAROUSEL_IT = [
-  { imageAlt: "Ostuni al tramonto" },
-  { imageAlt: "Masseria in Valle d'Itria" },
-  { imageAlt: "Interior di prestigio" }
-];
-var HOME_ABOUT_TEASER_CAROUSEL_EN = [
-  { imageAlt: "Ostuni at sunset" },
-  { imageAlt: "Masseria in the Valle d'Itria" },
-  { imageAlt: "Prestige interior" }
-];
 var HOME_DEFAULTS_IT = {
   seo: {
     title: "Norton Tanzarella",
@@ -5471,9 +5960,7 @@ var HOME_DEFAULTS_IT = {
         title: "Chi siamo",
         body: "Da Norton Tanzarella accompagniamo chi sceglie di investire e vivere in Valle d'Itria \u2014 tra Ostuni, masserie e borghi bianchi. La soddisfazione di chi acquista \xE8 la nostra priorit\xE0: consulenza personalizzata dalla prima visita alla firma, per trovare la casa giusta tra rustici, trulli e dimore di carattere.",
         button: { label: "Scopri chi siamo", to: "/about" },
-        backgroundImageAlt: "Paesaggio della Valle d'Itria",
-        carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_IT],
-        autoplayMs: 5e3
+        backgroundImageAlt: "Paesaggio della Valle d'Itria"
       }
     },
     {
@@ -5590,9 +6077,7 @@ var HOME_DEFAULTS_EN = {
         title: "About us",
         body: "At Norton Tanzarella we guide international buyers investing and living in the Valle d'Itria \u2014 Ostuni, masserie and whitewashed hill towns. Client satisfaction comes first: tailored advice from first viewing to completion, to match each buyer with the right home among rustici, trulli and character properties.",
         button: { label: "Read more", to: "/about" },
-        backgroundImageAlt: "Valle d'Itria landscape",
-        carouselItems: [...HOME_ABOUT_TEASER_CAROUSEL_EN],
-        autoplayMs: 5e3
+        backgroundImageAlt: "Valle d'Itria landscape"
       }
     },
     {
@@ -5690,24 +6175,10 @@ var CHI_SIAMO_DEFAULTS_IT = {
       }
     },
     {
-      id: "00000000-0000-4000-8000-000000000012",
-      type: "stats",
-      enabled: false,
-      order: 4,
-      content: {
-        items: [
-          { value: 20, suffix: "+", label: "Anni di esperienza" },
-          { value: 500, suffix: "+", label: "Clienti accompagnati" },
-          { value: 150, suffix: "+", label: "Immobili gestiti" },
-          { value: 1, label: "Rete di fiducia" }
-        ]
-      }
-    },
-    {
       id: "00000000-0000-4000-8000-000000000014",
       type: "cta",
       enabled: true,
-      order: 5,
+      order: 4,
       content: {
         title: "Parliamone",
         description: "Accompagniamo acquisti e vendite di prestigio in Valle d'Itria con discrezione e chiarezza.",
@@ -5718,7 +6189,7 @@ var CHI_SIAMO_DEFAULTS_IT = {
       id: "00000000-0000-4000-8000-000000000015",
       type: "faq",
       enabled: true,
-      order: 6,
+      order: 5,
       content: {
         title: "Domande frequenti",
         items: [
@@ -5816,24 +6287,10 @@ var CHI_SIAMO_DEFAULTS_EN = {
       }
     },
     {
-      id: "00000000-0000-4000-8000-000000000012",
-      type: "stats",
-      enabled: false,
-      order: 4,
-      content: {
-        items: [
-          { value: 20, suffix: "+", label: "Years of experience" },
-          { value: 500, suffix: "+", label: "Clients guided" },
-          { value: 150, suffix: "+", label: "Properties managed" },
-          { value: 1, label: "Trusted network" }
-        ]
-      }
-    },
-    {
       id: "00000000-0000-4000-8000-000000000014",
       type: "cta",
       enabled: true,
-      order: 5,
+      order: 4,
       content: {
         title: "Let's talk",
         description: "We accompany prestige purchases and sales in the Valle d'Itria with discretion and clarity.",
@@ -5844,7 +6301,7 @@ var CHI_SIAMO_DEFAULTS_EN = {
       id: "00000000-0000-4000-8000-000000000015",
       type: "faq",
       enabled: true,
-      order: 6,
+      order: 5,
       content: {
         title: "Frequently asked questions",
         items: [
@@ -5876,141 +6333,74 @@ var CHI_SIAMO_DEFAULTS_EN = {
 var SELL_WITH_US_DEFAULTS_IT = {
   seo: {
     title: "Vendi con noi",
-    description: "Vendi il tuo immobile con Norton Tanzarella: valutazione, marketing internazionale e accompagnamento fino alla conclusione."
+    description: "Vuoi vendere casa pi\xF9 velocemente e al miglior prezzo? Scopri il metodo Norton Tanzarella: video, social e valutazione professionale."
   },
   sections: [
     {
       id: "00000000-0000-4000-8000-000000000080",
-      type: "hero",
+      type: "sellHero",
       enabled: true,
       order: 0,
       content: {
-        title: "Vendi con noi",
-        subtitle: "Vendere un immobile richiede pi\xF9 di una semplice pubblicazione"
+        title: "Vuoi vendere casa pi\xF9 velocemente",
+        titleHighlight: "e al miglior prezzo?",
+        subtitle: "Scopri come i nostri video sui Social Media attirano acquirenti da tutto il mondo",
+        primaryCta: { label: "Richiedi una valutazione" }
       }
     },
     {
       id: "00000000-0000-4000-8000-000000000081",
-      type: "richText",
+      type: "sellMethod",
       enabled: true,
       order: 1,
       content: {
-        body: `Vendere una propriet\xE0 significa valorizzarne il potenziale, individuare i giusti acquirenti e gestire ogni fase del percorso con competenza, attenzione e discrezione.
-
-Norton Tanzarella Real Estate affianca proprietari italiani e internazionali nella vendita di immobili in Italia, offrendo un servizio personalizzato che unisce conoscenza del mercato, strategia commerciale e una rete di relazioni qualificata.
-
-Dalla prima valutazione alla conclusione della vendita, ci occupiamo di costruire il percorso pi\xF9 efficace per presentare la propriet\xE0 al mercato, raggiungere il pubblico giusto e accompagnare tutte le parti fino al completamento dell'operazione.
-
-La nostra sede \xE8 a Ostuni, ma il nostro approccio e la nostra rete sono orientati a un mercato pi\xF9 ampio, con particolare attenzione alle propriet\xE0 di carattere, alle residenze di pregio e agli immobili che possono incontrare l'interesse di acquirenti italiani e internazionali.`
+        title: "Selezioniamo solo immobili idonei",
+        intro: "Negli ultimi anni abbiamo aiutato proprietari come te a vendere casa grazie a un metodo semplice ma potente:",
+        bullets: [
+          "Video professionali delle propriet\xE0",
+          "Promozione mirata sui social media",
+          "Visibilit\xE0 internazionale"
+        ],
+        closing: "Oggi il modo di vendere casa \xE8 cambiato. Non basta pi\xF9 pubblicare un annuncio",
+        youtubeUrl: "https://www.youtube.com/watch?v=AhOlgYILYCY"
       }
     },
     {
       id: "00000000-0000-4000-8000-000000000082",
-      type: "stickySplits",
+      type: "valuationLead",
       enabled: true,
       order: 2,
       content: {
-        items: [
-          {
-            title: "Valutazione e strategia di vendita",
-            lead: "Ogni propriet\xE0 ha una storia. La vendita parte dal comprenderne il valore.",
-            body: `Una corretta valutazione immobiliare non riguarda soltanto la superficie, la posizione o le caratteristiche dell'immobile. Significa analizzare il mercato, il contesto, la domanda attuale e il potenziale della propriet\xE0 per definire un posizionamento realistico e competitivo.
-
-Studiamo ogni immobile in modo approfondito per individuare il corretto prezzo di mercato e costruire una strategia di vendita coerente con le sue caratteristiche.
-
-L'obiettivo non \xE8 semplicemente mettere una propriet\xE0 sul mercato, ma presentare nel modo giusto, al pubblico giusto e nel momento giusto.`
-          },
-          {
-            title: "Presentazione e valorizzazione della propriet\xE0",
-            lead: "La prima impressione pu\xF2 determinare il valore percepito di una casa.",
-            body: `Una propriet\xE0 di qualit\xE0 merita una comunicazione all'altezza.
-
-Per ogni incarico curiamo la presentazione dell'immobile attraverso fotografie, contenuti editoriali, descrizioni professionali e materiali pensati per raccontarne non soltanto gli spazi, ma anche l'atmosfera, il carattere e il modo di vivere che pu\xF2 offrire.
-
-Quando necessario, supportiamo il proprietario nell'individuazione degli interventi che possono migliorare la percezione della propriet\xE0 sul mercato, dalla preparazione degli ambienti alla valorizzazione degli elementi architettonici e paesaggistici.
-
-La casa non viene semplicemente pubblicata: viene posizionata e raccontata.`
-          },
-          {
-            title: "Marketing immobiliare e visibilit\xE0 internazionale",
-            lead: "Raggiungere pi\xF9 persone non significa necessariamente raggiungere gli acquirenti giusti.",
-            body: `La strategia di marketing viene costruita in funzione della propriet\xE0 e del suo potenziale acquirente.
-
-Norton Tanzarella utilizza i propri canali digitali, il network professionale e una comunicazione orientata anche al pubblico internazionale per dare alle propriet\xE0 una presenza qualificata sul mercato.
-
-La distribuzione dell'immobile viene accompagnata da una presentazione coerente su tutti i principali punti di contatto, con contenuti in pi\xF9 lingue quando necessario e una particolare attenzione alla domanda proveniente dall'estero.
-
-Questo permette di ampliare il bacino di potenziali acquirenti senza perdere di vista ci\xF2 che conta davvero: la qualit\xE0 delle opportunit\xE0 di vendita.`
-          },
-          {
-            title: "Ricerca e selezione degli acquirenti",
-            lead: "Non tutti i potenziali acquirenti sono realmente acquirenti.",
-            body: `Una vendita efficace passa anche dalla capacit\xE0 di distinguere l'interesse reale dalla semplice curiosit\xE0.
-
-Gestiamo le richieste, organizziamo le visite e accompagniamo i potenziali acquirenti nella conoscenza della propriet\xE0, cercando di comprendere esigenze, obiettivi e reale interesse all'acquisto.
-
-Quando possibile, lavoriamo attraverso una rete di contatti e professionisti qualificati, creando connessioni con acquirenti che possono essere realmente in linea con il tipo di immobile proposto.
-
-Il nostro obiettivo \xE8 tutelare il tempo del proprietario e concentrare il processo sulle opportunit\xE0 concrete.`
-          },
-          {
-            title: "Negoziazione e gestione della vendita",
-            lead: "Una buona trattativa non riguarda solo il prezzo.",
-            body: `Quando arriva un'offerta, entrano in gioco molte variabili: condizioni economiche, tempistiche, modalit\xE0 di pagamento, necessit\xE0 dell'acquirente e aspetti tecnici o documentali.
-
-Norton Tanzarella affianca il proprietario durante la fase di negoziazione, fornendo un supporto professionale nella valutazione delle proposte e nella gestione delle diverse fasi che portano alla conclusione dell'operazione.
-
-Coordiniamo il dialogo tra le parti e, attraverso una rete di professionisti qualificati, contribuiamo a rendere il percorso pi\xF9 ordinato, trasparente e sicuro.`
-          },
-          {
-            title: "Un network di professionisti per una vendita senza complicazioni",
-            lead: "La vendita di un immobile coinvolge molte competenze. Per questo non lavoriamo da soli.",
-            body: `A seconda delle esigenze della propriet\xE0, possiamo mettere in relazione il cliente con professionisti specializzati negli aspetti tecnici, urbanistici, catastali, legali, fiscali e finanziari dell'operazione.
-
-Il nostro ruolo \xE8 anche quello di coordinare le diverse competenze coinvolte, facendo in modo che ogni fase venga affrontata con la giusta attenzione.
-
-Per il proprietario significa avere un unico punto di riferimento durante il percorso, senza dover gestire autonomamente ogni singolo aspetto della vendita.`
-          },
-          {
-            title: "Dalla vendita alla nuova destinazione dell'immobile",
-            lead: "Per noi, una propriet\xE0 non termina il suo percorso con la firma.",
-            body: `Ogni vendita pu\xF2 rappresentare l'inizio di una nuova opportunit\xE0.
-
-Per questo il nostro rapporto con i proprietari non si limita alla commercializzazione dell'immobile. Grazie alla nostra conoscenza del mercato e alla rete di relazioni costruita negli anni, possiamo supportare anche chi desidera reinvestire, acquistare una nuova propriet\xE0 in Italia o individuare soluzioni pi\xF9 adatte alle proprie esigenze.
-
-Il nostro lavoro nasce dalla vendita, ma il rapporto pu\xF2 continuare oltre.`
-          }
-        ]
+        title: "Scopri quanto vale davvero la tua casa",
+        labels: {
+          name: "Nome",
+          phone: "Telefono",
+          email: "E-mail",
+          location: "Localit\xE0 della propriet\xE0"
+        },
+        placeholders: {
+          name: "ad esempio Mario Rossi",
+          phone: "ad esempio +39 111 111 1112",
+          email: "E-mail",
+          location: "Inserisci l'ubicazione della struttura"
+        },
+        submitLabel: "Inviare"
       }
     },
     {
-      id: "00000000-0000-4000-8000-000000000089",
-      type: "richText",
+      id: "00000000-0000-4000-8000-000000000083",
+      type: "socialReach",
       enabled: true,
       order: 3,
       content: {
-        body: `## Perch\xE9 vendere con Norton Tanzarella
-
-Vendere una propriet\xE0 attraverso Norton Tanzarella significa affidarsi a un interlocutore che combina **conoscenza del mercato immobiliare italiano, attenzione personale e una visione internazionale**.
-
-Ogni incarico viene seguito con un approccio su misura, perch\xE9 non esistono due propriet\xE0 uguali e non esistono due percorsi di vendita identici.
-
-Mettiamo insieme strategia, comunicazione, relazioni e competenze professionali per costruire un processo orientato a un obiettivo concreto: **vendere bene, con il giusto posizionamento e con la massima attenzione agli interessi del proprietario**.
-
-Hai deciso di vendere una casa, una villa, una masseria o un'altra propriet\xE0 in Italia?
-
-Raccontaci qualcosa del tuo immobile. Analizzeremo le sue caratteristiche e il contesto di mercato per capire come poterlo valorizzare e quale strategia di vendita possa essere pi\xF9 adatta.`
-      }
-    },
-    {
-      id: "00000000-0000-4000-8000-000000000090",
-      type: "cta",
-      enabled: true,
-      order: 4,
-      content: {
-        title: "Parliamo della tua propriet\xE0",
-        description: "La vendita di una propriet\xE0 importante merita pi\xF9 di una semplice vetrina. Merita una strategia.",
-        button: { label: "Contattaci", to: "/contact" }
+        title: "Ogni settimana raggiungiamo migliaia di potenziali acquirenti attraverso pi\xF9 piattaforme",
+        items: [
+          { value: 22, decimals: 0, unit: "K", suffix: "+", label: "Follower di Instagram" },
+          { value: 22, decimals: 0, unit: "K", suffix: "+", label: "Iscritti a YouTube" },
+          { value: 1.8, decimals: 1, unit: "mila", suffix: "+", label: "Pubblico di Facebook" },
+          { value: 62, decimals: 0, unit: "K", suffix: "+", label: "Follower di TikTok" }
+        ],
+        quote: "Vendere casa non \xE8 pubblicare un annuncio. \xC8 raccontare una storia"
       }
     }
   ]
@@ -6018,141 +6408,74 @@ Raccontaci qualcosa del tuo immobile. Analizzeremo le sue caratteristiche e il c
 var SELL_WITH_US_DEFAULTS_EN = {
   seo: {
     title: "Sell with us",
-    description: "Sell your property with Norton Tanzarella: valuation, international marketing and guidance through to completion."
+    description: "Want to sell your home faster and at the best price? Discover the Norton Tanzarella method: video, social media and a professional valuation."
   },
   sections: [
     {
       id: "00000000-0000-4000-8000-000000000080",
-      type: "hero",
+      type: "sellHero",
       enabled: true,
       order: 0,
       content: {
-        title: "Sell with us",
-        subtitle: "Selling a property requires more than a simple listing"
+        title: "Want to sell your home faster",
+        titleHighlight: "and at the best price?",
+        subtitle: "Discover how our Social Media videos attract buyers from around the world",
+        primaryCta: { label: "Request a valuation" }
       }
     },
     {
       id: "00000000-0000-4000-8000-000000000081",
-      type: "richText",
+      type: "sellMethod",
       enabled: true,
       order: 1,
       content: {
-        body: `Selling a property means unlocking its potential, finding the right buyers and guiding every stage of the journey with expertise, care and discretion.
-
-Norton Tanzarella Real Estate supports Italian and international owners selling property in Italy, offering a tailored service that combines market knowledge, commercial strategy and a qualified network of relationships.
-
-From the first valuation to completion, we build the most effective path to present the property to the market, reach the right audience and accompany all parties through to the end of the transaction.
-
-Our office is in Ostuni, yet our approach and network look to a wider market \u2014 with particular focus on character homes, prestige residences and properties that can attract Italian and international buyers.`
+        title: "We only select suitable properties",
+        intro: "In recent years we have helped owners like you sell their homes with a simple yet powerful method:",
+        bullets: [
+          "Professional property videos",
+          "Targeted social media promotion",
+          "International visibility"
+        ],
+        closing: "Today the way we sell homes has changed. Listing an ad is no longer enough",
+        youtubeUrl: "https://www.youtube.com/watch?v=AhOlgYILYCY"
       }
     },
     {
       id: "00000000-0000-4000-8000-000000000082",
-      type: "stickySplits",
+      type: "valuationLead",
       enabled: true,
       order: 2,
       content: {
-        items: [
-          {
-            title: "Valuation and sales strategy",
-            lead: "Every property has a story. A sale begins by understanding its value.",
-            body: `A sound property valuation is not only about size, location or features. It means analysing the market, the context, current demand and the property's potential to define a realistic and competitive positioning.
-
-We study every property in depth to identify the right market price and build a sales strategy aligned with its character.
-
-The goal is not simply to put a property on the market, but to present it the right way, to the right audience, at the right time.`
-          },
-          {
-            title: "Presentation and property staging",
-            lead: "First impressions can shape the perceived value of a home.",
-            body: `A quality property deserves communication of equal quality.
-
-For every instruction we craft the presentation through photography, editorial content, professional descriptions and materials designed to convey not only the spaces, but also the atmosphere, character and way of living it can offer.
-
-When needed, we help owners identify improvements that can lift how the property is perceived \u2014 from preparing interiors to highlighting architectural and landscape features.
-
-The home is not merely listed: it is positioned and told.`
-          },
-          {
-            title: "Property marketing and international reach",
-            lead: "Reaching more people does not always mean reaching the right buyers.",
-            body: `The marketing strategy is built around the property and its likely buyer.
-
-Norton Tanzarella uses its digital channels, professional network and communication aimed also at an international audience to give properties a qualified presence on the market.
-
-Distribution is paired with a coherent presentation across the main touchpoints, with multilingual content when needed and particular attention to demand from abroad.
-
-This widens the pool of potential buyers without losing sight of what matters most: the quality of sales opportunities.`
-          },
-          {
-            title: "Buyer research and selection",
-            lead: "Not every prospective buyer is a real buyer.",
-            body: `An effective sale also depends on telling genuine interest from simple curiosity.
-
-We manage enquiries, arrange viewings and accompany prospective buyers as they get to know the property, seeking to understand needs, goals and true intent to purchase.
-
-Where possible we work through a network of contacts and qualified professionals, connecting with buyers who may genuinely match the type of property offered.
-
-Our aim is to protect the owner's time and focus the process on concrete opportunities.`
-          },
-          {
-            title: "Negotiation and sale management",
-            lead: "A good negotiation is not only about price.",
-            body: `When an offer arrives, many variables come into play: financial terms, timing, payment methods, the buyer's needs and technical or documentary aspects.
-
-Norton Tanzarella supports the owner through negotiation, providing professional guidance in assessing proposals and managing the stages that lead to completion.
-
-We coordinate dialogue between the parties and, through a network of qualified professionals, help make the path more orderly, transparent and secure.`
-          },
-          {
-            title: "A network of professionals for a smoother sale",
-            lead: "Selling a property involves many disciplines. That is why we do not work alone.",
-            body: `Depending on the property's needs, we can introduce the client to specialists in technical, planning, cadastral, legal, tax and financial aspects of the transaction.
-
-Our role is also to coordinate the skills involved, so each stage is handled with the right attention.
-
-For the owner, that means a single point of contact throughout the journey \u2014 without having to manage every detail of the sale alone.`
-          },
-          {
-            title: "From sale to the property's next chapter",
-            lead: "For us, a property's journey does not end at the signature.",
-            body: `Every sale can be the start of a new opportunity.
-
-That is why our relationship with owners is not limited to marketing the property. Thanks to our market knowledge and the network of relationships built over the years, we can also support those who wish to reinvest, buy another home in Italy or find solutions better suited to their needs.
-
-Our work begins with the sale \u2014 but the relationship can continue beyond it.`
-          }
-        ]
+        title: "Find out what your home is really worth",
+        labels: {
+          name: "Name",
+          phone: "Phone",
+          email: "E-mail",
+          location: "Property location"
+        },
+        placeholders: {
+          name: "e.g. John Smith",
+          phone: "e.g. +39 111 111 1112",
+          email: "E-mail",
+          location: "Enter the property location"
+        },
+        submitLabel: "Send"
       }
     },
     {
-      id: "00000000-0000-4000-8000-000000000089",
-      type: "richText",
+      id: "00000000-0000-4000-8000-000000000083",
+      type: "socialReach",
       enabled: true,
       order: 3,
       content: {
-        body: `## Why sell with Norton Tanzarella
-
-Selling a property through Norton Tanzarella means trusting a partner who combines **knowledge of the Italian property market, personal attention and an international outlook**.
-
-Every instruction is handled with a tailored approach, because no two properties are alike and no two sales paths are identical.
-
-We bring together strategy, communication, relationships and professional expertise to build a process aimed at one concrete goal: **to sell well, with the right positioning and the greatest care for the owner's interests**.
-
-Have you decided to sell a house, a villa, a masseria or another property in Italy?
-
-Tell us about your property. We will review its features and the market context to understand how to enhance it and which sales strategy may suit it best.`
-      }
-    },
-    {
-      id: "00000000-0000-4000-8000-000000000090",
-      type: "cta",
-      enabled: true,
-      order: 4,
-      content: {
-        title: "Let's talk about your property",
-        description: "Selling an important property deserves more than a simple shop window. It deserves a strategy.",
-        button: { label: "Contact us", to: "/contact" }
+        title: "Every week we reach thousands of potential buyers across multiple platforms",
+        items: [
+          { value: 22, decimals: 0, unit: "K", suffix: "+", label: "Instagram followers" },
+          { value: 22, decimals: 0, unit: "K", suffix: "+", label: "YouTube subscribers" },
+          { value: 1.8, decimals: 1, unit: "K", suffix: "+", label: "Facebook audience" },
+          { value: 62, decimals: 0, unit: "K", suffix: "+", label: "TikTok followers" }
+        ],
+        quote: "Selling a house is not about posting an ad. It is about telling a story"
       }
     }
   ]
@@ -6386,8 +6709,8 @@ var PAGE_REGISTRY = {
     milestone: "M1"
   },
   "chi-siamo": {
-    allowedTypes: ["hero", "imageSlideshow", "stickySplits", "team", "stats", "cta", "faq"],
-    reorderable: ["imageSlideshow", "stickySplits", "team", "stats", "cta", "faq"],
+    allowedTypes: ["hero", "imageSlideshow", "stickySplits", "team", "cta", "faq"],
+    reorderable: ["imageSlideshow", "stickySplits", "team", "cta", "faq"],
     defaults: (locale) => locale === "en" ? CHI_SIAMO_DEFAULTS_EN : CHI_SIAMO_DEFAULTS_IT,
     milestone: "M2"
   },
@@ -6575,7 +6898,7 @@ var PAGE_REGISTRY = {
     milestone: "M2"
   },
   "sell-with-us": {
-    allowedTypes: ["hero", "richText", "stickySplits", "cta"],
+    allowedTypes: ["sellHero", "sellMethod", "valuationLead", "socialReach"],
     reorderable: [],
     defaults: (locale) => locale === "en" ? SELL_WITH_US_DEFAULTS_EN : SELL_WITH_US_DEFAULTS_IT,
     milestone: "M2"
@@ -6663,6 +6986,19 @@ var LEGAL_POLICY_SOURCE_LABELS_IT = {
   manual: "Manuale",
   iubenda: "Iubenda"
 };
+var QUESTIONNAIRE_FIELD_TYPE_LABELS_IT = {
+  text: "Testo",
+  email: "Email",
+  tel: "Telefono",
+  select: "Menu a tendina",
+  textarea: "Area di testo",
+  date: "Data"
+};
+var QUESTIONNAIRE_COLUMNS_LABELS_IT = {
+  "1": "1 colonna",
+  "2": "2 colonne",
+  "3": "3 colonne"
+};
 function enumLabelIt(fieldKey, value) {
   if (fieldKey === "dayOfWeek") return DAY_OF_WEEK_LABELS_IT[value] ?? value;
   if (fieldKey === "platform") {
@@ -6670,6 +7006,8 @@ function enumLabelIt(fieldKey, value) {
   }
   if (fieldKey === "mode") return FEATURED_COLLECTION_MODE_LABELS_IT[value] ?? value;
   if (fieldKey === "source") return LEGAL_POLICY_SOURCE_LABELS_IT[value] ?? value;
+  if (fieldKey === "type") return QUESTIONNAIRE_FIELD_TYPE_LABELS_IT[value] ?? value;
+  if (fieldKey === "columns") return QUESTIONNAIRE_COLUMNS_LABELS_IT[value] ?? value;
   return value;
 }
 
@@ -6684,7 +7022,10 @@ var SHARED_STRING_KEYS = /* @__PURE__ */ new Set([
   "privacyPolicyUrl",
   "mapUrl",
   "url",
-  "platform"
+  "platform",
+  "value",
+  "key",
+  "id"
 ]);
 var MARKDOWN_BODY_MIN_MAX_LENGTH = 1e4;
 function resolveLocaleScope(kind, fieldKey, format) {
@@ -6923,6 +7264,8 @@ export {
   DEFAULT_LAYOUT_SETTINGS_IT,
   DEFAULT_OPENING_HOURS_IT,
   DEFAULT_PROPERTY_WATERMARK,
+  DEFAULT_QUESTIONNAIRE_EN,
+  DEFAULT_QUESTIONNAIRE_IT,
   DEFAULT_SITE_MENU_SETTINGS_EN,
   DEFAULT_SITE_MENU_SETTINGS_IT,
   DEFAULT_SITE_SETTINGS_IT,
@@ -6940,18 +7283,20 @@ export {
   MAIN_NAV_PATHS,
   PAGE_KEYS,
   PAGE_REGISTRY,
+  QUESTIONNAIRE_COLUMNS_LABELS_IT,
+  QUESTIONNAIRE_FIELD_TYPE_LABELS_IT,
   SECTION_TYPE_LABELS_IT,
   SOCIAL_PLATFORMS,
   SOCIAL_PLATFORM_IDS,
   SOCIAL_PLATFORM_LABELS_IT,
   WEEKDAY_ORDER,
-  aboutTeaserCarouselItemSchema,
   aboutTeaserContentSchema,
   brandFooterVisibilitySchema,
   brandSchema,
   brandingColorsSchema,
   brandingLogosSchema,
   brandingTypographySchema,
+  buildHomeQuestionnaireDefaults,
   categoryGridContentSchema,
   categoryGridItemSchema,
   cmsNavLinkSchema,
@@ -6972,6 +7317,7 @@ export {
   destinationItemSchema,
   destinationsContentSchema,
   enumLabelIt,
+  extractLegacyStatementQuestionnaire,
   faqContentSchema,
   featureItemSchema,
   featuredCollectionContentSchema,
@@ -6992,6 +7338,7 @@ export {
   hexColorSchema,
   imageSlideshowContentSchema,
   imageSlideshowItemSchema,
+  isLegacySellWithUsDocument,
   isPageKey,
   itineraryContentSchema,
   itineraryItemSchema,
@@ -7002,11 +7349,14 @@ export {
   logoSlotSchema,
   mainNavLinkSchema,
   mergeOpeningHoursNotes,
+  mergeQuestionnaireDefaults,
   mergeSharedOrganization,
   mergeSiteSettingsDefaults,
   migratePropertyFinderBriefing,
   migratePropertyFinderPage,
+  migrateSellWithUsPage,
   migrateSplitsToStickySplits,
+  migrateStatementQuestionnaire,
   normalizeNavPath,
   normalizeSettingsScalars,
   openingHoursSchema,
@@ -7017,9 +7367,15 @@ export {
   pageHeaderContentSchema,
   parseSectionContent,
   propertyWatermarkSchema,
+  questionnaireFieldOptionSchema,
+  questionnaireFieldSchema,
+  questionnaireSchema,
+  questionnaireStepSchema,
   richTextContentSchema,
   scalarsToCssVars,
   sectionContentByType,
+  sellHeroContentSchema,
+  sellMethodContentSchema,
   settingsScalarsSchema,
   siteMenuSettingsSchema,
   siteSettingsSchema,
@@ -7027,14 +7383,18 @@ export {
   socialPlatformIcon,
   socialPlatformIconSlug,
   socialPlatformLabelIt,
+  socialReachContentSchema,
+  socialReachItemSchema,
   splitContentSchema,
   statementContentSchema,
   statsContentSchema,
   stickySplitItemSchema,
   stickySplitsContentSchema,
+  stripStatementQuestionnaire,
   teamContentSchema,
   testimonialsContentSchema,
   validateOpeningHours,
+  valuationLeadContentSchema,
   youtubeGalleryContentSchema,
   zodToFieldMeta
 };

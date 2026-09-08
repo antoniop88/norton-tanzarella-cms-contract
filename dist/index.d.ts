@@ -46,6 +46,945 @@ declare const featureItemSchema: z.ZodObject<{
     iconKey?: unknown;
 }>;
 
+/** Fixed UUIDs shared across IT|EN so bilingual editor keeps field identity. */
+declare function buildHomeQuestionnaireDefaults(locale: 'it' | 'en'): {
+    enabled: boolean;
+    buttonLabel: string;
+    modalTitle: string;
+    submitLabel: string;
+    successMessage: string;
+    steps: ({
+        id: "a1000000-0000-4000-8000-000000000001";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000001";
+            key: string;
+            type: "text";
+            columns: "1";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000002";
+            key: string;
+            type: "text";
+            columns: "1";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000003";
+            key: string;
+            type: "email";
+            columns: "3";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000004";
+            key: string;
+            type: "tel";
+            columns: "3";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000002";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000005";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000006";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000007";
+            key: string;
+            type: "select";
+            columns: "1";
+            required: boolean;
+            label: string;
+            options: {
+                value: "1" | "2" | "3" | "4" | "5+";
+                label: "1" | "2" | "3" | "4" | "5+";
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000008";
+            key: string;
+            type: "select";
+            columns: "1";
+            required: boolean;
+            label: string;
+            options: {
+                value: "1" | "2" | "3" | "4" | "5+";
+                label: "1" | "2" | "3" | "4" | "5+";
+            }[];
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000003";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000009";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000010";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: "Abruzzo" | "Basilicata" | "Calabria" | "Campania" | "Emilia Romagna" | "Friuli Venezia Giulia" | "Lazio" | "Liguria" | "Lombardia" | "Marche" | "Molise" | "Piemonte" | "Puglia" | "Sardegna" | "Sicilia" | "Toscana" | "Trentino Alto Adige" | "Umbria" | "Val d'Aosta" | "Veneto" | "Provincia autonoma di Trento" | "Provincia autonoma di Bolzano";
+                label: "Abruzzo" | "Basilicata" | "Calabria" | "Campania" | "Emilia Romagna" | "Friuli Venezia Giulia" | "Lazio" | "Liguria" | "Lombardia" | "Marche" | "Molise" | "Piemonte" | "Puglia" | "Sardegna" | "Sicilia" | "Toscana" | "Trentino Alto Adige" | "Umbria" | "Val d'Aosta" | "Veneto" | "Provincia autonoma di Trento" | "Provincia autonoma di Bolzano";
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000011";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000012";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000004";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000013";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000014";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000015";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000016";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000005";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000017";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+            placeholder?: undefined;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000018";
+            key: string;
+            type: "date";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options?: undefined;
+            placeholder?: undefined;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000019";
+            key: string;
+            type: "textarea";
+            columns: "3";
+            required: boolean;
+            label: string;
+            placeholder: string;
+            options?: undefined;
+        })[];
+    })[];
+};
+
+declare const questionnaireFieldOptionSchema: z.ZodObject<{
+    value: z.ZodString;
+    label: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    value: string;
+    label: string;
+}, {
+    value: string;
+    label: string;
+}>;
+declare const questionnaireFieldSchema: z.ZodObject<{
+    id: z.ZodString;
+    key: z.ZodString;
+    type: z.ZodEnum<["text", "email", "tel", "select", "textarea", "date"]>;
+    columns: z.ZodEnum<["1", "2", "3"]>;
+    required: z.ZodBoolean;
+    label: z.ZodString;
+    placeholder: z.ZodOptional<z.ZodString>;
+    options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        value: z.ZodString;
+        label: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        value: string;
+        label: string;
+    }, {
+        value: string;
+        label: string;
+    }>, "many">>;
+}, "strip", z.ZodTypeAny, {
+    type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+    label: string;
+    id: string;
+    key: string;
+    columns: "1" | "2" | "3";
+    required: boolean;
+    options?: {
+        value: string;
+        label: string;
+    }[] | undefined;
+    placeholder?: string | undefined;
+}, {
+    type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+    label: string;
+    id: string;
+    key: string;
+    columns: "1" | "2" | "3";
+    required: boolean;
+    options?: {
+        value: string;
+        label: string;
+    }[] | undefined;
+    placeholder?: string | undefined;
+}>;
+declare const questionnaireStepSchema: z.ZodObject<{
+    id: z.ZodString;
+    title: z.ZodOptional<z.ZodString>;
+    fields: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        key: z.ZodString;
+        type: z.ZodEnum<["text", "email", "tel", "select", "textarea", "date"]>;
+        columns: z.ZodEnum<["1", "2", "3"]>;
+        required: z.ZodBoolean;
+        label: z.ZodString;
+        placeholder: z.ZodOptional<z.ZodString>;
+        options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            value: z.ZodString;
+            label: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            value: string;
+            label: string;
+        }, {
+            value: string;
+            label: string;
+        }>, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+        label: string;
+        id: string;
+        key: string;
+        columns: "1" | "2" | "3";
+        required: boolean;
+        options?: {
+            value: string;
+            label: string;
+        }[] | undefined;
+        placeholder?: string | undefined;
+    }, {
+        type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+        label: string;
+        id: string;
+        key: string;
+        columns: "1" | "2" | "3";
+        required: boolean;
+        options?: {
+            value: string;
+            label: string;
+        }[] | undefined;
+        placeholder?: string | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    fields: {
+        type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+        label: string;
+        id: string;
+        key: string;
+        columns: "1" | "2" | "3";
+        required: boolean;
+        options?: {
+            value: string;
+            label: string;
+        }[] | undefined;
+        placeholder?: string | undefined;
+    }[];
+    title?: string | undefined;
+}, {
+    id: string;
+    fields: {
+        type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+        label: string;
+        id: string;
+        key: string;
+        columns: "1" | "2" | "3";
+        required: boolean;
+        options?: {
+            value: string;
+            label: string;
+        }[] | undefined;
+        placeholder?: string | undefined;
+    }[];
+    title?: string | undefined;
+}>;
+declare const questionnaireSchema: z.ZodObject<{
+    enabled: z.ZodBoolean;
+    buttonLabel: z.ZodString;
+    modalTitle: z.ZodOptional<z.ZodString>;
+    submitLabel: z.ZodString;
+    successMessage: z.ZodString;
+    steps: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        fields: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            key: z.ZodString;
+            type: z.ZodEnum<["text", "email", "tel", "select", "textarea", "date"]>;
+            columns: z.ZodEnum<["1", "2", "3"]>;
+            required: z.ZodBoolean;
+            label: z.ZodString;
+            placeholder: z.ZodOptional<z.ZodString>;
+            options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                value: z.ZodString;
+                label: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                value: string;
+                label: string;
+            }, {
+                value: string;
+                label: string;
+            }>, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+            label: string;
+            id: string;
+            key: string;
+            columns: "1" | "2" | "3";
+            required: boolean;
+            options?: {
+                value: string;
+                label: string;
+            }[] | undefined;
+            placeholder?: string | undefined;
+        }, {
+            type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+            label: string;
+            id: string;
+            key: string;
+            columns: "1" | "2" | "3";
+            required: boolean;
+            options?: {
+                value: string;
+                label: string;
+            }[] | undefined;
+            placeholder?: string | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        fields: {
+            type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+            label: string;
+            id: string;
+            key: string;
+            columns: "1" | "2" | "3";
+            required: boolean;
+            options?: {
+                value: string;
+                label: string;
+            }[] | undefined;
+            placeholder?: string | undefined;
+        }[];
+        title?: string | undefined;
+    }, {
+        id: string;
+        fields: {
+            type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+            label: string;
+            id: string;
+            key: string;
+            columns: "1" | "2" | "3";
+            required: boolean;
+            options?: {
+                value: string;
+                label: string;
+            }[] | undefined;
+            placeholder?: string | undefined;
+        }[];
+        title?: string | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    enabled: boolean;
+    buttonLabel: string;
+    submitLabel: string;
+    successMessage: string;
+    steps: {
+        id: string;
+        fields: {
+            type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+            label: string;
+            id: string;
+            key: string;
+            columns: "1" | "2" | "3";
+            required: boolean;
+            options?: {
+                value: string;
+                label: string;
+            }[] | undefined;
+            placeholder?: string | undefined;
+        }[];
+        title?: string | undefined;
+    }[];
+    modalTitle?: string | undefined;
+}, {
+    enabled: boolean;
+    buttonLabel: string;
+    submitLabel: string;
+    successMessage: string;
+    steps: {
+        id: string;
+        fields: {
+            type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+            label: string;
+            id: string;
+            key: string;
+            columns: "1" | "2" | "3";
+            required: boolean;
+            options?: {
+                value: string;
+                label: string;
+            }[] | undefined;
+            placeholder?: string | undefined;
+        }[];
+        title?: string | undefined;
+    }[];
+    modalTitle?: string | undefined;
+}>;
+type QuestionnaireFieldOption = z.infer<typeof questionnaireFieldOptionSchema>;
+type QuestionnaireField = z.infer<typeof questionnaireFieldSchema>;
+type QuestionnaireStep = z.infer<typeof questionnaireStepSchema>;
+type QuestionnaireContent = z.infer<typeof questionnaireSchema>;
+declare const DEFAULT_QUESTIONNAIRE_IT: {
+    enabled: boolean;
+    buttonLabel: string;
+    modalTitle: string;
+    submitLabel: string;
+    successMessage: string;
+    steps: ({
+        id: "a1000000-0000-4000-8000-000000000001";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000001";
+            key: string;
+            type: "text";
+            columns: "1";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000002";
+            key: string;
+            type: "text";
+            columns: "1";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000003";
+            key: string;
+            type: "email";
+            columns: "3";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000004";
+            key: string;
+            type: "tel";
+            columns: "3";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000002";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000005";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000006";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000007";
+            key: string;
+            type: "select";
+            columns: "1";
+            required: boolean;
+            label: string;
+            options: {
+                value: "1" | "2" | "3" | "4" | "5+";
+                label: "1" | "2" | "3" | "4" | "5+";
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000008";
+            key: string;
+            type: "select";
+            columns: "1";
+            required: boolean;
+            label: string;
+            options: {
+                value: "1" | "2" | "3" | "4" | "5+";
+                label: "1" | "2" | "3" | "4" | "5+";
+            }[];
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000003";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000009";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000010";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: "Abruzzo" | "Basilicata" | "Calabria" | "Campania" | "Emilia Romagna" | "Friuli Venezia Giulia" | "Lazio" | "Liguria" | "Lombardia" | "Marche" | "Molise" | "Piemonte" | "Puglia" | "Sardegna" | "Sicilia" | "Toscana" | "Trentino Alto Adige" | "Umbria" | "Val d'Aosta" | "Veneto" | "Provincia autonoma di Trento" | "Provincia autonoma di Bolzano";
+                label: "Abruzzo" | "Basilicata" | "Calabria" | "Campania" | "Emilia Romagna" | "Friuli Venezia Giulia" | "Lazio" | "Liguria" | "Lombardia" | "Marche" | "Molise" | "Piemonte" | "Puglia" | "Sardegna" | "Sicilia" | "Toscana" | "Trentino Alto Adige" | "Umbria" | "Val d'Aosta" | "Veneto" | "Provincia autonoma di Trento" | "Provincia autonoma di Bolzano";
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000011";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000012";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000004";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000013";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000014";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000015";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000016";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000005";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000017";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+            placeholder?: undefined;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000018";
+            key: string;
+            type: "date";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options?: undefined;
+            placeholder?: undefined;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000019";
+            key: string;
+            type: "textarea";
+            columns: "3";
+            required: boolean;
+            label: string;
+            placeholder: string;
+            options?: undefined;
+        })[];
+    })[];
+};
+declare const DEFAULT_QUESTIONNAIRE_EN: {
+    enabled: boolean;
+    buttonLabel: string;
+    modalTitle: string;
+    submitLabel: string;
+    successMessage: string;
+    steps: ({
+        id: "a1000000-0000-4000-8000-000000000001";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000001";
+            key: string;
+            type: "text";
+            columns: "1";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000002";
+            key: string;
+            type: "text";
+            columns: "1";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000003";
+            key: string;
+            type: "email";
+            columns: "3";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000004";
+            key: string;
+            type: "tel";
+            columns: "3";
+            required: boolean;
+            label: string;
+            placeholder: string;
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000002";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000005";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000006";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000007";
+            key: string;
+            type: "select";
+            columns: "1";
+            required: boolean;
+            label: string;
+            options: {
+                value: "1" | "2" | "3" | "4" | "5+";
+                label: "1" | "2" | "3" | "4" | "5+";
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000008";
+            key: string;
+            type: "select";
+            columns: "1";
+            required: boolean;
+            label: string;
+            options: {
+                value: "1" | "2" | "3" | "4" | "5+";
+                label: "1" | "2" | "3" | "4" | "5+";
+            }[];
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000003";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000009";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000010";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: "Abruzzo" | "Basilicata" | "Calabria" | "Campania" | "Emilia Romagna" | "Friuli Venezia Giulia" | "Lazio" | "Liguria" | "Lombardia" | "Marche" | "Molise" | "Piemonte" | "Puglia" | "Sardegna" | "Sicilia" | "Toscana" | "Trentino Alto Adige" | "Umbria" | "Val d'Aosta" | "Veneto" | "Provincia autonoma di Trento" | "Provincia autonoma di Bolzano";
+                label: "Abruzzo" | "Basilicata" | "Calabria" | "Campania" | "Emilia Romagna" | "Friuli Venezia Giulia" | "Lazio" | "Liguria" | "Lombardia" | "Marche" | "Molise" | "Piemonte" | "Puglia" | "Sardegna" | "Sicilia" | "Toscana" | "Trentino Alto Adige" | "Umbria" | "Val d'Aosta" | "Veneto" | "Provincia autonoma di Trento" | "Provincia autonoma di Bolzano";
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000011";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000012";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000004";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000013";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000014";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000015";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        } | {
+            id: "a2000000-0000-4000-8000-000000000016";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+        })[];
+    } | {
+        id: "a1000000-0000-4000-8000-000000000005";
+        title: string;
+        fields: ({
+            id: "a2000000-0000-4000-8000-000000000017";
+            key: string;
+            type: "select";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options: {
+                value: string;
+                label: string;
+            }[];
+            placeholder?: undefined;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000018";
+            key: string;
+            type: "date";
+            columns: "3";
+            required: boolean;
+            label: string;
+            options?: undefined;
+            placeholder?: undefined;
+        } | {
+            id: "a2000000-0000-4000-8000-000000000019";
+            key: string;
+            type: "textarea";
+            columns: "3";
+            required: boolean;
+            label: string;
+            placeholder: string;
+            options?: undefined;
+        })[];
+    })[];
+};
+/** Prefer stored questionnaire; seed locale defaults when missing/invalid. */
+declare function mergeQuestionnaireDefaults(partial: unknown, locale?: 'it' | 'en'): QuestionnaireContent;
+
 declare const heroContentSchema: z.ZodObject<{
     title: z.ZodString;
     subtitle: z.ZodOptional<z.ZodString>;
@@ -189,6 +1128,7 @@ declare const statementContentSchema: z.ZodObject<{
     tagline?: string | undefined;
 }>;
 type StatementContent = z.infer<typeof statementContentSchema>;
+
 declare const categoryGridItemSchema: z.ZodObject<{
     label: z.ZodString;
     mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
@@ -256,16 +1196,6 @@ declare const categoryGridContentSchema: z.ZodObject<{
 }>;
 type CategoryGridItem = z.infer<typeof categoryGridItemSchema>;
 type CategoryGridContent = z.infer<typeof categoryGridContentSchema>;
-declare const aboutTeaserCarouselItemSchema: z.ZodObject<{
-    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
-    imageAlt: z.ZodOptional<z.ZodString>;
-}, "strip", z.ZodTypeAny, {
-    mediaId?: string | undefined;
-    imageAlt?: string | undefined;
-}, {
-    mediaId?: unknown;
-    imageAlt?: string | undefined;
-}>;
 declare const aboutTeaserContentSchema: z.ZodObject<{
     title: z.ZodString;
     body: z.ZodString;
@@ -281,17 +1211,6 @@ declare const aboutTeaserContentSchema: z.ZodObject<{
     }>;
     backgroundMediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
     backgroundImageAlt: z.ZodOptional<z.ZodString>;
-    carouselItems: z.ZodArray<z.ZodObject<{
-        mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
-        imageAlt: z.ZodOptional<z.ZodString>;
-    }, "strip", z.ZodTypeAny, {
-        mediaId?: string | undefined;
-        imageAlt?: string | undefined;
-    }, {
-        mediaId?: unknown;
-        imageAlt?: string | undefined;
-    }>, "many">;
-    autoplayMs: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
     title: string;
     button: {
@@ -299,13 +1218,8 @@ declare const aboutTeaserContentSchema: z.ZodObject<{
         to: string;
     };
     body: string;
-    carouselItems: {
-        mediaId?: string | undefined;
-        imageAlt?: string | undefined;
-    }[];
     backgroundMediaId?: string | undefined;
     backgroundImageAlt?: string | undefined;
-    autoplayMs?: number | undefined;
 }, {
     title: string;
     button: {
@@ -313,15 +1227,9 @@ declare const aboutTeaserContentSchema: z.ZodObject<{
         to: string;
     };
     body: string;
-    carouselItems: {
-        mediaId?: unknown;
-        imageAlt?: string | undefined;
-    }[];
     backgroundMediaId?: unknown;
     backgroundImageAlt?: string | undefined;
-    autoplayMs?: number | undefined;
 }>;
-type AboutTeaserCarouselItem = z.infer<typeof aboutTeaserCarouselItemSchema>;
 type AboutTeaserContent = z.infer<typeof aboutTeaserContentSchema>;
 
 declare const pageHeaderContentSchema: z.ZodObject<{
@@ -615,17 +1523,17 @@ declare const youtubeGalleryContentSchema: z.ZodObject<{
     subscribeChannelUrl: z.ZodString;
     subscribeLabel: z.ZodString;
 }, "strip", z.ZodTypeAny, {
+    columns: number;
     playlistId: string;
     pageSize: number;
-    columns: number;
     subscribeChannelUrl: string;
     subscribeLabel: string;
 }, {
     playlistId: string;
     subscribeChannelUrl: string;
     subscribeLabel: string;
-    pageSize?: number | undefined;
     columns?: number | undefined;
+    pageSize?: number | undefined;
 }>;
 type YoutubeGalleryContent = z.infer<typeof youtubeGalleryContentSchema>;
 declare const googleReviewsContentSchema: z.ZodObject<{
@@ -749,6 +1657,200 @@ declare const destinationsContentSchema: z.ZodObject<{
 }>;
 type DestinationItem = z.infer<typeof destinationItemSchema>;
 type DestinationsContent = z.infer<typeof destinationsContentSchema>;
+/** Sell-with-us — full-bleed hero (v0.33). */
+declare const sellHeroContentSchema: z.ZodObject<{
+    title: z.ZodString;
+    titleHighlight: z.ZodOptional<z.ZodString>;
+    subtitle: z.ZodOptional<z.ZodString>;
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+    imageAlt: z.ZodOptional<z.ZodString>;
+    primaryCta: z.ZodObject<{
+        label: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        label: string;
+    }, {
+        label: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    title: string;
+    primaryCta: {
+        label: string;
+    };
+    subtitle?: string | undefined;
+    mediaId?: string | undefined;
+    imageAlt?: string | undefined;
+    titleHighlight?: string | undefined;
+}, {
+    title: string;
+    primaryCta: {
+        label: string;
+    };
+    subtitle?: string | undefined;
+    mediaId?: unknown;
+    imageAlt?: string | undefined;
+    titleHighlight?: string | undefined;
+}>;
+type SellHeroContent = z.infer<typeof sellHeroContentSchema>;
+/** Sell-with-us — metodo + video YouTube (v0.33). */
+declare const sellMethodContentSchema: z.ZodObject<{
+    title: z.ZodString;
+    intro: z.ZodOptional<z.ZodString>;
+    bullets: z.ZodArray<z.ZodString, "many">;
+    closing: z.ZodOptional<z.ZodString>;
+    youtubeUrl: z.ZodEffects<z.ZodString, string, string>;
+}, "strip", z.ZodTypeAny, {
+    title: string;
+    bullets: string[];
+    youtubeUrl: string;
+    intro?: string | undefined;
+    closing?: string | undefined;
+}, {
+    title: string;
+    bullets: string[];
+    youtubeUrl: string;
+    intro?: string | undefined;
+    closing?: string | undefined;
+}>;
+type SellMethodContent = z.infer<typeof sellMethodContentSchema>;
+/** Sell-with-us — form valutazione su sfondo (v0.33). */
+declare const valuationLeadContentSchema: z.ZodObject<{
+    title: z.ZodString;
+    mediaId: z.ZodEffects<z.ZodOptional<z.ZodString>, string | undefined, unknown>;
+    imageAlt: z.ZodOptional<z.ZodString>;
+    labels: z.ZodObject<{
+        name: z.ZodString;
+        phone: z.ZodString;
+        email: z.ZodString;
+        location: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        email: string;
+        phone: string;
+        name: string;
+        location: string;
+    }, {
+        email: string;
+        phone: string;
+        name: string;
+        location: string;
+    }>;
+    placeholders: z.ZodOptional<z.ZodObject<{
+        name: z.ZodOptional<z.ZodString>;
+        phone: z.ZodOptional<z.ZodString>;
+        email: z.ZodOptional<z.ZodString>;
+        location: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        email?: string | undefined;
+        phone?: string | undefined;
+        name?: string | undefined;
+        location?: string | undefined;
+    }, {
+        email?: string | undefined;
+        phone?: string | undefined;
+        name?: string | undefined;
+        location?: string | undefined;
+    }>>;
+    submitLabel: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    title: string;
+    submitLabel: string;
+    labels: {
+        email: string;
+        phone: string;
+        name: string;
+        location: string;
+    };
+    mediaId?: string | undefined;
+    imageAlt?: string | undefined;
+    placeholders?: {
+        email?: string | undefined;
+        phone?: string | undefined;
+        name?: string | undefined;
+        location?: string | undefined;
+    } | undefined;
+}, {
+    title: string;
+    submitLabel: string;
+    labels: {
+        email: string;
+        phone: string;
+        name: string;
+        location: string;
+    };
+    mediaId?: unknown;
+    imageAlt?: string | undefined;
+    placeholders?: {
+        email?: string | undefined;
+        phone?: string | undefined;
+        name?: string | undefined;
+        location?: string | undefined;
+    } | undefined;
+}>;
+type ValuationLeadContent = z.infer<typeof valuationLeadContentSchema>;
+/** Sell-with-us — contatori social + citazione (v0.33). */
+declare const socialReachItemSchema: z.ZodObject<{
+    value: z.ZodNumber;
+    decimals: z.ZodDefault<z.ZodNumber>;
+    unit: z.ZodOptional<z.ZodString>;
+    suffix: z.ZodOptional<z.ZodString>;
+    label: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    value: number;
+    label: string;
+    decimals: number;
+    suffix?: string | undefined;
+    unit?: string | undefined;
+}, {
+    value: number;
+    label: string;
+    suffix?: string | undefined;
+    decimals?: number | undefined;
+    unit?: string | undefined;
+}>;
+declare const socialReachContentSchema: z.ZodObject<{
+    title: z.ZodString;
+    items: z.ZodArray<z.ZodObject<{
+        value: z.ZodNumber;
+        decimals: z.ZodDefault<z.ZodNumber>;
+        unit: z.ZodOptional<z.ZodString>;
+        suffix: z.ZodOptional<z.ZodString>;
+        label: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        value: number;
+        label: string;
+        decimals: number;
+        suffix?: string | undefined;
+        unit?: string | undefined;
+    }, {
+        value: number;
+        label: string;
+        suffix?: string | undefined;
+        decimals?: number | undefined;
+        unit?: string | undefined;
+    }>, "many">;
+    quote: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    title: string;
+    items: {
+        value: number;
+        label: string;
+        decimals: number;
+        suffix?: string | undefined;
+        unit?: string | undefined;
+    }[];
+    quote: string;
+}, {
+    title: string;
+    items: {
+        value: number;
+        label: string;
+        suffix?: string | undefined;
+        decimals?: number | undefined;
+        unit?: string | undefined;
+    }[];
+    quote: string;
+}>;
+type SocialReachItem = z.infer<typeof socialReachItemSchema>;
+type SocialReachContent = z.infer<typeof socialReachContentSchema>;
 
 declare const cmsSeoSchema: z.ZodObject<{
     title: z.ZodOptional<z.ZodString>;
@@ -845,6 +1947,17 @@ declare function collectPageMediaIds(document: CmsPageDocument | unknown): strin
  */
 declare function migrateSplitsToStickySplits(sections: CmsSection[], defaults: CmsPageDocument): CmsSection[];
 
+/**
+ * Pull legacy `statement.questionnaire` (pre-v0.32) before strip.
+ */
+declare function extractLegacyStatementQuestionnaire(sections: CmsSection[]): unknown | null;
+/**
+ * v0.32: questionnaire lives in cms_settings — strip legacy `statement.questionnaire`.
+ */
+declare function stripStatementQuestionnaire(sections: CmsSection[]): CmsSection[];
+/** @deprecated Use stripStatementQuestionnaire — questionnaire is in settings since v0.32. */
+declare function migrateStatementQuestionnaire(sections: CmsSection[], _defaults?: unknown): CmsSection[];
+
 /** Titles from property-finder defaults before v0.30.6 (brochure hero). */
 declare const LEGACY_PROPERTY_FINDER_TITLES: Set<string>;
 /**
@@ -855,6 +1968,15 @@ declare const LEGACY_PROPERTY_FINDER_TITLES: Set<string>;
  */
 declare function migratePropertyFinderBriefing(sections: CmsSection[], defaults: CmsPageDocument): CmsSection[];
 declare function migratePropertyFinderPage(document: CmsPageDocument, defaults: CmsPageDocument): CmsPageDocument;
+
+/** True when the document still uses the pre-v0.33 stickySplits layout. */
+declare function isLegacySellWithUsDocument(document: CmsPageDocument): boolean;
+/**
+ * Replace pre-v0.33 sell-with-us documents with registry defaults (SEO refreshed).
+ * New-structure documents only get SEO backfill when still on legacy copy.
+ * Run **before** filtering by `allowedTypes`.
+ */
+declare function migrateSellWithUsPage(document: CmsPageDocument, defaults: CmsPageDocument): CmsPageDocument;
 
 declare const sectionContentByType: {
     readonly hero: zod.ZodObject<{
@@ -1299,17 +2421,17 @@ declare const sectionContentByType: {
         subscribeChannelUrl: zod.ZodString;
         subscribeLabel: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
+        columns: number;
         playlistId: string;
         pageSize: number;
-        columns: number;
         subscribeChannelUrl: string;
         subscribeLabel: string;
     }, {
         playlistId: string;
         subscribeChannelUrl: string;
         subscribeLabel: string;
-        pageSize?: number | undefined;
         columns?: number | undefined;
+        pageSize?: number | undefined;
     }>;
     readonly googleReviews: zod.ZodObject<{
         title: zod.ZodOptional<zod.ZodString>;
@@ -1342,17 +2464,6 @@ declare const sectionContentByType: {
         }>;
         backgroundMediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
         backgroundImageAlt: zod.ZodOptional<zod.ZodString>;
-        carouselItems: zod.ZodArray<zod.ZodObject<{
-            mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
-            imageAlt: zod.ZodOptional<zod.ZodString>;
-        }, "strip", zod.ZodTypeAny, {
-            mediaId?: string | undefined;
-            imageAlt?: string | undefined;
-        }, {
-            mediaId?: unknown;
-            imageAlt?: string | undefined;
-        }>, "many">;
-        autoplayMs: zod.ZodOptional<zod.ZodNumber>;
     }, "strip", zod.ZodTypeAny, {
         title: string;
         button: {
@@ -1360,13 +2471,8 @@ declare const sectionContentByType: {
             to: string;
         };
         body: string;
-        carouselItems: {
-            mediaId?: string | undefined;
-            imageAlt?: string | undefined;
-        }[];
         backgroundMediaId?: string | undefined;
         backgroundImageAlt?: string | undefined;
-        autoplayMs?: number | undefined;
     }, {
         title: string;
         button: {
@@ -1374,13 +2480,8 @@ declare const sectionContentByType: {
             to: string;
         };
         body: string;
-        carouselItems: {
-            mediaId?: unknown;
-            imageAlt?: string | undefined;
-        }[];
         backgroundMediaId?: unknown;
         backgroundImageAlt?: string | undefined;
-        autoplayMs?: number | undefined;
     }>;
     readonly itinerary: zod.ZodObject<{
         eyebrow: zod.ZodOptional<zod.ZodString>;
@@ -1453,6 +2554,172 @@ declare const sectionContentByType: {
         eyebrow?: string | undefined;
         lead?: string | undefined;
         outro?: string | undefined;
+    }>;
+    readonly sellHero: zod.ZodObject<{
+        title: zod.ZodString;
+        titleHighlight: zod.ZodOptional<zod.ZodString>;
+        subtitle: zod.ZodOptional<zod.ZodString>;
+        mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
+        imageAlt: zod.ZodOptional<zod.ZodString>;
+        primaryCta: zod.ZodObject<{
+            label: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            label: string;
+        }, {
+            label: string;
+        }>;
+    }, "strip", zod.ZodTypeAny, {
+        title: string;
+        primaryCta: {
+            label: string;
+        };
+        subtitle?: string | undefined;
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
+        titleHighlight?: string | undefined;
+    }, {
+        title: string;
+        primaryCta: {
+            label: string;
+        };
+        subtitle?: string | undefined;
+        mediaId?: unknown;
+        imageAlt?: string | undefined;
+        titleHighlight?: string | undefined;
+    }>;
+    readonly sellMethod: zod.ZodObject<{
+        title: zod.ZodString;
+        intro: zod.ZodOptional<zod.ZodString>;
+        bullets: zod.ZodArray<zod.ZodString, "many">;
+        closing: zod.ZodOptional<zod.ZodString>;
+        youtubeUrl: zod.ZodEffects<zod.ZodString, string, string>;
+    }, "strip", zod.ZodTypeAny, {
+        title: string;
+        bullets: string[];
+        youtubeUrl: string;
+        intro?: string | undefined;
+        closing?: string | undefined;
+    }, {
+        title: string;
+        bullets: string[];
+        youtubeUrl: string;
+        intro?: string | undefined;
+        closing?: string | undefined;
+    }>;
+    readonly valuationLead: zod.ZodObject<{
+        title: zod.ZodString;
+        mediaId: zod.ZodEffects<zod.ZodOptional<zod.ZodString>, string | undefined, unknown>;
+        imageAlt: zod.ZodOptional<zod.ZodString>;
+        labels: zod.ZodObject<{
+            name: zod.ZodString;
+            phone: zod.ZodString;
+            email: zod.ZodString;
+            location: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            email: string;
+            phone: string;
+            name: string;
+            location: string;
+        }, {
+            email: string;
+            phone: string;
+            name: string;
+            location: string;
+        }>;
+        placeholders: zod.ZodOptional<zod.ZodObject<{
+            name: zod.ZodOptional<zod.ZodString>;
+            phone: zod.ZodOptional<zod.ZodString>;
+            email: zod.ZodOptional<zod.ZodString>;
+            location: zod.ZodOptional<zod.ZodString>;
+        }, "strip", zod.ZodTypeAny, {
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            location?: string | undefined;
+        }, {
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            location?: string | undefined;
+        }>>;
+        submitLabel: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        title: string;
+        submitLabel: string;
+        labels: {
+            email: string;
+            phone: string;
+            name: string;
+            location: string;
+        };
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
+        placeholders?: {
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            location?: string | undefined;
+        } | undefined;
+    }, {
+        title: string;
+        submitLabel: string;
+        labels: {
+            email: string;
+            phone: string;
+            name: string;
+            location: string;
+        };
+        mediaId?: unknown;
+        imageAlt?: string | undefined;
+        placeholders?: {
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            location?: string | undefined;
+        } | undefined;
+    }>;
+    readonly socialReach: zod.ZodObject<{
+        title: zod.ZodString;
+        items: zod.ZodArray<zod.ZodObject<{
+            value: zod.ZodNumber;
+            decimals: zod.ZodDefault<zod.ZodNumber>;
+            unit: zod.ZodOptional<zod.ZodString>;
+            suffix: zod.ZodOptional<zod.ZodString>;
+            label: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            value: number;
+            label: string;
+            decimals: number;
+            suffix?: string | undefined;
+            unit?: string | undefined;
+        }, {
+            value: number;
+            label: string;
+            suffix?: string | undefined;
+            decimals?: number | undefined;
+            unit?: string | undefined;
+        }>, "many">;
+        quote: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        title: string;
+        items: {
+            value: number;
+            label: string;
+            decimals: number;
+            suffix?: string | undefined;
+            unit?: string | undefined;
+        }[];
+        quote: string;
+    }, {
+        title: string;
+        items: {
+            value: number;
+            label: string;
+            suffix?: string | undefined;
+            decimals?: number | undefined;
+            unit?: string | undefined;
+        }[];
+        quote: string;
     }>;
 };
 type SectionType = keyof typeof sectionContentByType;
@@ -1562,9 +2829,9 @@ declare function parseSectionContent(type: string, content: unknown): {
         }[];
         title?: string | undefined;
     } | {
+        columns: number;
         playlistId: string;
         pageSize: number;
-        columns: number;
         subscribeChannelUrl: string;
         subscribeLabel: string;
     } | {
@@ -1590,6 +2857,38 @@ declare function parseSectionContent(type: string, content: unknown): {
         eyebrow?: string | undefined;
         lead?: string | undefined;
         outro?: string | undefined;
+    } | {
+        title: string;
+        primaryCta: {
+            label: string;
+        };
+        subtitle?: string | undefined;
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
+        titleHighlight?: string | undefined;
+    } | {
+        title: string;
+        bullets: string[];
+        youtubeUrl: string;
+        intro?: string | undefined;
+        closing?: string | undefined;
+    } | {
+        title: string;
+        submitLabel: string;
+        labels: {
+            email: string;
+            phone: string;
+            name: string;
+            location: string;
+        };
+        mediaId?: string | undefined;
+        imageAlt?: string | undefined;
+        placeholders?: {
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            location?: string | undefined;
+        } | undefined;
     };
     error?: undefined;
 };
@@ -2051,8 +3350,8 @@ declare const propertyWatermarkSchema: z.ZodObject<{
     enabled: boolean;
     mediaId?: string | undefined;
 }, {
-    mediaId?: string | undefined;
     enabled?: boolean | undefined;
+    mediaId?: string | undefined;
 }>;
 type PropertyWatermark = z.infer<typeof propertyWatermarkSchema>;
 declare const DEFAULT_PROPERTY_WATERMARK: PropertyWatermark;
@@ -2432,8 +3731,8 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         enabled: boolean;
         mediaId?: string | undefined;
     }, {
-        mediaId?: string | undefined;
         enabled?: boolean | undefined;
+        mediaId?: string | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
     themeColor: string;
@@ -2586,8 +3885,8 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
     } | undefined;
     propertyWatermark?: {
-        mediaId?: string | undefined;
         enabled?: boolean | undefined;
+        mediaId?: string | undefined;
     } | undefined;
 }>, {
     themeColor: string;
@@ -2740,8 +4039,8 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
     } | undefined;
     propertyWatermark?: {
-        mediaId?: string | undefined;
         enabled?: boolean | undefined;
+        mediaId?: string | undefined;
     } | undefined;
 }>;
 type SettingsScalars = z.infer<typeof settingsScalarsSchema>;
@@ -2807,6 +4106,8 @@ declare const organizationSchema: z.ZodEffects<z.ZodObject<{
         description?: string | undefined;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
+    email: string;
+    phone: string;
     openingHours: {
         dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
         opens: string;
@@ -2814,8 +4115,6 @@ declare const organizationSchema: z.ZodEffects<z.ZodObject<{
         description?: string | undefined;
     }[];
     legalName: string;
-    email: string;
-    phone: string;
     address: {
         street: string;
         city: string;
@@ -2829,6 +4128,8 @@ declare const organizationSchema: z.ZodEffects<z.ZodObject<{
     vatNumber?: string | undefined;
     mapUrl?: string | undefined;
 }, {
+    email: string;
+    phone: string;
     openingHours: {
         dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
         opens: string;
@@ -2836,8 +4137,6 @@ declare const organizationSchema: z.ZodEffects<z.ZodObject<{
         description?: string | undefined;
     }[];
     legalName: string;
-    email: string;
-    phone: string;
     address: {
         street: string;
         city: string;
@@ -2851,6 +4150,8 @@ declare const organizationSchema: z.ZodEffects<z.ZodObject<{
     vatNumber?: string | undefined;
     mapUrl?: string | undefined;
 }>, {
+    email: string;
+    phone: string;
     openingHours: {
         dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
         opens: string;
@@ -2858,8 +4159,6 @@ declare const organizationSchema: z.ZodEffects<z.ZodObject<{
         description?: string | undefined;
     }[];
     legalName: string;
-    email: string;
-    phone: string;
     address: {
         street: string;
         city: string;
@@ -2873,6 +4172,8 @@ declare const organizationSchema: z.ZodEffects<z.ZodObject<{
     vatNumber?: string | undefined;
     mapUrl?: string | undefined;
 }, {
+    email: string;
+    phone: string;
     openingHours: {
         dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
         opens: string;
@@ -2880,8 +4181,6 @@ declare const organizationSchema: z.ZodEffects<z.ZodObject<{
         description?: string | undefined;
     }[];
     legalName: string;
-    email: string;
-    phone: string;
     address: {
         street: string;
         city: string;
@@ -2920,15 +4219,15 @@ declare const contactFormSchema: z.ZodEffects<z.ZodObject<{
         message: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         message?: string | undefined;
-        name?: string | undefined;
         email?: string | undefined;
         phone?: string | undefined;
+        name?: string | undefined;
         subject?: string | undefined;
     }, {
         message?: string | undefined;
-        name?: string | undefined;
         email?: string | undefined;
         phone?: string | undefined;
+        name?: string | undefined;
         subject?: string | undefined;
     }>>;
     messages: z.ZodOptional<z.ZodObject<{
@@ -2948,6 +4247,13 @@ declare const contactFormSchema: z.ZodEffects<z.ZodObject<{
     phoneFieldEnabled: boolean;
     phoneRequired: boolean;
     subjectFieldEnabled: boolean;
+    labels?: {
+        message?: string | undefined;
+        email?: string | undefined;
+        phone?: string | undefined;
+        name?: string | undefined;
+        subject?: string | undefined;
+    } | undefined;
     leadRecipientEmail?: string | undefined;
     privacyConsentText?: string | undefined;
     privacyPolicyUrl?: string | undefined;
@@ -2955,13 +4261,6 @@ declare const contactFormSchema: z.ZodEffects<z.ZodObject<{
     subjectOptions?: {
         value: string;
     }[] | undefined;
-    labels?: {
-        message?: string | undefined;
-        name?: string | undefined;
-        email?: string | undefined;
-        phone?: string | undefined;
-        subject?: string | undefined;
-    } | undefined;
     messages?: {
         success?: string | undefined;
         error?: string | undefined;
@@ -2973,6 +4272,13 @@ declare const contactFormSchema: z.ZodEffects<z.ZodObject<{
     phoneFieldEnabled: boolean;
     phoneRequired: boolean;
     subjectFieldEnabled: boolean;
+    labels?: {
+        message?: string | undefined;
+        email?: string | undefined;
+        phone?: string | undefined;
+        name?: string | undefined;
+        subject?: string | undefined;
+    } | undefined;
     leadRecipientEmail?: string | undefined;
     privacyConsentText?: string | undefined;
     privacyPolicyUrl?: string | undefined;
@@ -2980,13 +4286,6 @@ declare const contactFormSchema: z.ZodEffects<z.ZodObject<{
     subjectOptions?: {
         value: string;
     }[] | undefined;
-    labels?: {
-        message?: string | undefined;
-        name?: string | undefined;
-        email?: string | undefined;
-        phone?: string | undefined;
-        subject?: string | undefined;
-    } | undefined;
     messages?: {
         success?: string | undefined;
         error?: string | undefined;
@@ -2998,6 +4297,13 @@ declare const contactFormSchema: z.ZodEffects<z.ZodObject<{
     phoneFieldEnabled: boolean;
     phoneRequired: boolean;
     subjectFieldEnabled: boolean;
+    labels?: {
+        message?: string | undefined;
+        email?: string | undefined;
+        phone?: string | undefined;
+        name?: string | undefined;
+        subject?: string | undefined;
+    } | undefined;
     leadRecipientEmail?: string | undefined;
     privacyConsentText?: string | undefined;
     privacyPolicyUrl?: string | undefined;
@@ -3005,13 +4311,6 @@ declare const contactFormSchema: z.ZodEffects<z.ZodObject<{
     subjectOptions?: {
         value: string;
     }[] | undefined;
-    labels?: {
-        message?: string | undefined;
-        name?: string | undefined;
-        email?: string | undefined;
-        phone?: string | undefined;
-        subject?: string | undefined;
-    } | undefined;
     messages?: {
         success?: string | undefined;
         error?: string | undefined;
@@ -3023,6 +4322,13 @@ declare const contactFormSchema: z.ZodEffects<z.ZodObject<{
     phoneFieldEnabled: boolean;
     phoneRequired: boolean;
     subjectFieldEnabled: boolean;
+    labels?: {
+        message?: string | undefined;
+        email?: string | undefined;
+        phone?: string | undefined;
+        name?: string | undefined;
+        subject?: string | undefined;
+    } | undefined;
     leadRecipientEmail?: string | undefined;
     privacyConsentText?: string | undefined;
     privacyPolicyUrl?: string | undefined;
@@ -3030,13 +4336,6 @@ declare const contactFormSchema: z.ZodEffects<z.ZodObject<{
     subjectOptions?: {
         value: string;
     }[] | undefined;
-    labels?: {
-        message?: string | undefined;
-        name?: string | undefined;
-        email?: string | undefined;
-        phone?: string | undefined;
-        subject?: string | undefined;
-    } | undefined;
     messages?: {
         success?: string | undefined;
         error?: string | undefined;
@@ -3093,6 +4392,8 @@ declare const contactSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }>, "many">;
     }, "strip", z.ZodTypeAny, {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -3100,8 +4401,6 @@ declare const contactSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -3115,6 +4414,8 @@ declare const contactSettingsSchema: z.ZodObject<{
         vatNumber?: string | undefined;
         mapUrl?: string | undefined;
     }, {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -3122,8 +4423,6 @@ declare const contactSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -3137,6 +4436,8 @@ declare const contactSettingsSchema: z.ZodObject<{
         vatNumber?: string | undefined;
         mapUrl?: string | undefined;
     }>, {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -3144,8 +4445,6 @@ declare const contactSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -3159,6 +4458,8 @@ declare const contactSettingsSchema: z.ZodObject<{
         vatNumber?: string | undefined;
         mapUrl?: string | undefined;
     }, {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -3166,8 +4467,6 @@ declare const contactSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -3206,15 +4505,15 @@ declare const contactSettingsSchema: z.ZodObject<{
             message: z.ZodOptional<z.ZodString>;
         }, "strip", z.ZodTypeAny, {
             message?: string | undefined;
-            name?: string | undefined;
             email?: string | undefined;
             phone?: string | undefined;
+            name?: string | undefined;
             subject?: string | undefined;
         }, {
             message?: string | undefined;
-            name?: string | undefined;
             email?: string | undefined;
             phone?: string | undefined;
+            name?: string | undefined;
             subject?: string | undefined;
         }>>;
         messages: z.ZodOptional<z.ZodObject<{
@@ -3234,6 +4533,13 @@ declare const contactSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -3241,13 +4547,6 @@ declare const contactSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
@@ -3259,6 +4558,13 @@ declare const contactSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -3266,13 +4572,6 @@ declare const contactSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
@@ -3284,6 +4583,13 @@ declare const contactSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -3291,13 +4597,6 @@ declare const contactSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
@@ -3309,6 +4608,13 @@ declare const contactSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -3316,21 +4622,172 @@ declare const contactSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
         } | undefined;
         submitButtonLabel?: string | undefined;
     }>;
+    questionnaire: z.ZodObject<{
+        enabled: z.ZodBoolean;
+        buttonLabel: z.ZodString;
+        modalTitle: z.ZodOptional<z.ZodString>;
+        submitLabel: z.ZodString;
+        successMessage: z.ZodString;
+        steps: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            title: z.ZodOptional<z.ZodString>;
+            fields: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                key: z.ZodString;
+                type: z.ZodEnum<["text", "email", "tel", "select", "textarea", "date"]>;
+                columns: z.ZodEnum<["1", "2", "3"]>;
+                required: z.ZodBoolean;
+                label: z.ZodString;
+                placeholder: z.ZodOptional<z.ZodString>;
+                options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    value: z.ZodString;
+                    label: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    value: string;
+                    label: string;
+                }, {
+                    value: string;
+                    label: string;
+                }>, "many">>;
+            }, "strip", z.ZodTypeAny, {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }, {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }>, "many">;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }, {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        enabled: boolean;
+        buttonLabel: string;
+        submitLabel: string;
+        successMessage: string;
+        steps: {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }[];
+        modalTitle?: string | undefined;
+    }, {
+        enabled: boolean;
+        buttonLabel: string;
+        submitLabel: string;
+        successMessage: string;
+        steps: {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }[];
+        modalTitle?: string | undefined;
+    }>;
 }, "strip", z.ZodTypeAny, {
+    questionnaire: {
+        enabled: boolean;
+        buttonLabel: string;
+        submitLabel: string;
+        successMessage: string;
+        steps: {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }[];
+        modalTitle?: string | undefined;
+    };
     organization: {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -3338,8 +4795,6 @@ declare const contactSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -3359,6 +4814,13 @@ declare const contactSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -3366,13 +4828,6 @@ declare const contactSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
@@ -3380,7 +4835,33 @@ declare const contactSettingsSchema: z.ZodObject<{
         submitButtonLabel?: string | undefined;
     };
 }, {
+    questionnaire: {
+        enabled: boolean;
+        buttonLabel: string;
+        submitLabel: string;
+        successMessage: string;
+        steps: {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }[];
+        modalTitle?: string | undefined;
+    };
     organization: {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -3388,8 +4869,6 @@ declare const contactSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -3409,6 +4888,13 @@ declare const contactSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -3416,13 +4902,6 @@ declare const contactSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
@@ -4031,6 +5510,8 @@ declare const siteSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }>, "many">;
     }, "strip", z.ZodTypeAny, {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -4038,8 +5519,6 @@ declare const siteSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -4053,6 +5532,8 @@ declare const siteSettingsSchema: z.ZodObject<{
         vatNumber?: string | undefined;
         mapUrl?: string | undefined;
     }, {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -4060,8 +5541,6 @@ declare const siteSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -4075,6 +5554,8 @@ declare const siteSettingsSchema: z.ZodObject<{
         vatNumber?: string | undefined;
         mapUrl?: string | undefined;
     }>, {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -4082,8 +5563,6 @@ declare const siteSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -4097,6 +5576,8 @@ declare const siteSettingsSchema: z.ZodObject<{
         vatNumber?: string | undefined;
         mapUrl?: string | undefined;
     }, {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -4104,8 +5585,6 @@ declare const siteSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -4144,15 +5623,15 @@ declare const siteSettingsSchema: z.ZodObject<{
             message: z.ZodOptional<z.ZodString>;
         }, "strip", z.ZodTypeAny, {
             message?: string | undefined;
-            name?: string | undefined;
             email?: string | undefined;
             phone?: string | undefined;
+            name?: string | undefined;
             subject?: string | undefined;
         }, {
             message?: string | undefined;
-            name?: string | undefined;
             email?: string | undefined;
             phone?: string | undefined;
+            name?: string | undefined;
             subject?: string | undefined;
         }>>;
         messages: z.ZodOptional<z.ZodObject<{
@@ -4172,6 +5651,13 @@ declare const siteSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -4179,13 +5665,6 @@ declare const siteSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
@@ -4197,6 +5676,13 @@ declare const siteSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -4204,13 +5690,6 @@ declare const siteSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
@@ -4222,6 +5701,13 @@ declare const siteSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -4229,13 +5715,6 @@ declare const siteSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
@@ -4247,6 +5726,13 @@ declare const siteSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -4254,18 +5740,143 @@ declare const siteSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
         } | undefined;
         submitButtonLabel?: string | undefined;
+    }>;
+    questionnaire: z.ZodObject<{
+        enabled: z.ZodBoolean;
+        buttonLabel: z.ZodString;
+        modalTitle: z.ZodOptional<z.ZodString>;
+        submitLabel: z.ZodString;
+        successMessage: z.ZodString;
+        steps: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            title: z.ZodOptional<z.ZodString>;
+            fields: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                key: z.ZodString;
+                type: z.ZodEnum<["text", "email", "tel", "select", "textarea", "date"]>;
+                columns: z.ZodEnum<["1", "2", "3"]>;
+                required: z.ZodBoolean;
+                label: z.ZodString;
+                placeholder: z.ZodOptional<z.ZodString>;
+                options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    value: z.ZodString;
+                    label: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    value: string;
+                    label: string;
+                }, {
+                    value: string;
+                    label: string;
+                }>, "many">>;
+            }, "strip", z.ZodTypeAny, {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }, {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }>, "many">;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }, {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        enabled: boolean;
+        buttonLabel: string;
+        submitLabel: string;
+        successMessage: string;
+        steps: {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }[];
+        modalTitle?: string | undefined;
+    }, {
+        enabled: boolean;
+        buttonLabel: string;
+        submitLabel: string;
+        successMessage: string;
+        steps: {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }[];
+        modalTitle?: string | undefined;
     }>;
 } & {
     brand: z.ZodObject<{
@@ -4421,7 +6032,33 @@ declare const siteSettingsSchema: z.ZodObject<{
         attribution?: string | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
+    questionnaire: {
+        enabled: boolean;
+        buttonLabel: string;
+        submitLabel: string;
+        successMessage: string;
+        steps: {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }[];
+        modalTitle?: string | undefined;
+    };
     organization: {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -4429,8 +6066,6 @@ declare const siteSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -4450,6 +6085,13 @@ declare const siteSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -4457,13 +6099,6 @@ declare const siteSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
@@ -4517,7 +6152,33 @@ declare const siteSettingsSchema: z.ZodObject<{
         to: "/" | "/about" | "/properties" | "/property-finder" | "/virtual-tours" | "/sell-with-us" | "/contact";
     } | undefined;
 }, {
+    questionnaire: {
+        enabled: boolean;
+        buttonLabel: string;
+        submitLabel: string;
+        successMessage: string;
+        steps: {
+            id: string;
+            fields: {
+                type: "text" | "email" | "tel" | "select" | "date" | "textarea";
+                label: string;
+                id: string;
+                key: string;
+                columns: "1" | "2" | "3";
+                required: boolean;
+                options?: {
+                    value: string;
+                    label: string;
+                }[] | undefined;
+                placeholder?: string | undefined;
+            }[];
+            title?: string | undefined;
+        }[];
+        modalTitle?: string | undefined;
+    };
     organization: {
+        email: string;
+        phone: string;
         openingHours: {
             dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "PublicHolidays";
             opens: string;
@@ -4525,8 +6186,6 @@ declare const siteSettingsSchema: z.ZodObject<{
             description?: string | undefined;
         }[];
         legalName: string;
-        email: string;
-        phone: string;
         address: {
             street: string;
             city: string;
@@ -4546,6 +6205,13 @@ declare const siteSettingsSchema: z.ZodObject<{
         phoneFieldEnabled: boolean;
         phoneRequired: boolean;
         subjectFieldEnabled: boolean;
+        labels?: {
+            message?: string | undefined;
+            email?: string | undefined;
+            phone?: string | undefined;
+            name?: string | undefined;
+            subject?: string | undefined;
+        } | undefined;
         leadRecipientEmail?: string | undefined;
         privacyConsentText?: string | undefined;
         privacyPolicyUrl?: string | undefined;
@@ -4553,13 +6219,6 @@ declare const siteSettingsSchema: z.ZodObject<{
         subjectOptions?: {
             value: string;
         }[] | undefined;
-        labels?: {
-            message?: string | undefined;
-            name?: string | undefined;
-            email?: string | undefined;
-            phone?: string | undefined;
-            subject?: string | undefined;
-        } | undefined;
         messages?: {
             success?: string | undefined;
             error?: string | undefined;
@@ -4615,7 +6274,7 @@ declare const siteSettingsSchema: z.ZodObject<{
 }>;
 type SiteSettings = z.infer<typeof siteSettingsSchema>;
 declare const DEFAULT_SITE_SETTINGS_IT: SiteSettings;
-declare function mergeSiteSettingsDefaults(document: unknown): SiteSettings;
+declare function mergeSiteSettingsDefaults(document: unknown, locale?: 'it' | 'en'): SiteSettings;
 
 type PageKey = 'home' | 'chi-siamo' | 'immobili-index' | 'contatti' | 'property-finder' | 'virtual-tours' | 'sell-with-us' | 'privacy-policy' | 'cookie-policy';
 type PageRegistryEntry = {
@@ -4635,6 +6294,8 @@ declare const DAY_OF_WEEK_LABELS_IT: Record<string, string>;
 declare const SOCIAL_PLATFORM_LABELS_IT: Record<string, string>;
 declare const FEATURED_COLLECTION_MODE_LABELS_IT: Record<string, string>;
 declare const LEGAL_POLICY_SOURCE_LABELS_IT: Record<string, string>;
+declare const QUESTIONNAIRE_FIELD_TYPE_LABELS_IT: Record<string, string>;
+declare const QUESTIONNAIRE_COLUMNS_LABELS_IT: Record<string, string>;
 declare function enumLabelIt(fieldKey: string, value: string): string;
 
 type LocaleScope = 'shared' | 'i18n';
@@ -4708,4 +6369,4 @@ type FieldMeta = {
 };
 declare function zodToFieldMeta(schema: ZodTypeAny, key?: string): FieldMeta[];
 
-export { type AboutTeaserCarouselItem, type AboutTeaserContent, type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_PROPERTY_WATERMARK, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, type DestinationItem, type DestinationsContent, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type GoogleReviewsContent, type ImageSlideshowContent, type ImageSlideshowItem, type ItineraryContent, type ItineraryItem, LEGACY_NAV_PATH_MAP, LEGACY_PROPERTY_FINDER_TITLES, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, type PropertyWatermark, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SettingsScalars, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type StatementContent, type StickySplitItem, type StickySplitsContent, type TimeSlot, WEEKDAY_ORDER, type YoutubeGalleryContent, aboutTeaserCarouselItemSchema, aboutTeaserContentSchema, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectBrandingMediaIds, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, collectPropertyWatermarkMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, destinationItemSchema, destinationsContentSchema, enumLabelIt, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, googleReviewsContentSchema, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isPageKey, itineraryContentSchema, itineraryItemSchema, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeSharedOrganization, mergeSiteSettingsDefaults, migratePropertyFinderBriefing, migratePropertyFinderPage, migrateSplitsToStickySplits, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, propertyWatermarkSchema, richTextContentSchema, scalarsToCssVars, sectionContentByType, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, splitContentSchema, statementContentSchema, statsContentSchema, stickySplitItemSchema, stickySplitsContentSchema, teamContentSchema, testimonialsContentSchema, validateOpeningHours, youtubeGalleryContentSchema, zodToFieldMeta };
+export { type AboutTeaserContent, type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_PROPERTY_WATERMARK, DEFAULT_QUESTIONNAIRE_EN, DEFAULT_QUESTIONNAIRE_IT, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, type DestinationItem, type DestinationsContent, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type GoogleReviewsContent, type ImageSlideshowContent, type ImageSlideshowItem, type ItineraryContent, type ItineraryItem, LEGACY_NAV_PATH_MAP, LEGACY_PROPERTY_FINDER_TITLES, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, type PageKey, type PageRegistryEntry, type PropertyWatermark, QUESTIONNAIRE_COLUMNS_LABELS_IT, QUESTIONNAIRE_FIELD_TYPE_LABELS_IT, type QuestionnaireContent, type QuestionnaireField, type QuestionnaireFieldOption, type QuestionnaireStep, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SellHeroContent, type SellMethodContent, type SettingsScalars, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type SocialReachContent, type SocialReachItem, type StatementContent, type StickySplitItem, type StickySplitsContent, type TimeSlot, type ValuationLeadContent, WEEKDAY_ORDER, type YoutubeGalleryContent, aboutTeaserContentSchema, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, buildHomeQuestionnaireDefaults, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectBrandingMediaIds, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, collectPropertyWatermarkMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, destinationItemSchema, destinationsContentSchema, enumLabelIt, extractLegacyStatementQuestionnaire, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, googleReviewsContentSchema, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isLegacySellWithUsDocument, isPageKey, itineraryContentSchema, itineraryItemSchema, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeQuestionnaireDefaults, mergeSharedOrganization, mergeSiteSettingsDefaults, migratePropertyFinderBriefing, migratePropertyFinderPage, migrateSellWithUsPage, migrateSplitsToStickySplits, migrateStatementQuestionnaire, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, propertyWatermarkSchema, questionnaireFieldOptionSchema, questionnaireFieldSchema, questionnaireSchema, questionnaireStepSchema, richTextContentSchema, scalarsToCssVars, sectionContentByType, sellHeroContentSchema, sellMethodContentSchema, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, socialReachContentSchema, socialReachItemSchema, splitContentSchema, statementContentSchema, statsContentSchema, stickySplitItemSchema, stickySplitsContentSchema, stripStatementQuestionnaire, teamContentSchema, testimonialsContentSchema, validateOpeningHours, valuationLeadContentSchema, youtubeGalleryContentSchema, zodToFieldMeta };

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { DEFAULT_CONTACT_SETTINGS_IT, contactSettingsSchema } from './contact.js'
+import { mergeQuestionnaireDefaults } from './questionnaire.js'
 import {
   DEFAULT_LAYOUT_SETTINGS_IT,
   DEFAULT_SITE_MENU_SETTINGS_IT,
@@ -108,7 +109,10 @@ function normalizeMenu(value: unknown): SiteMenuSettings {
   return parsed.data
 }
 
-export function mergeSiteSettingsDefaults(document: unknown): SiteSettings {
+export function mergeSiteSettingsDefaults(
+  document: unknown,
+  locale: 'it' | 'en' = 'it',
+): SiteSettings {
   const partial = (document && typeof document === 'object' ? document : {}) as Record<string, unknown>
   const partialOrg = (partial.organization as Record<string, unknown> | undefined) ?? {}
   const partialForm = (partial.contactForm as Record<string, unknown> | undefined) ?? {}
@@ -144,6 +148,7 @@ export function mergeSiteSettingsDefaults(document: unknown): SiteSettings {
         ...((partialForm.messages as object | undefined) ?? undefined),
       },
     },
+    questionnaire: mergeQuestionnaireDefaults(partial.questionnaire, locale),
     brand: {
       ...DEFAULT_SITE_SETTINGS_IT.brand,
       ...(partial.brand as object | undefined),

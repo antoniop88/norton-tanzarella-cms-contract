@@ -170,3 +170,95 @@ export const destinationsContentSchema = z.object({
 
 export type DestinationItem = z.infer<typeof destinationItemSchema>
 export type DestinationsContent = z.infer<typeof destinationsContentSchema>
+
+/** Sell-with-us — full-bleed hero (v0.33). */
+export const sellHeroContentSchema = z.object({
+  title: z.string().max(80).describe('Titolo'),
+  titleHighlight: z.string().max(80).optional().describe('Parte titolo in evidenza (oro)'),
+  subtitle: z.string().max(300).optional().describe('Sottotitolo'),
+  mediaId: optionalMediaIdSchema.describe('Immagine sfondo'),
+  imageAlt: z.string().max(160).optional().describe('Alt immagine'),
+  primaryCta: z
+    .object({
+      label: z.string().max(40).describe('Etichetta'),
+    })
+    .describe('CTA primaria (scroll al form)'),
+})
+
+export type SellHeroContent = z.infer<typeof sellHeroContentSchema>
+
+const youtubeWatchUrlSchema = z
+  .string()
+  .max(500)
+  .url()
+  .refine(
+    (value) => {
+      try {
+        const host = new URL(value).hostname.replace(/^www\./, '')
+        return host === 'youtube.com' || host === 'youtu.be' || host === 'm.youtube.com'
+      } catch {
+        return false
+      }
+    },
+    { message: 'URL YouTube (youtube.com o youtu.be)' },
+  )
+
+/** Sell-with-us — metodo + video YouTube (v0.33). */
+export const sellMethodContentSchema = z.object({
+  title: z.string().max(80).describe('Titolo sezione'),
+  intro: z.string().max(500).optional().describe('Introduzione'),
+  bullets: z
+    .array(z.string().max(120).describe('Punto'))
+    .min(1)
+    .max(6)
+    .describe('Elenco punti'),
+  closing: z.string().max(300).optional().describe('Chiusura'),
+  youtubeUrl: youtubeWatchUrlSchema.describe('URL video YouTube'),
+})
+
+export type SellMethodContent = z.infer<typeof sellMethodContentSchema>
+
+/** Sell-with-us — form valutazione su sfondo (v0.33). */
+export const valuationLeadContentSchema = z.object({
+  title: z.string().max(80).describe('Titolo form'),
+  mediaId: optionalMediaIdSchema.describe('Immagine sfondo'),
+  imageAlt: z.string().max(160).optional().describe('Alt immagine'),
+  labels: z
+    .object({
+      name: z.string().max(40).describe('Label nome'),
+      phone: z.string().max(40).describe('Label telefono'),
+      email: z.string().max(40).describe('Label e-mail'),
+      location: z.string().max(60).describe('Label località'),
+    })
+    .describe('Etichette campi'),
+  placeholders: z
+    .object({
+      name: z.string().max(80).optional().describe('Placeholder nome'),
+      phone: z.string().max(80).optional().describe('Placeholder telefono'),
+      email: z.string().max(80).optional().describe('Placeholder e-mail'),
+      location: z.string().max(120).optional().describe('Placeholder località'),
+    })
+    .optional()
+    .describe('Placeholder campi'),
+  submitLabel: z.string().max(40).describe('Etichetta invio'),
+})
+
+export type ValuationLeadContent = z.infer<typeof valuationLeadContentSchema>
+
+/** Sell-with-us — contatori social + citazione (v0.33). */
+export const socialReachItemSchema = z.object({
+  value: z.number().min(0).describe('Valore numerico'),
+  decimals: z.number().int().min(0).max(2).default(0).describe('Decimali da mostrare'),
+  unit: z.string().max(10).optional().describe('Unità (K, mila, …)'),
+  suffix: z.string().max(10).optional().describe('Suffisso (+, …)'),
+  label: z.string().max(40).describe('Etichetta'),
+})
+
+export const socialReachContentSchema = z.object({
+  title: z.string().max(160).describe('Titolo sezione'),
+  items: z.array(socialReachItemSchema).min(2).max(6).describe('Contatori'),
+  quote: z.string().max(200).describe('Citazione banner'),
+})
+
+export type SocialReachItem = z.infer<typeof socialReachItemSchema>
+export type SocialReachContent = z.infer<typeof socialReachContentSchema>
