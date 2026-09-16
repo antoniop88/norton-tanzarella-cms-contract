@@ -1,4 +1,4 @@
-# CMS — Contratto v0.33.1
+# CMS — Contratto v0.34.0
 
 ## Export
 
@@ -152,6 +152,12 @@ Defaults: hero → slideshow → stickySplits → team → cta → faq (IT|EN).
 - `propertyWatermark.mediaId?` (uuid → `media_assets` in `brand/`) — persistito anche se `enabled=false`; obbligatorio se `enabled=true`
 - `collectBrandingMediaIds(scalars)` — loghi + filigrana
 - Backend applica filigrana al caricamento immagini `context=immobili` (non retroattivo)
+
+## Branding scalars — `maintenance` (v0.34.0)
+
+- `maintenance.enabled` (boolean, default `false`) — switch immediato su `cms_settings.scalars`
+- `maintenance.retryAfterSeconds` (int, default `3600`, range 60–604800) — header `Retry-After` sulle risposte 503
+- Non è una pageKey; il sito pubblico risponde 503 sullo stesso URL (vedi workspace `docs/cms-requirements.md`)
 - v0.30.3: `normalizeSettingsScalars` non elimina `mediaId` quando lo switch è spento
 
 ## Hero video (v0.16.0)

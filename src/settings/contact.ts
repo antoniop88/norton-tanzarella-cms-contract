@@ -208,6 +208,8 @@ export {
   collectBrandingMediaIds,
   propertyWatermarkSchema,
   DEFAULT_PROPERTY_WATERMARK,
+  maintenanceSchema,
+  DEFAULT_SITE_MAINTENANCE,
 } from './branding.js'
 export type {
   FontSans,
@@ -218,6 +220,7 @@ export type {
   BrandingTypography,
   BrandingLogos,
   PropertyWatermark,
+  SiteMaintenance,
   SettingsScalars,
 } from './branding.js'
 

@@ -5198,6 +5198,14 @@ var propertyWatermarkSchema = external_exports.object({
 var DEFAULT_PROPERTY_WATERMARK = {
   enabled: false
 };
+var maintenanceSchema = external_exports.object({
+  enabled: external_exports.boolean().default(false),
+  retryAfterSeconds: external_exports.number().int().min(60).max(604800).default(3600)
+});
+var DEFAULT_SITE_MAINTENANCE = {
+  enabled: false,
+  retryAfterSeconds: 3600
+};
 var DEFAULT_BRANDING_COLORS = {
   primary: "#0A2374",
   secondary: "#B2914F",
@@ -5218,7 +5226,8 @@ var DEFAULT_BRANDING_SCALARS = {
   colors: { ...DEFAULT_BRANDING_COLORS },
   typography: { ...DEFAULT_BRANDING_TYPOGRAPHY },
   logos: {},
-  propertyWatermark: { ...DEFAULT_PROPERTY_WATERMARK }
+  propertyWatermark: { ...DEFAULT_PROPERTY_WATERMARK },
+  maintenance: { ...DEFAULT_SITE_MAINTENANCE }
 };
 var settingsScalarsSchema = external_exports.object({
   themeColor: hexColorSchema,
@@ -5226,7 +5235,8 @@ var settingsScalarsSchema = external_exports.object({
   colors: brandingColorsSchema,
   typography: brandingTypographySchema,
   logos: brandingLogosSchema.default({}),
-  propertyWatermark: propertyWatermarkSchema.default({ enabled: false })
+  propertyWatermark: propertyWatermarkSchema.default({ enabled: false }),
+  maintenance: maintenanceSchema.default({ enabled: false, retryAfterSeconds: 3600 })
 }).superRefine((data, ctx) => {
   if (data.propertyWatermark.enabled && !data.propertyWatermark.mediaId) {
     ctx.addIssue({
@@ -5260,6 +5270,7 @@ function normalizeSettingsScalars(raw) {
   const typographyIn = input.typography && typeof input.typography === "object" ? input.typography : {};
   const logosIn = input.logos && typeof input.logos === "object" ? input.logos : {};
   const propertyWatermarkIn = input.propertyWatermark && typeof input.propertyWatermark === "object" ? input.propertyWatermark : {};
+  const maintenanceIn = input.maintenance && typeof input.maintenance === "object" ? input.maintenance : {};
   const primary = typeof colorsIn.primary === "string" && colorsIn.primary || typeof input.themeColor === "string" && input.themeColor || base.colors.primary;
   const background = typeof colorsIn.background === "string" && colorsIn.background || typeof input.backgroundColor === "string" && input.backgroundColor || base.colors.background;
   const colors = {
@@ -5276,13 +5287,18 @@ function normalizeSettingsScalars(raw) {
     ...base.propertyWatermark,
     ...propertyWatermarkIn
   };
+  const maintenance = {
+    ...base.maintenance,
+    ...maintenanceIn
+  };
   const candidate = {
     themeColor: primary,
     backgroundColor: background,
     colors,
     typography,
     logos: { ...logosIn },
-    propertyWatermark
+    propertyWatermark,
+    maintenance
   };
   const parsed = settingsScalarsSchema.safeParse(candidate);
   if (parsed.success) return parsed.data;
@@ -7302,6 +7318,7 @@ export {
   DEFAULT_PROPERTY_WATERMARK,
   DEFAULT_QUESTIONNAIRE_EN,
   DEFAULT_QUESTIONNAIRE_IT,
+  DEFAULT_SITE_MAINTENANCE,
   DEFAULT_SITE_MENU_SETTINGS_EN,
   DEFAULT_SITE_MENU_SETTINGS_IT,
   DEFAULT_SITE_SETTINGS_IT,
@@ -7385,6 +7402,7 @@ export {
   logoAltSchema,
   logoSlotSchema,
   mainNavLinkSchema,
+  maintenanceSchema,
   mergeOpeningHoursNotes,
   mergeQuestionnaireDefaults,
   mergeSharedOrganization,

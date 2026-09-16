@@ -94,6 +94,18 @@ export const DEFAULT_PROPERTY_WATERMARK: PropertyWatermark = {
   enabled: false,
 }
 
+export const maintenanceSchema = z.object({
+  enabled: z.boolean().default(false),
+  retryAfterSeconds: z.number().int().min(60).max(604_800).default(3600),
+})
+
+export type SiteMaintenance = z.infer<typeof maintenanceSchema>
+
+export const DEFAULT_SITE_MAINTENANCE: SiteMaintenance = {
+  enabled: false,
+  retryAfterSeconds: 3600,
+}
+
 export const DEFAULT_BRANDING_COLORS: BrandingColors = {
   primary: '#0A2374',
   secondary: '#B2914F',
@@ -117,6 +129,7 @@ export const DEFAULT_BRANDING_SCALARS = {
   typography: { ...DEFAULT_BRANDING_TYPOGRAPHY },
   logos: {} as BrandingLogos,
   propertyWatermark: { ...DEFAULT_PROPERTY_WATERMARK },
+  maintenance: { ...DEFAULT_SITE_MAINTENANCE },
 }
 
 /**
@@ -132,6 +145,7 @@ export const settingsScalarsSchema = z
     typography: brandingTypographySchema,
     logos: brandingLogosSchema.default({}),
     propertyWatermark: propertyWatermarkSchema.default({ enabled: false }),
+    maintenance: maintenanceSchema.default({ enabled: false, retryAfterSeconds: 3600 }),
   })
   .superRefine((data, ctx) => {
     if (data.propertyWatermark.enabled && !data.propertyWatermark.mediaId) {
@@ -183,6 +197,10 @@ export function normalizeSettingsScalars(raw: unknown): SettingsScalars {
     input.propertyWatermark && typeof input.propertyWatermark === 'object'
       ? (input.propertyWatermark as Partial<PropertyWatermark>)
       : {}
+  const maintenanceIn =
+    input.maintenance && typeof input.maintenance === 'object'
+      ? (input.maintenance as Partial<SiteMaintenance>)
+      : {}
 
   const primary =
     (typeof colorsIn.primary === 'string' && colorsIn.primary) ||
@@ -211,6 +229,11 @@ export function normalizeSettingsScalars(raw: unknown): SettingsScalars {
   }
   // Keep mediaId when the apply-switch is off: the logo is saved first, enabled later.
 
+  const maintenance: SiteMaintenance = {
+    ...base.maintenance,
+    ...maintenanceIn,
+  }
+
   const candidate = {
     themeColor: primary,
     backgroundColor: background,
@@ -218,6 +241,7 @@ export function normalizeSettingsScalars(raw: unknown): SettingsScalars {
     typography,
     logos: { ...logosIn },
     propertyWatermark,
+    maintenance,
   }
 
   const parsed = settingsScalarsSchema.safeParse(candidate)

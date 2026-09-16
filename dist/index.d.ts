@@ -3362,6 +3362,18 @@ declare const propertyWatermarkSchema: z.ZodObject<{
 }>;
 type PropertyWatermark = z.infer<typeof propertyWatermarkSchema>;
 declare const DEFAULT_PROPERTY_WATERMARK: PropertyWatermark;
+declare const maintenanceSchema: z.ZodObject<{
+    enabled: z.ZodDefault<z.ZodBoolean>;
+    retryAfterSeconds: z.ZodDefault<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    enabled: boolean;
+    retryAfterSeconds: number;
+}, {
+    enabled?: boolean | undefined;
+    retryAfterSeconds?: number | undefined;
+}>;
+type SiteMaintenance = z.infer<typeof maintenanceSchema>;
+declare const DEFAULT_SITE_MAINTENANCE: SiteMaintenance;
 declare const DEFAULT_BRANDING_COLORS: BrandingColors;
 declare const DEFAULT_BRANDING_TYPOGRAPHY: BrandingTypography;
 declare const DEFAULT_BRANDING_SCALARS: {
@@ -3385,6 +3397,10 @@ declare const DEFAULT_BRANDING_SCALARS: {
     propertyWatermark: {
         enabled: boolean;
         mediaId?: string | undefined;
+    };
+    maintenance: {
+        enabled: boolean;
+        retryAfterSeconds: number;
     };
 };
 /**
@@ -3741,6 +3757,16 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         enabled?: boolean | undefined;
         mediaId?: string | undefined;
     }>>;
+    maintenance: z.ZodDefault<z.ZodObject<{
+        enabled: z.ZodDefault<z.ZodBoolean>;
+        retryAfterSeconds: z.ZodDefault<z.ZodNumber>;
+    }, "strip", z.ZodTypeAny, {
+        enabled: boolean;
+        retryAfterSeconds: number;
+    }, {
+        enabled?: boolean | undefined;
+        retryAfterSeconds?: number | undefined;
+    }>>;
 }, "strip", z.ZodTypeAny, {
     themeColor: string;
     backgroundColor: string;
@@ -3818,6 +3844,10 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         enabled: boolean;
         mediaId?: string | undefined;
     };
+    maintenance: {
+        enabled: boolean;
+        retryAfterSeconds: number;
+    };
 }, {
     themeColor: string;
     backgroundColor: string;
@@ -3894,6 +3924,10 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
     propertyWatermark?: {
         enabled?: boolean | undefined;
         mediaId?: string | undefined;
+    } | undefined;
+    maintenance?: {
+        enabled?: boolean | undefined;
+        retryAfterSeconds?: number | undefined;
     } | undefined;
 }>, {
     themeColor: string;
@@ -3972,6 +4006,10 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
         enabled: boolean;
         mediaId?: string | undefined;
     };
+    maintenance: {
+        enabled: boolean;
+        retryAfterSeconds: number;
+    };
 }, {
     themeColor: string;
     backgroundColor: string;
@@ -4048,6 +4086,10 @@ declare const settingsScalarsSchema: z.ZodEffects<z.ZodObject<{
     propertyWatermark?: {
         enabled?: boolean | undefined;
         mediaId?: string | undefined;
+    } | undefined;
+    maintenance?: {
+        enabled?: boolean | undefined;
+        retryAfterSeconds?: number | undefined;
     } | undefined;
 }>;
 type SettingsScalars = z.infer<typeof settingsScalarsSchema>;
@@ -6376,4 +6418,4 @@ type FieldMeta = {
 };
 declare function zodToFieldMeta(schema: ZodTypeAny, key?: string): FieldMeta[];
 
-export { type AboutTeaserContent, type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_PROPERTY_WATERMARK, DEFAULT_QUESTIONNAIRE_EN, DEFAULT_QUESTIONNAIRE_IT, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, type DestinationItem, type DestinationsContent, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type GoogleReviewsContent, type ImageSlideshowContent, type ImageSlideshowItem, type ItineraryContent, type ItineraryItem, LEGACY_NAV_PATH_MAP, LEGACY_PROPERTY_FINDER_TITLES, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, PERFORMANCE_SELL_HERO_TITLES, type PageKey, type PageRegistryEntry, type PropertyWatermark, QUESTIONNAIRE_COLUMNS_LABELS_IT, QUESTIONNAIRE_FIELD_TYPE_LABELS_IT, type QuestionnaireContent, type QuestionnaireField, type QuestionnaireFieldOption, type QuestionnaireStep, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SellHeroContent, type SellMethodContent, type SettingsScalars, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type SocialReachContent, type SocialReachItem, type StatementContent, type StickySplitItem, type StickySplitsContent, type TimeSlot, type ValuationLeadContent, WEEKDAY_ORDER, type YoutubeGalleryContent, aboutTeaserContentSchema, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, buildHomeQuestionnaireDefaults, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectBrandingMediaIds, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, collectPropertyWatermarkMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, destinationItemSchema, destinationsContentSchema, enumLabelIt, extractLegacyStatementQuestionnaire, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, googleReviewsContentSchema, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isLegacySellWithUsDocument, isPageKey, itineraryContentSchema, itineraryItemSchema, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, mergeOpeningHoursNotes, mergeQuestionnaireDefaults, mergeSharedOrganization, mergeSiteSettingsDefaults, migratePropertyFinderBriefing, migratePropertyFinderPage, migrateSellWithUsPage, migrateSellWithUsPerformanceCopy, migrateSplitsToStickySplits, migrateStatementQuestionnaire, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, propertyWatermarkSchema, questionnaireFieldOptionSchema, questionnaireFieldSchema, questionnaireSchema, questionnaireStepSchema, richTextContentSchema, scalarsToCssVars, sectionContentByType, sellHeroContentSchema, sellMethodContentSchema, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, socialReachContentSchema, socialReachItemSchema, splitContentSchema, statementContentSchema, statsContentSchema, stickySplitItemSchema, stickySplitsContentSchema, stripStatementQuestionnaire, teamContentSchema, testimonialsContentSchema, validateOpeningHours, valuationLeadContentSchema, youtubeGalleryContentSchema, zodToFieldMeta };
+export { type AboutTeaserContent, type BrandFooterVisibility, type BrandingColors, type BrandingLogos, type BrandingTypography, type CategoryGridContent, type CategoryGridItem, type CmsNavLink, type CmsPageDocument, type CmsSection, type ContactSettings, DAY_OF_WEEK_LABELS_IT, DEFAULT_BRANDING_COLORS, DEFAULT_BRANDING_SCALARS, DEFAULT_BRANDING_TYPOGRAPHY, DEFAULT_BRAND_FOOTER_VISIBILITY, DEFAULT_CONTACT_SETTINGS_IT, DEFAULT_LAYOUT_SETTINGS_IT, DEFAULT_OPENING_HOURS_IT, DEFAULT_PROPERTY_WATERMARK, DEFAULT_QUESTIONNAIRE_EN, DEFAULT_QUESTIONNAIRE_IT, DEFAULT_SITE_MAINTENANCE, DEFAULT_SITE_MENU_SETTINGS_EN, DEFAULT_SITE_MENU_SETTINGS_IT, DEFAULT_SITE_SETTINGS_IT, type DayOfWeek, type DaySchedule, type DayScheduleGroup, type DestinationItem, type DestinationsContent, EDITOR_DAY_ORDER, FEATURED_COLLECTION_MODE_LABELS_IT, FONT_HEADING_WHITELIST, FONT_SANS_WHITELIST, FONT_WHITELIST, FOOTER_NAV_PATHS, type FieldMeta, type FontHeading, type FontSans, type FooterNavPath, type GoogleReviewsContent, type ImageSlideshowContent, type ImageSlideshowItem, type ItineraryContent, type ItineraryItem, LEGACY_NAV_PATH_MAP, LEGACY_PROPERTY_FINDER_TITLES, LEGAL_LINK_PATHS, LEGAL_POLICY_SOURCE_LABELS_IT, LOGO_SLOTS, type LayoutSettings, type LegalLinkPath, type LegalNavLink, type LocaleScope, type LogoSlot, type LogoSlotConfig, MAIN_NAV_PATHS, type MainNavLink, type MainNavPath, type OpeningHoursEntry, type OpeningHoursValidationIssue, PAGE_KEYS, PAGE_REGISTRY, PERFORMANCE_SELL_HERO_TITLES, type PageKey, type PageRegistryEntry, type PropertyWatermark, QUESTIONNAIRE_COLUMNS_LABELS_IT, QUESTIONNAIRE_FIELD_TYPE_LABELS_IT, type QuestionnaireContent, type QuestionnaireField, type QuestionnaireFieldOption, type QuestionnaireStep, SECTION_TYPE_LABELS_IT, SOCIAL_PLATFORMS, SOCIAL_PLATFORM_IDS, SOCIAL_PLATFORM_LABELS_IT, type SectionType, type SellHeroContent, type SellMethodContent, type SettingsScalars, type SiteMaintenance, type SiteMenuSettings, type SiteSettings, type SocialLink, type SocialPlatform, type SocialReachContent, type SocialReachItem, type StatementContent, type StickySplitItem, type StickySplitsContent, type TimeSlot, type ValuationLeadContent, WEEKDAY_ORDER, type YoutubeGalleryContent, aboutTeaserContentSchema, brandFooterVisibilitySchema, brandSchema, brandingColorsSchema, brandingLogosSchema, brandingTypographySchema, buildHomeQuestionnaireDefaults, categoryGridContentSchema, categoryGridItemSchema, cmsNavLinkSchema, cmsPageDocumentSchema, cmsSectionSchema, cmsSeoSchema, collectBrandingMediaIds, collectLogoMediaIds, collectMenuMediaIds, collectPageMediaIds, collectPropertyWatermarkMediaIds, contactFormSchema, contactSettingsSchema, cssVarsToStyleText, ctaContentSchema, ctaLinkSchema, dayOfWeekSchema, destinationItemSchema, destinationsContentSchema, enumLabelIt, extractLegacyStatementQuestionnaire, faqContentSchema, featureItemSchema, featuredCollectionContentSchema, featuresContentSchema, flattenDaySchedules, fontSansCssValue, footerColumnSchema, footerSchema, getM1PageKeys, getM2PageKeys, getM3PageKeys, googleReviewsContentSchema, groupConsecutiveSchedules, groupOpeningHoursByDay, headerCtaSchema, headerSecondaryCtaSchema, heroContentSchema, hexColorSchema, imageSlideshowContentSchema, imageSlideshowItemSchema, isLegacySellWithUsDocument, isPageKey, itineraryContentSchema, itineraryItemSchema, layoutSettingsSchema, legalNavLinkSchema, legalPolicyContentSchema, logoAltSchema, logoSlotSchema, mainNavLinkSchema, maintenanceSchema, mergeOpeningHoursNotes, mergeQuestionnaireDefaults, mergeSharedOrganization, mergeSiteSettingsDefaults, migratePropertyFinderBriefing, migratePropertyFinderPage, migrateSellWithUsPage, migrateSellWithUsPerformanceCopy, migrateSplitsToStickySplits, migrateStatementQuestionnaire, normalizeNavPath, normalizeSettingsScalars, openingHoursSchema, optionalCtaLinkSchema, optionalIconKeySchema, optionalMediaIdSchema, organizationSchema, pageHeaderContentSchema, parseSectionContent, propertyWatermarkSchema, questionnaireFieldOptionSchema, questionnaireFieldSchema, questionnaireSchema, questionnaireStepSchema, richTextContentSchema, scalarsToCssVars, sectionContentByType, sellHeroContentSchema, sellMethodContentSchema, settingsScalarsSchema, siteMenuSettingsSchema, siteSettingsSchema, socialLinkSchema, socialPlatformIcon, socialPlatformIconSlug, socialPlatformLabelIt, socialReachContentSchema, socialReachItemSchema, splitContentSchema, statementContentSchema, statsContentSchema, stickySplitItemSchema, stickySplitsContentSchema, stripStatementQuestionnaire, teamContentSchema, testimonialsContentSchema, validateOpeningHours, valuationLeadContentSchema, youtubeGalleryContentSchema, zodToFieldMeta };

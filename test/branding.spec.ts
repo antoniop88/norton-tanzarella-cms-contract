@@ -82,4 +82,33 @@ describe('branding scalars', () => {
       [mediaId, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'].sort(),
     )
   })
+
+  it('defaults site maintenance to disabled with Retry-After 3600', () => {
+    const scalars = normalizeSettingsScalars(undefined)
+    expect(scalars.maintenance.enabled).toBe(false)
+    expect(scalars.maintenance.retryAfterSeconds).toBe(3600)
+  })
+
+  it('normalizes maintenance from partial input', () => {
+    const scalars = normalizeSettingsScalars({
+      maintenance: { enabled: true, retryAfterSeconds: 7200 },
+    })
+    expect(scalars.maintenance.enabled).toBe(true)
+    expect(scalars.maintenance.retryAfterSeconds).toBe(7200)
+  })
+
+  it('rejects maintenance retryAfterSeconds outside 60–604800', () => {
+    expect(
+      settingsScalarsSchema.safeParse({
+        ...DEFAULT_BRANDING_SCALARS,
+        maintenance: { enabled: true, retryAfterSeconds: 30 },
+      }).success,
+    ).toBe(false)
+    expect(
+      settingsScalarsSchema.safeParse({
+        ...DEFAULT_BRANDING_SCALARS,
+        maintenance: { enabled: true, retryAfterSeconds: 700_000 },
+      }).success,
+    ).toBe(false)
+  })
 })
