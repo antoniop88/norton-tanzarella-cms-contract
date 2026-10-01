@@ -44,54 +44,30 @@ const HOME_CATEGORY_GRID_HEADER_EN = {
 
 const HOME_CATEGORY_GRID_ITEMS_IT = [
   {
-    label: 'Masserie',
-    imageAlt: 'Masseria in Valle d\'Itria',
-    categorySlug: 'masseria',
+    label: 'Case in campagna',
+    imageAlt: 'Casa in campagna in Valle d\'Itria',
+    categorySlug: 'case-in-campagna',
     ctaLabel: 'Vedi gli immobili',
   },
   {
-    label: 'Rustici',
-    imageAlt: 'Rustico in campagna',
-    categorySlug: 'rustici',
-    ctaLabel: 'Vedi gli immobili',
-  },
-  {
-    label: 'Trulli',
-    imageAlt: 'Trulli in Valle d\'Itria',
-    categorySlug: 'trulli',
-    ctaLabel: 'Vedi gli immobili',
-  },
-  {
-    label: 'Centro storico Ostuni',
-    imageAlt: 'Casa nel centro storico di Ostuni',
-    categorySlug: 'centro-storico',
+    label: 'Case in città',
+    imageAlt: 'Casa in città',
+    categorySlug: 'case-in-citta',
     ctaLabel: 'Vedi gli immobili',
   },
 ] as const
 
 const HOME_CATEGORY_GRID_ITEMS_EN = [
   {
-    label: 'Masserie',
-    imageAlt: 'Masseria in the Valle d\'Itria',
-    categorySlug: 'masseria',
+    label: 'Country homes',
+    imageAlt: 'Country home in the Valle d\'Itria',
+    categorySlug: 'case-in-campagna',
     ctaLabel: 'View properties',
   },
   {
-    label: 'Rustici',
-    imageAlt: 'Country house (rustico)',
-    categorySlug: 'rustici',
-    ctaLabel: 'View properties',
-  },
-  {
-    label: 'Trulli',
-    imageAlt: 'Trulli in the Valle d\'Itria',
-    categorySlug: 'trulli',
-    ctaLabel: 'View properties',
-  },
-  {
-    label: 'Ostuni historic centre',
-    imageAlt: 'Home in Ostuni historic centre',
-    categorySlug: 'centro-storico',
+    label: 'City homes',
+    imageAlt: 'City home',
+    categorySlug: 'case-in-citta',
     ctaLabel: 'View properties',
   },
 ] as const

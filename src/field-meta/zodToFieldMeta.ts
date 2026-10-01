@@ -370,8 +370,12 @@ export function zodToFieldMeta(schema: ZodTypeAny, key = 'root'): FieldMeta[] {
 
       if (inner instanceof z.ZodArray) {
         const itemSchema = inner._def.type as ZodTypeAny
-        const minLength = inner._def.minLength?.value as number | undefined
-        const maxLength = inner._def.maxLength?.value as number | undefined
+        // Zod 3.22+: `.length(n)` sets `exactLength` only (not minLength/maxLength).
+        const exact = inner._def.exactLength?.value as number | undefined
+        const minLength =
+          exact ?? (inner._def.minLength?.value as number | undefined)
+        const maxLength =
+          exact ?? (inner._def.maxLength?.value as number | undefined)
         fields.push({
           kind: 'array',
           key: fieldKey,

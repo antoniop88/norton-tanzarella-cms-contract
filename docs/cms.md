@@ -68,12 +68,13 @@ Defaults ordine (v0.29.1): hero → statement → categoryGrid → featuredColle
 - Seed IT|EN via `buildHomeQuestionnaireDefaults` / `mergeQuestionnaireDefaults`
 - Riuso web: home statement CTA, Trova immobile, listing immobili, scheda (intent messaggio)
 
-## `categoryGrid` (v0.20.0, header v0.29.2)
+## `categoryGrid` (v0.20.0, header v0.29.2, items flex v0.35.0)
 
 - `eyebrow?` (max 60, i18n) — sopratitolo uppercase spaced
 - `title?` (max 80, i18n) — titolo principale serif
 - `tagline?` (max 160, i18n) — sottotitolo corsivo sotto il titolo
-- `items[4]` (lunghezza fissa): `label` (max 60, i18n), `mediaId?` (shared), `imageAlt?` (max 160, i18n), `categorySlug` (max 80, shared), `ctaLabel?` (max 60, i18n)
+- `items[0–6]`: `label` (max 60, i18n), `mediaId?` (shared), `imageAlt?` (max 160, i18n), `categorySlug` (max 80, shared), `ctaLabel?` (max 60, i18n)
+- Defaults: Case in campagna / Case in città (`case-in-campagna`, `case-in-citta`); array vuoto → sezione nascosta sul web
 - Ripristina la navigazione per categoria rimossa per errore con `categoryShowcase`; estetica sobria (intestazione editoriale + griglia rettangolare, no maschere a pietra)
 
 ## Branding / tipografia (v0.19.0)

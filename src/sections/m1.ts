@@ -66,7 +66,7 @@ export const categoryGridContentSchema = z.object({
   eyebrow: z.string().max(60).optional().describe('Sopratitolo (maiuscolo)'),
   title: z.string().max(80).optional().describe('Titolo principale'),
   tagline: z.string().max(160).optional().describe('Sottotitolo (corsivo)'),
-  items: z.array(categoryGridItemSchema).length(4).describe('Categorie'),
+  items: z.array(categoryGridItemSchema).min(0).max(6).describe('Categorie'),
 })
 
 export type CategoryGridItem = z.infer<typeof categoryGridItemSchema>
