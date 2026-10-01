@@ -4930,7 +4930,7 @@ var SECTION_TYPE_LABELS_IT = {
   faq: "FAQ",
   testimonials: "Testimonianze",
   youtubeGallery: "Gallery YouTube",
-  googleReviews: "Google Reviews",
+  googleReviews: "Recensioni Google",
   aboutTeaser: "About teaser",
   itinerary: "Itinerario",
   destinations: "Territori",
@@ -5997,7 +5997,7 @@ var HOME_DEFAULTS_IT = {
       enabled: true,
       order: 6,
       content: {
-        title: "GOOGLE REVIEWS",
+        title: "Recensioni Google",
         maxItems: 5,
         hideWhenEmpty: true,
         showSummary: true
@@ -6114,7 +6114,7 @@ var HOME_DEFAULTS_EN = {
       enabled: true,
       order: 6,
       content: {
-        title: "GOOGLE REVIEWS",
+        title: "Google Reviews",
         maxItems: 5,
         hideWhenEmpty: true,
         showSummary: true

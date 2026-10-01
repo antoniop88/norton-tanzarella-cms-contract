@@ -92,7 +92,7 @@ export const SECTION_TYPE_LABELS_IT: Record<SectionType, string> = {
   faq: 'FAQ',
   testimonials: 'Testimonianze',
   youtubeGallery: 'Gallery YouTube',
-  googleReviews: 'Google Reviews',
+  googleReviews: 'Recensioni Google',
   aboutTeaser: 'About teaser',
   itinerary: 'Itinerario',
   destinations: 'Territori',

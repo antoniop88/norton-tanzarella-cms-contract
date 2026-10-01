@@ -175,7 +175,7 @@ const HOME_DEFAULTS_IT: CmsPageDocument = {
       enabled: true,
       order: 6,
       content: {
-        title: 'GOOGLE REVIEWS',
+        title: 'Recensioni Google',
         maxItems: 5,
         hideWhenEmpty: true,
         showSummary: true,
@@ -300,7 +300,7 @@ const HOME_DEFAULTS_EN: CmsPageDocument = {
       enabled: true,
       order: 6,
       content: {
-        title: 'GOOGLE REVIEWS',
+        title: 'Google Reviews',
         maxItems: 5,
         hideWhenEmpty: true,
         showSummary: true,
